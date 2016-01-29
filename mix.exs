@@ -15,6 +15,7 @@ defmodule Braintree.Mixfile do
   end
 
   defp deps do
-    [httpoison: "~> 0.8"]
+    [httpoison: "~> 0.8",
+     quinn: "~> 0.0.4"]
   end
 end
