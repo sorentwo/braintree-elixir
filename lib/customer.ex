@@ -18,6 +18,7 @@ defmodule Braintree.Customer do
                updated_at:      timestamp,
                addresses:       [],
                credit_cards:    [],
+               custom_fields:   %{},
                paypal_accounts: []
              }
 
@@ -33,6 +34,7 @@ defmodule Braintree.Customer do
             updated_at:      nil,
             addresses:       [],
             credit_cards:    [],
+            custom_fields:   %{},
             paypal_accounts: []
 
   def create(params \\ %{}) do
