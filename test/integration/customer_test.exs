@@ -1,6 +1,8 @@
 defmodule Braintree.Integration.CustomerTest do
   use ExUnit.Case, async: true
 
+  @moduletag :integration
+
   alias Braintree.Customer
 
   test "create/1 without any params" do
