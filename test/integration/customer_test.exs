@@ -17,7 +17,7 @@ defmodule Braintree.Integration.CustomerTest do
       website: "www.microsoft.com"
     })
 
-    assert customer.id =~ ~r/^\d{6}$/
+    assert customer.id =~ ~r/^\d+$/
     assert customer.first_name == "Bill"
     assert customer.last_name == "Gates"
     assert customer.company == "Microsoft"

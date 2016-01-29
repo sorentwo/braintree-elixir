@@ -1,4 +1,8 @@
 defmodule Braintree.Customer do
+  use Braintree.HTTP
+
+  import Braintree.Util, only: [atomize: 1]
+
   @type timestamp :: {{integer, integer, integer}, {integer, integer, integer}}
 
   @type t :: %__MODULE__{
@@ -31,7 +35,8 @@ defmodule Braintree.Customer do
             credit_cards:    [],
             paypal_accounts: []
 
-  def create(_params \\ :empty) do
-    {:ok, %__MODULE__{}}
+  def create(params \\ %{}) do
+    {:ok, %{"customer" => customer}} = post("customers", %{customer: params})
+    {:ok, struct(__MODULE__, atomize(customer))}
   end
 end

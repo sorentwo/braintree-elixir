@@ -2,6 +2,7 @@ defmodule Braintree.HTTP do
   use HTTPoison.Base
 
   alias Braintree.XML
+  alias HTTPoison.Response
 
   @endpoint "https://api.sandbox.braintreegateway.com/merchants/"
 
@@ -14,6 +15,12 @@ defmodule Braintree.HTTP do
     {"X-ApiVersion", "4"},
     {"Content-Type", "application/xml"}
   ]
+
+  defmacro __using__(_opts) do
+    quote do
+      import Braintree.HTTP, only: [get: 3, post: 2, post: 4, put: 4]
+    end
+  end
 
   def request(method, url, body, headers, options) do
     options = options ++ [hackney: [ssl_options: [cacertfile: @cacertfile]]]
@@ -46,11 +53,20 @@ defmodule Braintree.HTTP do
   def process_response_body(body) do
     body
     |> :zlib.gunzip
-    |> IO.inspect
     |> XML.load
+  rescue
+    ErlangError -> IO.inspect(body)
   end
 
-  def process_response(resp), do: resp
+  def process_response({:ok, %Response{status_code: code, body: body}})
+       when code >= 200 and code <= 399,
+    do: {:ok, body}
+
+  def process_response({_, %Response{status_code: code, body: body}}),
+    do: {:error, code, body}
+
+  def process_response({code, %HTTPoison.Error{reason: reason}}),
+    do: {:error, code, inspect(reason)}
 
   ## Helpers
 

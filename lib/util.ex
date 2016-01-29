@@ -12,4 +12,9 @@ defmodule Braintree.Util do
 
   def hyphenate(value) when is_binary(value),
     do: String.replace(value, "_", "-")
+
+  @spec atomize(Map.t) :: Map.t
+  def atomize(map) when is_map(map) do
+    for {key, val} <- map, into: %{}, do: {String.to_atom(key), val}
+  end
 end
