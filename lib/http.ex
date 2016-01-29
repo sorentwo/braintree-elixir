@@ -1,6 +1,8 @@
 defmodule Braintree.HTTP do
   use HTTPoison.Base
 
+  alias Braintree.XML
+
   @endpoint "https://api.sandbox.braintreegateway.com/merchants/"
 
   @cacertfile Path.join(:code.priv_dir(:braintree), "/certs/api_braintreegateway_com.ca.crt")
@@ -22,12 +24,17 @@ defmodule Braintree.HTTP do
   ## HTTPoison Callbacks
 
   def process_url(path) do
-    @endpoint <> path
+    merchant_id = Application.get_env(:braintree, :merchant_id)
+
+    @endpoint <> merchant_id <> "/" <> path
   end
 
-  def process_request_body(body) do
-    body # convert to xml
-  end
+  def process_request_body(""),
+    do: ""
+  def process_request_body(map) when map == %{},
+    do: ""
+  def process_request_body(body),
+    do: XML.dump(body)
 
   def process_request_headers(_headers) do
     public  = Application.get_env(:braintree, :public_key)
@@ -37,9 +44,10 @@ defmodule Braintree.HTTP do
   end
 
   def process_response_body(body) do
-    # unzip
-    # convert from xml
     body
+    |> :zlib.gunzip
+    |> IO.inspect
+    |> XML.load
   end
 
   def process_response(resp), do: resp

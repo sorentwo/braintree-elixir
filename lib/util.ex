@@ -6,6 +6,7 @@ defmodule Braintree.Util do
   def underscorize(value) when is_binary(value),
     do: String.replace(value, "-", "_")
 
+  @spec hyphenate(String.t | atom) :: String.t
   def hyphenate(value) when is_atom(value),
     do: value |> to_string |> hyphenate
 
