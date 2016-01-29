@@ -4,7 +4,9 @@ defmodule Braintree.HTTP do
   alias Braintree.XML
   alias HTTPoison.Response
 
-  @endpoint "https://api.sandbox.braintreegateway.com/merchants/"
+  @endpoints [
+    sandbox: "https://api.sandbox.braintreegateway.com/merchants/"
+  ]
 
   @cacertfile Path.join(:code.priv_dir(:braintree), "/certs/api_braintreegateway_com.ca.crt")
 
@@ -22,6 +24,8 @@ defmodule Braintree.HTTP do
     end
   end
 
+  @spec request(atom, binary, binary, headers, Keyword.t) ::
+        {:ok, Response.t | AsyncResponse.t} | {:error, Error.t}
   def request(method, url, body, headers, options) do
     options = options ++ [hackney: [ssl_options: [cacertfile: @cacertfile]]]
 
@@ -30,19 +34,21 @@ defmodule Braintree.HTTP do
 
   ## HTTPoison Callbacks
 
+  @doc false
   def process_url(path) do
+    environment = Application.get_env(:braintree, :environment, :sandbox)
     merchant_id = Application.get_env(:braintree, :merchant_id)
 
-    @endpoint <> merchant_id <> "/" <> path
+    Keyword.get(@endpoints, environment) <> merchant_id <> "/" <> path
   end
 
-  def process_request_body(""),
-    do: ""
-  def process_request_body(map) when map == %{},
+  @doc false
+  def process_request_body(body) when body == "" or body == %{},
     do: ""
   def process_request_body(body),
     do: XML.dump(body)
 
+  @doc false
   def process_request_headers(_headers) do
     public  = Application.get_env(:braintree, :public_key)
     private = Application.get_env(:braintree, :private_key)
@@ -50,6 +56,7 @@ defmodule Braintree.HTTP do
     [{"Authorization", basic_auth(public, private)} | @headers]
   end
 
+  @doc false
   def process_response_body(body) do
     body
     |> :zlib.gunzip
@@ -58,6 +65,7 @@ defmodule Braintree.HTTP do
     ErlangError -> IO.inspect(body)
   end
 
+  @doc false
   def process_response({:ok, %Response{status_code: code, body: body}})
        when code >= 200 and code <= 399,
     do: {:ok, body}
@@ -70,6 +78,7 @@ defmodule Braintree.HTTP do
 
   ## Helpers
 
+  @doc false
   def basic_auth(user, pass) do
     "Basic " <> :base64.encode("#{user}:#{pass}")
   end

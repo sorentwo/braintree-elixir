@@ -38,7 +38,10 @@ defmodule Braintree.Customer do
             paypal_accounts: []
 
   def create(params \\ %{}) do
-    {:ok, %{"customer" => customer}} = post("customers", %{customer: params})
-    {:ok, struct(__MODULE__, atomize(customer))}
+    case post("customers", %{customer: params}) do
+      {:ok, %{"customer" => customer}} -> {:ok, structize(customer)}
+    end
   end
+
+  def structize(map), do: struct(__MODULE__, atomize(map))
 end

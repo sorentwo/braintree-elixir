@@ -6,7 +6,8 @@ defmodule Braintree.HTTPTest do
   test "process_url/1 prepends the endpoint" do
     merchant_id = Application.get_env(:braintree, :merchant_id)
 
-    assert HTTP.process_url("customer") =~ "braintreegateway.com/merchants/#{merchant_id}/customer"
+    assert HTTP.process_url("customer") =~
+      "sandbox.braintreegateway.com/merchants/#{merchant_id}/customer"
   end
 
   test "process_request_body/1 converts the request body to xml" do
