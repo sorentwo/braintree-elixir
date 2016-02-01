@@ -29,6 +29,9 @@ defmodule Braintree.CustomerTest do
       "credit_cards" => [%{
         "bin" => "12345",
         "card_type" => "Visa"
+      }],
+      "verifications" => [%{
+        "status" => "processor_declined"
       }]
     })
 
@@ -39,5 +42,9 @@ defmodule Braintree.CustomerTest do
 
     assert card.bin == "12345"
     assert card.card_type == "Visa"
+
+    [verification] = customer.verifications
+
+    assert verification.status == "processor_declined"
   end
 end

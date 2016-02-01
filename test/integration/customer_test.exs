@@ -4,7 +4,9 @@ defmodule Braintree.Integration.CustomerTest do
   @moduletag :integration
 
   alias Braintree.Customer
+  alias Braintree.CreditCard.Verification
   alias Braintree.Test.CreditCardNumbers
+  alias Braintree.Test.CreditCardNumbers.FailsSandboxVerification
 
   def master_card do
     CreditCardNumbers.master_cards |> List.first
@@ -56,5 +58,21 @@ defmodule Braintree.Integration.CustomerTest do
     assert card.expiration_month == "01"
     assert card.expiration_year == "2016"
     assert card.unique_number_identifier =~ ~r/\A\w{32}\z/
+  end
+
+  test "create/1 with card verification" do
+    {:error, customer} = Customer.create(
+      first_name: "Parker",
+      last_name: "Selbert",
+      credit_card: %{
+        number: FailsSandboxVerification.master_card,
+        expiration_date: "01/2016",
+        options: %{verify_card: true}
+      }
+    )
+
+    [verification] = customer.verifications
+
+    assert verification.status =~ "processor_declined"
   end
 end

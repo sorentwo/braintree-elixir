@@ -57,4 +57,40 @@ defmodule Braintree.CreditCard do
             venmo_sdk:                "Unknown",
             subscriptions:            [],
             verifications:            []
+
+  defmodule Verification do
+    @type t :: %__MODULE__{
+                 avs_error_response_code:          String.t,
+                 avs_postal_code_response_code:    String.t,
+                 avs_street_address_response_code: String.t,
+                 cvv_response_code:                String.t,
+                 merchant_account_id:              String.t,
+                 processor_response_code:          String.t,
+                 processor_response_text:          String.t,
+                 status:                           String.t,
+                 id:                               String.t,
+                 gateway_rejection_reason:         String.t,
+                 credit_card:                      CreditCard.t,
+                 billing:                          String.t,
+                 risk_data:                        String.t,
+                 created_at:                       String.t
+              }
+
+    defstruct [
+      :avs_error_response_code,
+      :avs_postal_code_response_code,
+      :avs_street_address_response_code,
+      :cvv_response_code,
+      :merchant_account_id,
+      :processor_response_code,
+      :processor_response_text,
+      :status,
+      :id,
+      :gateway_rejection_reason,
+      :credit_card,
+      :billing,
+      :risk_data,
+      :created_at
+    ]
+  end
 end

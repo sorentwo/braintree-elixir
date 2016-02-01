@@ -4,6 +4,7 @@ defmodule Braintree.Customer do
   import Braintree.Util, only: [atomize: 1]
 
   alias Braintree.CreditCard
+  alias Braintree.CreditCard.Verification
 
   @type timestamp :: {{integer, integer, integer}, {integer, integer, integer}}
 
@@ -18,11 +19,12 @@ defmodule Braintree.Customer do
                website:           String.t,
                created_at:        timestamp,
                updated_at:        timestamp,
+               custom_fields:     %{},
                addresses:         [],
                credit_cards:      [],
-               custom_fields:     %{},
                paypal_accounts:   [],
-               coinbase_accounts: []
+               coinbase_accounts: [],
+               verifications:     []
              }
 
   defstruct id:                nil,
@@ -35,11 +37,12 @@ defmodule Braintree.Customer do
             website:           nil,
             created_at:        nil,
             updated_at:        nil,
+            custom_fields:     %{},
             addresses:         [],
             credit_cards:      [],
-            custom_fields:     %{},
+            coinbase_accounts: [],
             paypal_accounts:   [],
-            coinbase_accounts: []
+            verifications:     []
 
   @spec create(Map.t) :: {:ok, t} | {:error, Map.t}
   def create(params \\ %{}) do
@@ -53,10 +56,12 @@ defmodule Braintree.Customer do
   def construct(map) do
     company = struct(__MODULE__, atomize(map))
 
-    %{company | credit_cards: construct_cards(company.credit_cards)}
+    %{company |
+      credit_cards: construct_many(CreditCard, company.credit_cards),
+      verifications: construct_many(Verification, company.verifications)}
   end
 
-  defp construct_cards(credit_cards) do
-    Enum.map(credit_cards, &(struct(CreditCard, atomize(&1))))
+  defp construct_many(module, props) do
+    Enum.map(props, &(struct(module, atomize(&1))))
   end
 end
