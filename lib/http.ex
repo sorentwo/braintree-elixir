@@ -46,7 +46,7 @@ defmodule Braintree.HTTP do
       end
   """
   @spec request(atom, binary, binary, headers, Keyword.t) ::
-        {:ok, Response.t | AsyncResponse.t} | {:error, Error.t}
+        {:ok, Response.t | AsyncResponse.t} | {:error, integer, Response.t} | {:error, Error.t}
   def request(method, url, body, headers \\ [], options \\ []) do
     super(method, url, body, headers, options ++ @options) |> process_response
   end
@@ -58,7 +58,7 @@ defmodule Braintree.HTTP do
     environment = Application.get_env(:braintree, :environment, :sandbox)
     merchant_id = Application.get_env(:braintree, :merchant_id)
 
-    Keyword.get(@endpoints, environment) <> merchant_id <> "/" <> path
+    Keyword.fetch!(@endpoints, environment) <> merchant_id <> "/" <> path
   end
 
   @doc false
@@ -89,11 +89,11 @@ defmodule Braintree.HTTP do
        when code >= 200 and code <= 399,
     do: {:ok, body}
 
-  def process_response({_, %Response{status_code: code, body: body}}),
-    do: {:error, code, body}
+  def process_response({:ok, %Response{body: body}}),
+    do: {:error, body}
 
-  def process_response({code, %HTTPoison.Error{reason: reason}}),
-    do: {:error, code, inspect(reason)}
+  def process_response({_code, %HTTPoison.Error{reason: reason}}),
+    do: {:error, inspect(reason)}
 
   ## Helpers
 

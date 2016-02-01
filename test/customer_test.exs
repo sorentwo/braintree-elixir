@@ -1,8 +1,10 @@
 defmodule Braintree.CustomerTest do
   use ExUnit.Case, async: true
 
+  alias Braintree.Customer
+
   test "all customer attributes are included" do
-    customer = %Braintree.Customer{
+    customer = %Customer{
       company: "Soren",
       email: "parker@example.com",
       first_name: "Parker",
@@ -18,5 +20,24 @@ defmodule Braintree.CustomerTest do
     assert customer.addresses == []
     assert customer.credit_cards == []
     assert customer.paypal_accounts == []
+  end
+
+  test "construct/1 converts a map to known structs" do
+    customer = Customer.construct(%{
+      "company" => "Soren",
+      "email" => "parker@example.com",
+      "credit_cards" => [%{
+        "bin" => "12345",
+        "card_type" => "Visa"
+      }]
+    })
+
+    assert customer.company == "Soren"
+    assert Enum.any?(customer.credit_cards)
+
+    [card] = customer.credit_cards
+
+    assert card.bin == "12345"
+    assert card.card_type == "Visa"
   end
 end

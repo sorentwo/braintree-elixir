@@ -4,6 +4,11 @@ defmodule Braintree.Integration.CustomerTest do
   @moduletag :integration
 
   alias Braintree.Customer
+  alias Braintree.Test.CreditCardNumbers
+
+  def master_card do
+    CreditCardNumbers.master_cards |> List.first
+  end
 
   test "create/1 without any params" do
     assert {:ok, _customer} = Customer.create()
@@ -28,5 +33,28 @@ defmodule Braintree.Integration.CustomerTest do
     assert customer.website == "www.microsoft.com"
     assert customer.created_at
     assert customer.updated_at
+  end
+
+  test "create/1 with a credit card" do
+    {:ok, customer} = Customer.create(
+      first_name: "Parker",
+      last_name: "Selbert",
+      credit_card: %{
+        number: master_card,
+        expiration_date: "01/2016",
+        cvv: "100"
+      }
+    )
+
+    assert customer.first_name == "Parker"
+    assert customer.last_name == "Selbert"
+
+    [card] = customer.credit_cards
+
+    assert card.bin == String.slice(master_card, 0..5)
+    assert card.last_4 == String.slice(master_card, -4..-1)
+    assert card.expiration_month == "01"
+    assert card.expiration_year == "2016"
+    assert card.unique_number_identifier =~ ~r/\A\w{32}\z/
   end
 end

@@ -3,6 +3,8 @@ defmodule Braintree.Customer do
 
   import Braintree.Util, only: [atomize: 1]
 
+  alias Braintree.CreditCard
+
   @type timestamp :: {{integer, integer, integer}, {integer, integer, integer}}
 
   @type t :: %__MODULE__{
@@ -39,13 +41,22 @@ defmodule Braintree.Customer do
             paypal_accounts:   [],
             coinbase_accounts: []
 
-  @spec create(Map.t) :: {:ok, t} | {:error, t}
+  @spec create(Map.t) :: {:ok, t} | {:error, Map.t}
   def create(params \\ %{}) do
     case post("customers", %{customer: params}) do
-      {:ok, %{"customer" => customer}} -> {:ok, structize(customer)}
+      {:ok, %{"customer" => customer}} -> {:ok, construct(customer)}
       {:error, something} -> {:error, something}
     end
   end
 
-  def structize(map), do: struct(__MODULE__, atomize(map))
+  @doc false
+  def construct(map) do
+    company = struct(__MODULE__, atomize(map))
+
+    %{company | credit_cards: construct_cards(company.credit_cards)}
+  end
+
+  defp construct_cards(credit_cards) do
+    Enum.map(credit_cards, &(struct(CreditCard, atomize(&1))))
+  end
 end
