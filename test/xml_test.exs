@@ -1,6 +1,8 @@
 defmodule Braintree.XMLTest do
   use ExUnit.Case, async: true
 
+  doctest Braintree.XML
+
   import Braintree.XML, only: [load: 1, dump: 1]
 
   test "dump/1 with content" do

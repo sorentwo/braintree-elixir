@@ -1,20 +1,41 @@
 defmodule Braintree.XML do
+  @moduledoc """
+  Simplified XML handling module that only supports `dump` and `load`.
+  """
+
   @doctype ~s|<?xml version="1.0" encoding="UTF-8" ?>|
 
   @type xml :: binary
 
   import Braintree.Util, only: [hyphenate: 1, underscorize: 1]
 
+  @doc ~S"""
+  Converts a map into the equivalent XML representation.
+
+  ## Examples
+
+      iex> Braintree.XML.dump(%{a: %{b: 1, c: 2}})
+      ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<a>\n<b>1</b>\n<c>2</c>\n</a>|
+  """
   @spec dump(Map.t) :: xml
   def dump(map) do
-    generate([@doctype|Enum.into(map, [])])
+    generate([@doctype | Enum.into(map, [])])
   end
 
+  @doc ~S"""
+  Converts an XML document, or fragment, into a map. Type annotation
+  attributes are respected, but all other attributes are ignored.
+
+  ## Examples
+
+      iex> Braintree.XML.load("<a><b type='integer'>1</b><c>2</c></a>")
+      %{"a" => %{"b" => 1, "c" => "2"}}
+  """
   @spec load(xml) :: Map.t
   def load(xml) do
-    root = xml |> Quinn.parse |> Enum.at(0)
+    %{name: name, value: value} = xml |> Quinn.parse |> Enum.at(0)
 
-    %{underscorize(root.name) => parse(root.value)}
+    %{underscorize(name) => parse(value)}
   end
 
   defp generate(term) when is_binary(term),

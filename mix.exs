@@ -7,6 +7,7 @@ defmodule Braintree.Mixfile do
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     aliases: aliases,
      deps: deps]
   end
 
@@ -17,5 +18,9 @@ defmodule Braintree.Mixfile do
   defp deps do
     [httpoison: "~> 0.8",
      quinn: "~> 0.0.4"]
+  end
+
+  defp aliases do
+    ["test.all": "test --include integration"]
   end
 end

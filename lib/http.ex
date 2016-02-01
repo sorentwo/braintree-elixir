@@ -18,18 +18,37 @@ defmodule Braintree.HTTP do
     {"Content-Type", "application/xml"}
   ]
 
-  defmacro __using__(_opts) do
+  @options [
+    hackney: [ssl_options: [cacertfile: @cacertfile]],
+    connect_timeout: 10_000,
+    recv_timeout: 10_000
+  ]
+
+  defmacro __using__(_) do
     quote do
-      import Braintree.HTTP, only: [get: 3, post: 2, post: 4, put: 4]
+      import unquote(__MODULE__), only: [get: 3, post: 2, post: 4, put: 4]
     end
   end
 
+  @doc """
+  Centralized request handling function. All convenience structs use this
+  function to interact with the Braintree servers. This function can be used
+  directly to supplement missing functionality.
+
+  ## Example
+
+      defmodule MyApp.Disbursement do
+        alias Braintree.HTTP
+
+        def disburse(params \\ %{}) do
+          HTTP.request(:get, "disbursements", params)
+        end
+      end
+  """
   @spec request(atom, binary, binary, headers, Keyword.t) ::
         {:ok, Response.t | AsyncResponse.t} | {:error, Error.t}
-  def request(method, url, body, headers, options) do
-    options = options ++ [hackney: [ssl_options: [cacertfile: @cacertfile]]]
-
-    super(method, url, body, headers, options) |> process_response
+  def request(method, url, body, headers \\ [], options \\ []) do
+    super(method, url, body, headers, options ++ @options) |> process_response
   end
 
   ## HTTPoison Callbacks
