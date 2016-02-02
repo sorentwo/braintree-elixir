@@ -48,9 +48,11 @@ is everywhere so far, the namespacing has been matched.
 The CRUD functions for each action module break down like this:
 
 ```elixir
-case Braintree::Customer.create(%{company: "Whale Corp"}) do
-  {:ok, %Braintree.Customer{} = customer} -> do_stuff_with_customer(customer)
-  {:error, %Braintree.Error{} = error}    -> do_stuff_with_error(error)
+alias Braintree.{Customer, Verification}
+
+case Customer.create(%{company: "Whale Corp"}) do
+  {:ok, %Customer{} = customer} -> do_stuff_with_customer(customer)
+  {:error, %Verification{} = error}    -> do_stuff_with_error(error)
 end
 ```
 
@@ -59,4 +61,4 @@ end
 MIT License, see [LICENSE.txt][] for details.
 
 [braintree]: http://braintree.com
-[doc]: docs
+[doc]: https://developers.braintreepayments.com/
