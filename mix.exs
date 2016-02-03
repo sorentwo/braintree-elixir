@@ -11,6 +11,9 @@ defmodule Braintree.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
 
+     description: description,
+     package: package,
+
      aliases: aliases,
      deps: deps,
 
@@ -27,6 +30,19 @@ defmodule Braintree.Mixfile do
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_),     do: ["lib"]
+
+  defp description do
+    """
+    Native Braintree client library for Elixir
+    """
+  end
+
+  defp package do
+    [maintainers: ["Parker Selbert"],
+     licenses: ["MIT"],
+     links: %{"GitHub" => "https://github.com/sorentwo/braintree-elixir"},
+     files: ~w(mix.exs README.md CHANGELOG.md lib)]
+  end
 
   defp deps do
     [{:httpoison, "~> 0.8"},
