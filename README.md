@@ -61,7 +61,7 @@ end
 
 ## License
 
-MIT License, see [LICENSE.txt][] for details.
+MIT License, see [LICENSE.txt](LICENSE.txt) for details.
 
 [braintree]: http://braintree.com
 [doc]: https://developers.braintreepayments.com/
