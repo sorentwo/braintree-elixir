@@ -1,4 +1,12 @@
 defmodule Braintree.Customer do
+  @moduledoc """
+  You can create a customer by itself, with a payment method, or with a
+  credit card with a billing address.
+
+  For additional reference see:
+  https://developers.braintreepayments.com/reference/request/customer/create/ruby
+  """
+
   use Braintree.HTTP
 
   import Braintree.Util, only: [atomize: 1]
@@ -40,6 +48,24 @@ defmodule Braintree.Customer do
             coinbase_accounts: [],
             paypal_accounts:   []
 
+  @doc """
+  Create a customer record, or return an error response with after failed
+  validation.
+
+  ## Example
+
+      {:ok, customer} = Braintree.Customer.create(%{
+        first_name: "Jen",
+        last_name: "Smith",
+        company: "Braintree",
+        email: "jen@example.com",
+        phone: "312.555.1234",
+        fax: "614.555.5678",
+        website: "www.example.com"
+      })
+
+      customer.company # Braintree
+  """
   @spec create(Map.t) :: {:ok, t} | {:error, Error.t}
   def create(params \\ %{}) do
     case post("customers", %{customer: params}) do

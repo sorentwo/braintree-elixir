@@ -16,7 +16,9 @@ defmodule Braintree.Mixfile do
 
      name: "Braintree",
      source_url: "https://github.com/sorentwo/braintree",
-     docs: [source_ref: "v#{@version}", main: "Braintree"]]
+     docs: [source_ref: "v#{@version}",
+            extras: ["README.md"],
+            main: "Braintree"]]
   end
 
   def application do

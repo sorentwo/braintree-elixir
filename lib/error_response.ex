@@ -1,4 +1,9 @@
 defmodule Braintree.ErrorResponse do
+  @moduledoc """
+  A general purpose response wrapper that is built for any failed API
+  response.
+  """
+
   import Braintree.Util, only: [atomize: 1]
 
   @type t :: %__MODULE__{

@@ -1,4 +1,9 @@
 defmodule Braintree.Transaction do
+  @moduledoc """
+  Create a new sale
+  To create a transaction, you must include an amount and either a payment_method_nonce or a payment_method_token.
+  """
+
   use Braintree.HTTP
 
   import Braintree.Util, only: [atomize: 1]
@@ -56,6 +61,20 @@ defmodule Braintree.Transaction do
             updated_at:                         nil,
             voice_referral_number:              nil
 
+  @doc """
+  Use a `payment_method_nonce` or `payment_method_token` to make a one time
+  charge against a payment method.
+
+  ## Example
+
+      {:ok, transaction} = Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: @payment_method_nonce,
+        options: %{submit_for_settlement: true}
+      })
+
+      transaction.status # "settling"
+  """
   @spec sale(Map.t) :: {:ok, any} | {:error, Error.t}
   def sale(params) do
     sale_params = Map.merge(params, %{type: "sale"})
