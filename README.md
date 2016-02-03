@@ -48,11 +48,12 @@ is everywhere so far, the namespacing has been matched.
 The CRUD functions for each action module break down like this:
 
 ```elixir
-alias Braintree.{Customer, Verification}
+alias Braintree.Customer
+alias Braintree.ErrorResponse, as: Error
 
 case Customer.create(%{company: "Whale Corp"}) do
   {:ok, %Customer{} = customer} -> do_stuff_with_customer(customer)
-  {:error, %Verification{} = error}    -> do_stuff_with_error(error)
+  {:error, %Error{} = error}    -> do_stuff_with_error(error)
 end
 ```
 
