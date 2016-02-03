@@ -31,7 +31,17 @@ defmodule Braintree.XMLTest do
         <last-name nil="true"/>
         <created-at type="datetime">2016-02-02T18:36:33Z</created-at>
         <custom-fields/>
-        <credit-cards type="array"/>
+        <credit-cards type="array">
+          <credit-card>
+            <bin>510510</bin>
+            <card-type>MasterCard</card-type>
+            <default type="boolean">true</default>
+            <expiration-month>01</expiration-month>
+            <expiration-year>2016</expiration-year>
+            <expired type="boolean">false</expired>
+            <verifications type="array"/>
+          </credit-card>
+        </credit-cards>
         <addresses type="array"/>
       </customer>
     """
@@ -43,7 +53,15 @@ defmodule Braintree.XMLTest do
         "last_name" => nil,
         "created_at" => "2016-02-02T18:36:33Z",
         "custom_fields" => "",
-        "credit_cards" => [],
+        "credit_cards" => [
+          %{"bin" => "510510",
+            "card_type" => "MasterCard",
+            "default" => true,
+            "expiration_month" => "01",
+            "expiration_year" => "2016",
+            "expired" => false,
+            "verifications" => []}
+        ],
         "addresses" => []
       }
     }

@@ -79,17 +79,17 @@ defmodule Braintree.XML do
     |> List.first
   end
 
-  defp transform(elements) when is_list(elements) do
-    elements
-    |> Enum.reject(&(&1 == nil))
-    |> Enum.into(%{}, &transform/1)
-  end
+  defp transform(elements) when is_list(elements),
+    do: Enum.into(without_nil(elements), %{}, &transform/1)
 
   defp transform({name, [type: "integer"], [value]}),
     do: {name, String.to_integer(value)}
 
   defp transform({name, [type: "array"], elements}),
-    do: {name, Enum.map(elements, &transform/1)}
+    do: {name, Enum.map(without_nil(elements), &(elem(transform(&1), 1)))}
+
+  defp transform({name, [type: "boolean"], [value]}),
+    do: {name, value == "true"}
 
   defp transform({name, [nil: "true"], []}),
     do: {name, nil}
@@ -101,5 +101,8 @@ defmodule Braintree.XML do
     do: {name, ""}
 
   defp transform({name, _, values}),
-    do: {name, Enum.into(values, %{}, &transform/1)}
+    do: {name, transform(values)}
+
+  defp without_nil(list),
+    do: Enum.reject(list, &Kernel.==(&1, nil))
 end
