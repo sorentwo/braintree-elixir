@@ -22,22 +22,6 @@ defmodule Braintree.XML do
     generate([@doctype | Enum.into(map, [])])
   end
 
-  @doc ~S"""
-  Converts an XML document, or fragment, into a map. Type annotation
-  attributes are respected, but all other attributes are ignored.
-
-  ## Examples
-
-      iex> Braintree.XML.load("<a><b type='integer'>1</b><c>2</c></a>")
-      %{"a" => %{"b" => 1, "c" => "2"}}
-  """
-  @spec load(xml) :: Map.t
-  def load(xml) do
-    %{name: name, value: value} = xml |> Quinn.parse |> Enum.at(0)
-
-    %{underscorize(name) => parse(value)}
-  end
-
   defp generate(term) when is_binary(term),
     do: term
 
@@ -56,30 +40,66 @@ defmodule Braintree.XML do
   defp generate({name, value}),
     do: "<#{hyphenate(name)}>#{value}</#{hyphenate(name)}>"
 
-  defp parse(elements) when is_list(elements),
-    do: for element <- elements, into: %{}, do: parse(element)
+  @doc ~S"""
+  Converts an XML document, or fragment, into a map. Type annotation
+  attributes are respected, but all other attributes are ignored.
 
-  defp parse(%{name: name, attr: [type: "integer"], value: [value]}),
-    do: {underscorize(name), String.to_integer(value)}
+  ## Examples
 
-  defp parse(%{name: name, attr: [type: "array"], value: elements}),
-    do: {underscorize(name), Enum.map(elements, &parse(&1.value))}
+      iex> Braintree.XML.load("<a><b type='integer'>1</b><c>2</c></a>")
+      %{"a" => %{"b" => 1, "c" => "2"}}
+  """
+  @spec load(xml) :: Map.t
+  def load(xml) do
+    {name, _, values} =
+      xml
+      |> :erlang.bitstring_to_list
+      |> :xmerl_scan.string
+      |> elem(0)
+      |> parse
 
-  defp parse(%{name: name, attr: [type: "datetime"], value: [value]}),
-    do: {underscorize(name), value}
-
-  defp parse(%{name: name, attr: [nil: "true"], value: []}),
-    do: {underscorize(name), nil}
-
-  defp parse(%{name: name, value: [value]}),
-    do: {underscorize(name), value}
-
-  defp parse(%{name: name, value: []}),
-    do: {underscorize(name), ""}
-
-  defp parse(%{name: name, value: values}) do
-    values = for element <- values, into: %{}, do: {name, parse(element)}
-
-    {underscorize(name), values}
+    %{name => transform(values)}
   end
+
+  defp parse(elements) when is_list(elements),
+    do: Enum.map(elements, &parse/1)
+
+  defp parse({:xmlElement, name, _, _, _, _, _, attributes, elements, _, _, _}),
+    do: {underscorize(name), parse(attributes), parse(elements)}
+
+  defp parse({:xmlAttribute, name, _, _, _, _, _, _, value, _}),
+    do: {name, to_string(value)}
+
+  defp parse({:xmlText, _, _, _, value, _}) do
+    value
+    |> to_string
+    |> String.strip
+    |> List.wrap
+    |> Enum.reject(&(&1 == ""))
+    |> List.first
+  end
+
+  defp transform(elements) when is_list(elements) do
+    elements
+    |> Enum.reject(&(&1 == nil))
+    |> Enum.into(%{}, &transform/1)
+  end
+
+  defp transform({name, [type: "integer"], [value]}),
+    do: {name, String.to_integer(value)}
+
+  defp transform({name, [type: "array"], elements}),
+    do: {name, Enum.map(elements, &transform/1)}
+
+  defp transform({name, [nil: "true"], []}),
+    do: {name, nil}
+
+  defp transform({name, _, [value]}),
+    do: {name, value}
+
+  defp transform({name, _, []}),
+    do: {name, ""}
+
+  defp transform({name, _, values}),
+    do: {name, Enum.into(values, %{}, &transform/1)}
 end

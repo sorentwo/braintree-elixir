@@ -20,8 +20,7 @@ defmodule Braintree.Mixfile do
   defp elixirc_paths(_),     do: ["lib"]
 
   defp deps do
-    [httpoison: "~> 0.8",
-     quinn: "~> 0.0.4"]
+    [httpoison: "~> 0.8"]
   end
 
   defp aliases do

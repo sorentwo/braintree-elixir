@@ -23,8 +23,29 @@ defmodule Braintree.XMLTest do
       %{"customer" => %{"company" => "Soren", "name" => "Parker"}}
   end
 
-  test "load/1 with separated values" do
-    assert load("<customer><company-name>Soren</company-name></customer>") ==
-      %{"customer" => %{"company_name" => "Soren"}}
+  test "load/1 with typed values" do
+    xml = """
+      <customer>
+        <id type="integer">65854825</id>
+        <first-name nil="true"/>
+        <last-name nil="true"/>
+        <created-at type="datetime">2016-02-02T18:36:33Z</created-at>
+        <custom-fields/>
+        <credit-cards type="array"/>
+        <addresses type="array"/>
+      </customer>
+    """
+
+    assert load(xml) == %{
+      "customer" => %{
+        "id" => 65854825,
+        "first_name" => nil,
+        "last_name" => nil,
+        "created_at" => "2016-02-02T18:36:33Z",
+        "custom_fields" => "",
+        "credit_cards" => [],
+        "addresses" => []
+      }
+    }
   end
 end
