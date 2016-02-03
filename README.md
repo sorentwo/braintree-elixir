@@ -31,13 +31,13 @@ sourced by `config.exs`, or read the values in from the environment:
 ```elixir
 config :braintree,
   environment: :sandbox,
-  merchant_id: System.get_env("MERCHANT_ID"),
-  public_key:  System.get_env("PUBLIC_KEY"),
-  private_key: System.get_env("PRIVATE_KEY")
+  merchant_id: System.get_env("BRAINTREE_MERCHANT_ID"),
+  public_key:  System.get_env("BRAINTREE_PUBLIC_KEY"),
+  private_key: System.get_env("BRAINTREE_PRIVATE_KEY")
 ```
 
 Furthermore, the environment defaults ot `:sandbox`, so you'll want to configure
-it for production in `prod.exs`.
+it with `:production` in `prod.exs`.
 
 ## Usage
 

@@ -5,6 +5,7 @@ defmodule Braintree.HTTP do
   alias HTTPoison.Response
 
   @endpoints [
+    production: "https://api.braintreegateway.com/merchants/",
     sandbox: "https://api.sandbox.braintreegateway.com/merchants/"
   ]
 
