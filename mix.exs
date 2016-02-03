@@ -41,7 +41,7 @@ defmodule Braintree.Mixfile do
     [maintainers: ["Parker Selbert"],
      licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/sorentwo/braintree-elixir"},
-     files: ~w(mix.exs README.md CHANGELOG.md lib)]
+     files: ~w(lib priv mix.exs README.md CHANGELOG.md)]
   end
 
   defp deps do

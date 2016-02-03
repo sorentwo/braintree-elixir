@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sorentwo/braintree-elixir.svg?branch=master)](https://travis-ci.org/sorentwo/braintree-elixir)
+
 # Braintree
 
 A native [Braintree][braintree] client library for Elixir. Only a subset of the
