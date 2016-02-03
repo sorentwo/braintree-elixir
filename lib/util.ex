@@ -46,15 +46,14 @@ defmodule Braintree.Util do
 
   ## Example
 
-      iex> _atoms = [:a, :b, :c]
-      ...> Braintree.Util.atomize(%{"a" => 1, "b" => %{"c" => 2}})
+      iex> Braintree.Util.atomize(%{"a" => 1, "b" => %{"c" => 2}})
       %{a: 1, b: %{c: 2}}
   """
   @spec atomize(Map.t) :: Map.t
   def atomize(map) when is_map(map) do
     Enum.into(map, %{}, fn
-      {key, val} when is_map(val) -> {String.to_existing_atom(key), atomize(val)}
-      {key, val} -> {String.to_existing_atom(key), val}
+      {key, val} when is_map(val) -> {String.to_atom(key), atomize(val)}
+      {key, val} -> {String.to_atom(key), val}
     end)
   end
 end
