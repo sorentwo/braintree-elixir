@@ -5,4 +5,4 @@ otp_release:
   - 18.1
 sudo: false # to use faster container based build environment
 script:
-  - mix test
+  - mix test --include integration
