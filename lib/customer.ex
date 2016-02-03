@@ -4,7 +4,7 @@ defmodule Braintree.Customer do
   import Braintree.Util, only: [atomize: 1]
 
   alias Braintree.CreditCard
-  alias Braintree.ErrorResponse
+  alias Braintree.ErrorResponse, as: Error
 
   @type timestamp :: {{integer, integer, integer}, {integer, integer, integer}}
 
@@ -42,18 +42,17 @@ defmodule Braintree.Customer do
             coinbase_accounts: [],
             paypal_accounts:   []
 
-  @spec create(Map.t) :: {:ok, t} | {:error, Map.t}
+  @spec create(Map.t) :: {:ok, t} | {:error, Error.t}
   def create(params \\ %{}) do
     case post("customers", %{customer: params}) do
       {:ok, %{"customer" => customer}} ->
         {:ok, construct(customer)}
       {:error, %{"api_error_response" => error}} ->
-        {:error, ErrorResponse.construct(error)}
+        {:error, Error.construct(error)}
     end
   end
 
   @doc false
-  @spec construct(Map.t) :: t
   def construct(map) do
     company = struct(__MODULE__, atomize(map))
 
