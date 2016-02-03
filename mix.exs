@@ -1,15 +1,22 @@
 defmodule Braintree.Mixfile do
   use Mix.Project
 
+  @version "0.1.0"
+
   def project do
     [app: :braintree,
-     version: "0.0.1",
+     version: @version,
      elixir: "~> 1.2",
      elixirc_paths: elixirc_paths(Mix.env),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+
      aliases: aliases,
-     deps: deps]
+     deps: deps,
+
+     name: "Braintree",
+     source_url: "https://github.com/sorentwo/braintree",
+     docs: [source_ref: "v#{@version}", main: "Braintree"]]
   end
 
   def application do
@@ -20,7 +27,10 @@ defmodule Braintree.Mixfile do
   defp elixirc_paths(_),     do: ["lib"]
 
   defp deps do
-    [httpoison: "~> 0.8"]
+    [{:httpoison, "~> 0.8"},
+     {:ex_doc, "~> 0.11", only: :dev},
+     {:earmark, "~> 0.2", only: :dev}
+   ]
   end
 
   defp aliases do
