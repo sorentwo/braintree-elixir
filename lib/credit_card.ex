@@ -1,6 +1,4 @@
 defmodule Braintree.CreditCard do
-  @type timestamp :: {{integer, integer, integer}, {integer, integer, integer}}
-
   @type t :: %__MODULE__{
                bin:                      String.t,
                card_type:                String.t,
@@ -23,8 +21,8 @@ defmodule Braintree.CreditCard do
                prepaid:                  String.t,
                token:                    String.t,
                unique_number_identifier: String.t,
-               created_at:               timestamp,
-               updated_at:               timestamp,
+               created_at:               String.t,
+               updated_at:               String.t,
                venmo_sdk:                boolean,
                subscriptions:            [],
                verifications:            []

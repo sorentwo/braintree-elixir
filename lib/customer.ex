@@ -6,8 +6,6 @@ defmodule Braintree.Customer do
   alias Braintree.CreditCard
   alias Braintree.ErrorResponse, as: Error
 
-  @type timestamp :: {{integer, integer, integer}, {integer, integer, integer}}
-
   @type t :: %__MODULE__{
                id:                String.t,
                company:           String.t,
@@ -17,8 +15,8 @@ defmodule Braintree.Customer do
                last_name:         String.t,
                phone:             String.t,
                website:           String.t,
-               created_at:        timestamp,
-               updated_at:        timestamp,
+               created_at:        String.t,
+               updated_at:        String.t,
                custom_fields:     %{},
                addresses:         [],
                credit_cards:      [],
