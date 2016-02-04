@@ -4,8 +4,8 @@ defmodule Braintree.Integration.CustomerTest do
   @moduletag :integration
 
   alias Braintree.Customer
-  alias Braintree.Test.CreditCardNumbers
-  alias Braintree.Test.CreditCardNumbers.FailsSandboxVerification
+  alias Braintree.Testing.CreditCardNumbers
+  alias Braintree.Testing.CreditCardNumbers.FailsSandboxVerification
 
   def master_card do
     CreditCardNumbers.master_cards |> List.first

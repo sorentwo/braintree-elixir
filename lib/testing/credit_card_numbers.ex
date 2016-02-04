@@ -1,6 +1,6 @@
-defmodule Braintree.Test.CreditCardNumbers do
+defmodule Braintree.Testing.CreditCardNumbers do
   @moduledoc """
-  # The functions contained in the Braintree.Test.CreditCardNumbers module
+  # The functions contained in the Braintree.Testing.CreditCardNumbers module
   # provide credit card numbers that should be used when working in the sandbox
   # environment. The sandbox will not accept any credit card numbers other than
   # the ones listed below.
