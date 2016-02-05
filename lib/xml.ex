@@ -50,7 +50,7 @@ defmodule Braintree.XML do
       %{"a" => %{"b" => 1, "c" => "2"}}
   """
   @spec load(xml) :: Map.t
-  def load(""), do: ""
+  def load(""), do: %{}
 
   def load(xml) do
     {name, _, values} =

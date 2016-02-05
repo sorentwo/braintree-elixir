@@ -18,6 +18,10 @@ defmodule Braintree.XMLTest do
       ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<nested>\n<name>Parker</name>\n<name>Shannon</name>\n</nested>|
   end
 
+  test "load/1 with an empty string" do
+    assert load("") == %{}
+  end
+
   test "load/1 with simple values" do
     assert load("<customer><company>Soren</company><name>Parker</name></customer>") ==
       %{"customer" => %{"company" => "Soren", "name" => "Parker"}}

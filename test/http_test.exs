@@ -30,8 +30,8 @@ defmodule Braintree.HTTPTest do
   end
 
   test "process_response_body/1 safely handles empty responses" do
-    assert HTTP.process_response_body(compress("")) == ""
-    assert HTTP.process_response_body(compress(" ")) == ""
+    assert HTTP.process_response_body(compress("")) == %{}
+    assert HTTP.process_response_body(compress(" ")) == %{}
   end
 
   test "basic_auth/2 encodes credentials" do
