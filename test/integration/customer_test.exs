@@ -70,7 +70,7 @@ defmodule Braintree.Integration.CustomerTest do
   end
 
   test "update/2 updates an existing customer" do
-    {:ok, customer} = Customer.create(%{first_name: "Parker", last_name: "Selbert"})
+    {:ok, customer} = Customer.create(%{first_name: "Parker"})
     {:ok, customer} = Customer.update(customer.id, %{first_name: "Rekrap"})
 
     assert customer.first_name == "Rekrap"
@@ -83,6 +83,16 @@ defmodule Braintree.Integration.CustomerTest do
     {:error, error} = Customer.update(customer.id, %{company: invalid_company})
 
     assert error.message =~ ~r/company is too long/i
+  end
+
+  test "delete/1 removes an existing customer" do
+    {:ok, customer} = Customer.create()
+
+    :ok = Customer.delete(customer.id)
+  end
+
+  test "delete/1 exposes an error when deletion fails" do
+    :error = Customer.delete("randomid")
   end
 
   defp master_card do

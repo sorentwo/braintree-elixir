@@ -7,10 +7,9 @@ defmodule Braintree.Customer do
   https://developers.braintreepayments.com/reference/request/customer/create/ruby
   """
 
-  use Braintree.HTTP
-
   import Braintree.Util, only: [atomize: 1]
 
+  alias Braintree.HTTP
   alias Braintree.CreditCard
   alias Braintree.ErrorResponse, as: Error
 
@@ -68,7 +67,7 @@ defmodule Braintree.Customer do
   """
   @spec create(Map.t) :: {:ok, t} | {:error, Error.t}
   def create(params \\ %{}) do
-    case post("customers", %{customer: params}) do
+    case HTTP.post("customers", %{customer: params}) do
       {:ok, %{"customer" => customer}} ->
         {:ok, construct(customer)}
       {:error, %{"api_error_response" => error}} ->
@@ -77,8 +76,9 @@ defmodule Braintree.Customer do
   end
 
   @doc """
-  Update an existing customer record, or return an error response if
-  validation fails.
+  To update a customer, use its ID along with new attributes. The same
+  validations apply as when creating a customer. Any attribute not passed will
+  remain unchanged.
 
   ## Example
 
@@ -90,11 +90,28 @@ defmodule Braintree.Customer do
   """
   @spec update(binary, Map.t) :: {:ok, t} | {:error, Error.t}
   def update(id, params) do
-    case put("customers/" <> id, %{customer: params}) do
+    case HTTP.put("customers/" <> id, %{customer: params}) do
       {:ok, %{"customer" => customer}} ->
         {:ok, construct(customer)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
+    end
+  end
+
+  @doc """
+  You can delete a customer using its ID. When a customer is deleted, all
+  associated payment methods are also deleted, and all associated recurring
+  billing subscriptions are canceled.
+
+  ## Example
+
+      :ok = Braintree.Customer.delete("customer_id")
+  """
+  @spec delete(binary) :: :ok | {:error, Error.t}
+  def delete(id) do
+    case HTTP.delete("customers/" <> id) do
+      {:ok, _response} -> :ok
+      {:error, _error} -> :error
     end
   end
 

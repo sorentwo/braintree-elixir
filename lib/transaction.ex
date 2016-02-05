@@ -4,10 +4,9 @@ defmodule Braintree.Transaction do
   To create a transaction, you must include an amount and either a payment_method_nonce or a payment_method_token.
   """
 
-  use Braintree.HTTP
-
   import Braintree.Util, only: [atomize: 1]
 
+  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
 
   defstruct add_ons:                            nil,
@@ -79,7 +78,7 @@ defmodule Braintree.Transaction do
   def sale(params) do
     sale_params = Map.merge(params, %{type: "sale"})
 
-    case post("transactions", %{transaction: sale_params}) do
+    case HTTP.post("transactions", %{transaction: sale_params}) do
       {:ok, %{"transaction" => transaction}} ->
         {:ok, construct(transaction)}
       {:error, %{"api_error_response" => error}} ->

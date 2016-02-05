@@ -20,16 +20,8 @@ defmodule Braintree.HTTP do
   ]
 
   @options [
-    hackney: [ssl_options: [cacertfile: @cacertfile]],
-    connect_timeout: 10_000,
-    recv_timeout: 10_000
+    hackney: [ssl_options: [cacertfile: @cacertfile]]
   ]
-
-  defmacro __using__(_) do
-    quote do
-      import unquote(__MODULE__), only: [get: 3, post: 2, put: 2]
-    end
-  end
 
   @doc """
   Centralized request handling function. All convenience structs use this
@@ -80,6 +72,7 @@ defmodule Braintree.HTTP do
   def process_response_body(body) do
     body
     |> :zlib.gunzip
+    |> String.strip
     |> XML.load
   rescue
     ErlangError -> IO.inspect(body)
