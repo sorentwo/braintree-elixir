@@ -89,7 +89,7 @@ defmodule Braintree.Customer do
       customer.company # "New Company Name"
   """
   @spec update(binary, Map.t) :: {:ok, t} | {:error, Error.t}
-  def update(id, params) do
+  def update(id, params) when is_binary(id) and is_map(params) do
     case HTTP.put("customers/" <> id, %{customer: params}) do
       {:ok, %{"customer" => customer}} ->
         {:ok, construct(customer)}
@@ -107,8 +107,8 @@ defmodule Braintree.Customer do
 
       :ok = Braintree.Customer.delete("customer_id")
   """
-  @spec delete(binary) :: :ok | {:error, Error.t}
-  def delete(id) do
+  @spec delete(binary) :: :ok | :error
+  def delete(id) when is_binary(id) do
     case HTTP.delete("customers/" <> id) do
       {:ok, _response} -> :ok
       {:error, _error} -> :error
