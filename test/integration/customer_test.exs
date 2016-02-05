@@ -7,10 +7,6 @@ defmodule Braintree.Integration.CustomerTest do
   alias Braintree.Testing.CreditCardNumbers
   alias Braintree.Testing.CreditCardNumbers.FailsSandboxVerification
 
-  def master_card do
-    CreditCardNumbers.master_cards |> List.first
-  end
-
   test "create/1 without any params" do
     assert {:ok, _customer} = Customer.create()
   end
@@ -70,6 +66,33 @@ defmodule Braintree.Integration.CustomerTest do
       }
     )
 
-    error.message =~ "processor_declined"
+    assert error.message =~ ~r/cvv is required/i
+  end
+
+  test "update/2 updates an existing customer" do
+    {:ok, customer} = Customer.create(%{first_name: "Parker", last_name: "Selbert"})
+    {:ok, customer} = Customer.update(customer.id, %{first_name: "Rekrap"})
+
+    assert customer.first_name == "Rekrap"
+  end
+
+  test "update/2 exposes an error when updating fails" do
+    invalid_company = repeatedly("a", 300)
+
+    {:ok, customer} = Customer.create()
+    {:error, error} = Customer.update(customer.id, %{company: invalid_company})
+
+    assert error.message =~ ~r/company is too long/i
+  end
+
+  defp master_card do
+    CreditCardNumbers.master_cards() |> List.first
+  end
+
+  defp repeatedly(string, len) do
+    fn -> string end
+    |> Stream.repeatedly
+    |> Enum.take(len)
+    |> Enum.join
   end
 end

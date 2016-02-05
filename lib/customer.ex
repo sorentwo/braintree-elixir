@@ -76,6 +76,28 @@ defmodule Braintree.Customer do
     end
   end
 
+  @doc """
+  Update an existing customer record, or return an error response if
+  validation fails.
+
+  ## Example
+
+      {:ok, customer} = Braintree.Customer.update("customer_id", %{
+        company: "New Company Name"
+      })
+
+      customer.company # "New Company Name"
+  """
+  @spec update(binary, Map.t) :: {:ok, t} | {:error, Error.t}
+  def update(id, params) do
+    case put("customers/" <> id, %{customer: params}) do
+      {:ok, %{"customer" => customer}} ->
+        {:ok, construct(customer)}
+      {:error, %{"api_error_response" => error}} ->
+        {:error, Error.construct(error)}
+    end
+  end
+
   @doc false
   def construct(map) do
     company = struct(__MODULE__, atomize(map))

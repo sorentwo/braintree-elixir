@@ -27,7 +27,7 @@ defmodule Braintree.HTTP do
 
   defmacro __using__(_) do
     quote do
-      import unquote(__MODULE__), only: [get: 3, post: 2, post: 4, put: 4]
+      import unquote(__MODULE__), only: [get: 3, post: 2, put: 2]
     end
   end
 
