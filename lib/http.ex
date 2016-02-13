@@ -48,8 +48,8 @@ defmodule Braintree.HTTP do
 
   @doc false
   def process_url(path) do
-    environment = Application.get_env(:braintree, :environment, :sandbox)
-    merchant_id = Application.get_env(:braintree, :merchant_id)
+    environment = Braintree.get_env(:environment, :sandbox)
+    merchant_id = Braintree.get_env(:merchant_id)
 
     Keyword.fetch!(@endpoints, environment) <> merchant_id <> "/" <> path
   end
@@ -62,8 +62,8 @@ defmodule Braintree.HTTP do
 
   @doc false
   def process_request_headers(_headers) do
-    public  = Application.get_env(:braintree, :public_key)
-    private = Application.get_env(:braintree, :private_key)
+    public  = Braintree.get_env(:public_key)
+    private = Braintree.get_env(:private_key)
 
     [{"Authorization", basic_auth(public, private)} | @headers]
   end

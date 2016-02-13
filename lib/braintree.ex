@@ -5,4 +5,28 @@ defmodule Braintree do
   For general reference please see:
   https://developers.braintreepayments.com/reference/overview
   """
+
+  defmodule ConfigError do
+    defexception [:message]
+
+    def exception(value) do
+      message = "missing config for :#{value}"
+
+      %ConfigError{message: message}
+    end
+  end
+
+  @doc """
+  Convenience function for retrieving braintree specfic environment values, but
+  will raise an exception if values are missing.
+
+  ## Example
+
+      iex> Braintree.get_env(:random_value)
+      ** (Braintree.ConfigError) missing config for :random_value
+  """
+  @spec get_env(atom, any) :: any
+  def get_env(key, default \\ nil) do
+    Application.get_env(:braintree, key, default) || raise ConfigError, key
+  end
 end
