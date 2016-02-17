@@ -1,3 +1,8 @@
+## v0.3.0 2016-02-17
+
+* Fixed: Raise helpful errors when missing required config
+* Added: Client token module for generating new client tokens [Taylor Briggs]
+
 ## v0.2.0 2016-02-05
 
 * Added: Support for updating and deleting customers.
