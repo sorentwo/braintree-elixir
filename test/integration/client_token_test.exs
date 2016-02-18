@@ -18,6 +18,6 @@ defmodule Braintree.Integration.ClientToken do
   end
 
   test "generate/1 with a bogus customer" do
-    {:error, error} = ClientToken.generate(%{customer_id: "asdfghjkl"})
+    assert {:error, _} = ClientToken.generate(%{customer_id: "asdfghjkl"})
   end
 end
