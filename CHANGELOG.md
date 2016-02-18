@@ -1,3 +1,9 @@
+## v0.3.1 2016-02-18
+
+* Fixed: Lookup the certfile path at runtime rather than compile time. This
+  fixes potential build errors when pre-building releases or packaging on
+  platforms like Heroku.
+
 ## v0.3.0 2016-02-17
 
 * Fixed: Raise helpful errors when missing required config
