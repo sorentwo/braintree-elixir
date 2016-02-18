@@ -9,7 +9,7 @@ defmodule Braintree.HTTP do
     sandbox: "https://api.sandbox.braintreegateway.com/merchants/"
   ]
 
-  @cacertfile Path.join(:code.priv_dir(:braintree), "/certs/api_braintreegateway_com.ca.crt")
+  @cacertfile "/certs/api_braintreegateway_com.ca.crt"
 
   @headers [
     {"Accept", "application/xml"},
@@ -17,10 +17,6 @@ defmodule Braintree.HTTP do
     {"Accept-Encoding", "gzip"},
     {"X-ApiVersion", "4"},
     {"Content-Type", "application/xml"}
-  ]
-
-  @options [
-    hackney: [ssl_options: [cacertfile: @cacertfile]]
   ]
 
   @doc """
@@ -41,7 +37,7 @@ defmodule Braintree.HTTP do
   @spec request(atom, binary, binary, headers, Keyword.t) ::
         {:ok, Response.t | AsyncResponse.t} | {:error, integer, Response.t} | {:error, Error.t}
   def request(method, url, body, headers \\ [], options \\ []) do
-    super(method, url, body, headers, options ++ @options) |> process_response
+    super(method, url, body, headers, options ++ base_options) |> process_response
   end
 
   ## HTTPoison Callbacks
@@ -94,5 +90,11 @@ defmodule Braintree.HTTP do
   @doc false
   def basic_auth(user, pass) do
     "Basic " <> :base64.encode("#{user}:#{pass}")
+  end
+
+  defp base_options do
+    cacertfile_path = Path.join(:code.priv_dir(:braintree), @cacertfile)
+
+    [hackney: [ssl_options: [cacertfile: cacertfile_path]]]
   end
 end
