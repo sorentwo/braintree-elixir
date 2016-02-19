@@ -1,6 +1,8 @@
 defmodule Braintree.HTTPTest do
   use ExUnit.Case, async: true
 
+  import ExUnit.CaptureLog
+
   alias Braintree.{ConfigError, HTTP}
 
   test "process_url/1 prepends the endpoint" do
@@ -38,6 +40,12 @@ defmodule Braintree.HTTPTest do
   test "process_response_body/1 safely handles empty responses" do
     assert HTTP.process_response_body(compress("")) == %{}
     assert HTTP.process_response_body(compress(" ")) == %{}
+  end
+
+  test "process_response_body/1 logs unhandled errors" do
+    assert capture_log(fn ->
+      HTTP.process_response_body("asdf")
+    end) =~ "unprocessable response"
   end
 
   test "process_request_headers/1 raises a helpful error message" do

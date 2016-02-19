@@ -1,4 +1,6 @@
 defmodule Braintree.HTTP do
+  require Logger
+
   use HTTPoison.Base
 
   alias Braintree.XML
@@ -71,7 +73,7 @@ defmodule Braintree.HTTP do
     |> String.strip
     |> XML.load
   rescue
-    ErlangError -> IO.inspect(body)
+    ErlangError -> Logger.error("unprocessable response")
   end
 
   @doc false
