@@ -1,4 +1,9 @@
 defmodule Braintree.CreditCard do
+  @moduledoc """
+  CreditCard structs are not created directly, but are built within
+  responsees from other endpoints, such as `Braintree.Customer`.
+  """
+
   @type t :: %__MODULE__{
                bin:                      String.t,
                card_type:                String.t,

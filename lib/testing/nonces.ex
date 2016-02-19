@@ -1,4 +1,11 @@
 defmodule Braintree.Testing.Nonces do
+  @moduledoc """
+  The functions contained in this module provide pre-defined nonces that can
+  be used when working with the sandbox. Nonces are preferred over credit
+  card numbers when testing payment methods.
+
+  See http://www.braintreepayments.com/docs/ruby/reference/sandbox
+  """
   def transactable do
     "fake-valid-nonce"
   end

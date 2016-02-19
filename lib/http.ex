@@ -1,4 +1,21 @@
 defmodule Braintree.HTTP do
+  @moduledoc """
+  Base client for all server interaction, used by all endpoint specific
+  modules. This request wrapper coordinates the remote server, headers,
+  authorization and SSL options.
+
+  This uses `HTTPoison.Base`, so all of the typical HTTP verbs are avialble.
+
+  Using `Braintree.HTTP` requires the presence of three config values:
+
+  * merchant_id - Braintree merchant id
+  * private_key - Braintree private key
+  * public_key - Braintree public key
+
+  All three must have values set or a `Braintree.ConfigError` will be raised
+  at runtime.
+  """
+
   require Logger
 
   use HTTPoison.Base
@@ -39,7 +56,9 @@ defmodule Braintree.HTTP do
   @spec request(atom, binary, binary, headers, Keyword.t) ::
         {:ok, Response.t | AsyncResponse.t} | {:error, integer, Response.t} | {:error, Error.t}
   def request(method, url, body, headers \\ [], options \\ []) do
-    super(method, url, body, headers, options ++ base_options) |> process_response
+    response = super(method, url, body, headers, options ++ base_options)
+
+    process_response(response)
   end
 
   ## HTTPoison Callbacks
