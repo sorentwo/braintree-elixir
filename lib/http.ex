@@ -75,13 +75,15 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  def process_response({:ok, %Response{status_code: code, body: body}})
-       when code >= 200 and code <= 399,
+  def process_response({:ok, %{status_code: code, body: body}})
+      when code >= 200 and code <= 399,
     do: {:ok, body}
-
-  def process_response({:ok, %Response{body: body}}),
+  def process_response({:ok, %{status_code: 401}}),
+    do: {:error, :unauthorized}
+  def process_response({:ok, %{status_code: 404}}),
+    do: {:error, :not_found}
+  def process_response({:ok, %{body: body}}),
     do: {:error, body}
-
   def process_response({_code, %HTTPoison.Error{reason: reason}}),
     do: {:error, inspect(reason)}
 
@@ -93,8 +95,8 @@ defmodule Braintree.HTTP do
   end
 
   defp base_options do
-    cacertfile_path = Path.join(:code.priv_dir(:braintree), @cacertfile)
+    path = Path.join(:code.priv_dir(:braintree), @cacertfile)
 
-    [hackney: [ssl_options: [cacertfile: cacertfile_path]]]
+    [hackney: [ssl_options: [cacertfile: path]]]
   end
 end
