@@ -1,3 +1,9 @@
+## v0.3.2 2016-02-26
+
+* Fixed: Log unprocessable responses rather than inspecting them to STDOUT.
+* Fixed: Convert 404 and 401 responses to error tuples, they are common problems
+  with misconfiguration.
+
 ## v0.3.1 2016-02-18
 
 * Fixed: Lookup the certfile path at runtime rather than compile time. This
