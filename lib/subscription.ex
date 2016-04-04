@@ -84,7 +84,6 @@ defmodule Braintree.Subscription do
   def create(params \\ %{}) do
     case HTTP.post("subscriptions", %{subscription: params}) do
       {:ok, %{"subscription" => subscription}} ->
-        subscription |> atomize |> Map.keys |> IO.inspect
         {:ok, construct(subscription)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
