@@ -1,4 +1,4 @@
-defmodule Braintree.Integration.CustomerTest do
+defmodule Braintree.Integration.SubscriptionTest do
   use ExUnit.Case, async: true
 
   @moduletag :integration
