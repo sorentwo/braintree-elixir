@@ -85,7 +85,72 @@ defmodule Braintree.Transaction do
         {:error, Error.construct(error)}
     end
   end
+  
+  
+  @doc """
+  Use a `transaction_id` and optional `amount` to issue a refund
+  for that transaction
 
+  ## Example
+
+      {:ok, transaction} = Transaction.refund(
+      "123",
+      %{
+        amount: "100.00"
+      })
+
+      transaction.status # "refunded"
+  """
+  @spec refund(String.t, Map.t) :: {:ok, any} | {:error, Error.t}
+  def refund(transaction_id, params) do
+    case HTTP.post("transactions/#{transaction_id}/refund", %{transaction: params}) do
+      {:ok, %{"transaction" => transaction}} ->
+        {:ok, construct(transaction)}
+      {:error, %{"api_error_response" => error}} ->
+        {:error, Error.construct(error)}
+    end
+  end
+  
+  @doc """
+  Use a `transaction_id` to issue a void for that transaction
+
+  ## Example
+
+      {:ok, transaction} = Transaction.void("123")
+
+      transaction.status # "voided"
+  """
+  @spec void(String.t) :: {:ok, any} | {:error, Error.t}
+  def void(transaction_id) do
+    case HTTP.put("transactions/#{transaction_id}/void", %{}) do
+      {:ok, %{"transaction" => transaction}} ->
+        {:ok, construct(transaction)}
+      {:error, %{"api_error_response" => error}} ->
+        {:error, Error.construct(error)}
+      {:error, :not_found} -> 
+        {:error, Error.construct(%{"message" => "Transaction ID is invalid."})}
+    end
+  end
+  
+  @doc """
+  Find an existing transaction by `transaction_id`
+
+  ## Example
+
+      {:ok, transaction} = Transaction.find("123")
+  """
+  @spec find(String.t) :: {:ok, any} | {:error, Error.t}
+  def find(transaction_id) do
+    case HTTP.get("transactions/#{transaction_id}") do
+      {:ok, %{"transaction" => transaction}} ->
+        {:ok, construct(transaction)}
+      {:error, %{"api_error_response" => error}} ->
+        {:error, Error.construct(error)}
+      {:error, :not_found} -> 
+        {:error, Error.construct(%{"message" => "Transaction ID is invalid."})}
+    end
+  end
+  
   def construct(map) do
     struct(__MODULE__, atomize(map))
   end
