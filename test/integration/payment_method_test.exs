@@ -68,6 +68,36 @@ defmodule Braintree.Integration.PaymentMethodTest do
     assert payment_method.bin =~ card.bin
   end
 
+  test "create/1 can create a paypal payment method" do
+    {:ok, customer} = Customer.create(%{
+      first_name: "Rick",
+      last_name: "Grimes"
+    })
+    
+    {:ok, paypal_account} = PaymentMethod.create(%{
+        customer_id: customer.id,
+        payment_method_nonce: Nonces.paypal_future_payment
+      })
+      
+    assert paypal_account.email == "jane.doe@example.com"
+    assert paypal_account.token =~ ~r/^\w+$/
+  end
+
+  test "create/1 can successfully make paypal payment method the default" do
+    {:ok, customer} = Customer.create(%{
+      first_name: "Bill",
+      last_name: "Gates"
+    })
+    
+    {:ok, paypal_account} = PaymentMethod.create(%{
+        customer_id: customer.id,
+        payment_method_nonce: Nonces.paypal_future_payment,
+        options: %{make_default: true}
+      })
+      
+    assert paypal_account.default == true
+  end
+
   test "update/1 fails when invalid token provided" do
     {:error, error} = PaymentMethod.update("bogus")
 
@@ -94,6 +124,22 @@ defmodule Braintree.Integration.PaymentMethodTest do
 
     assert updated_payment_method.cardholder_name == "Steve"
   end
+  
+  test "update/2 can successfully call update on paypal payment method" do
+    {:ok, customer} = Customer.create(%{
+      first_name: "Bill",
+      last_name: "Gates"
+    })
+
+    {:ok, paypal_account} = PaymentMethod.create(%{
+        customer_id: customer.id,
+        payment_method_nonce: Nonces.paypal_future_payment
+      })
+
+    {:ok, updated_paypal_account} = PaymentMethod.update(paypal_account.token, %{})
+
+    assert updated_paypal_account.email == "jane.doe@example.com"
+  end
 
   test "delete/1 fails when invalid token provided" do
     {:error, error} = PaymentMethod.delete("bogus")
@@ -113,6 +159,22 @@ defmodule Braintree.Integration.PaymentMethodTest do
       })
 
     {:ok, message} = PaymentMethod.delete(payment_method.token)
+
+    assert message == "Success"
+  end
+  
+  test "delete/1 can delete paypal payment method" do
+    {:ok, customer} = Customer.create(%{
+      first_name: "Bill",
+      last_name: "Gates"
+    })
+
+    {:ok, paypal_account} = PaymentMethod.create(%{
+        customer_id: customer.id,
+        payment_method_nonce: Nonces.paypal_future_payment
+      })
+      
+    {:ok, message} = PaymentMethod.delete(paypal_account.token)
 
     assert message == "Success"
   end
@@ -139,6 +201,23 @@ defmodule Braintree.Integration.PaymentMethodTest do
     assert found_payment.cardholder_name == payment_method.cardholder_name
     assert found_payment.card_type == payment_method.card_type
     assert found_payment.token == payment_method.token
+  end
+  
+  test "find/1 can find an existing paypal payment method" do
+    {:ok, customer} = Customer.create(%{
+      first_name: "Bill",
+      last_name: "Gates"
+    })
+
+    {:ok, paypal_account} = PaymentMethod.create(%{
+        customer_id: customer.id,
+        payment_method_nonce: Nonces.paypal_future_payment
+      })
+
+    {:ok, found_paypal_account} = PaymentMethod.find(paypal_account.token)
+    
+    assert found_paypal_account.email == "jane.doe@example.com"
+    assert found_paypal_account.token =~ ~r/^\w+$/
   end
 
   defp master_card do

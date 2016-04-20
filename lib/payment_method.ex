@@ -59,6 +59,7 @@ defmodule Braintree.PaymentMethod do
             verifications:            []
 
   alias Braintree.HTTP
+  alias Braintree.PaypalAccount
   alias Braintree.ErrorResponse, as: Error
   import Braintree.Util, only: [atomize: 1]
 
@@ -85,6 +86,8 @@ defmodule Braintree.PaymentMethod do
     case HTTP.post("payment_methods", %{payment_method: params}) do
       {:ok, %{"credit_card" => credit_card}} ->
         {:ok, construct(credit_card)}
+      {:ok, %{"paypal_account" => paypal_account}} ->
+        {:ok, PaypalAccount.construct(paypal_account)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
     end
@@ -120,6 +123,8 @@ defmodule Braintree.PaymentMethod do
     case HTTP.put("payment_methods/any/#{token}", %{payment_method: params}) do
       {:ok, %{"credit_card" => credit_card}} ->
         {:ok, construct(credit_card)}
+      {:ok, %{"paypal_account" => paypal_account}} ->
+        {:ok, PaypalAccount.construct(paypal_account)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
       {:error, :not_found} -> 
@@ -161,6 +166,8 @@ defmodule Braintree.PaymentMethod do
     case HTTP.get("payment_methods/any/#{token}") do
       {:ok, %{"credit_card" => credit_card}} ->
         {:ok, construct(credit_card)}
+      {:ok, %{"paypal_account" => paypal_account}} ->
+        {:ok, PaypalAccount.construct(paypal_account)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
       {:error, :not_found} -> 
