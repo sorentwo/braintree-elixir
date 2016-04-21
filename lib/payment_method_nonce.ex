@@ -3,15 +3,15 @@ defmodule Braintree.PaymentMethodNonce do
   Create a payment method nonce from an existing payment method token
   """
   @type t :: %__MODULE__{
-               default:                  String.t,
-               description:              String.t,
-               nonce:                    String.t,
-               three_d_secure_info:      String.t,
-               type:                     String.t,
-               details:                  Map.t,
-               is_locked:                boolean,
-               consumed:                 boolean,
-               security_questions:       []
+               default:             String.t,
+               description:         String.t,
+               nonce:               String.t,
+               three_d_secure_info: String.t,
+               type:                String.t,
+               details:             Map.t,
+               is_locked:           boolean,
+               consumed:            boolean,
+               security_questions:  []
              }
 
   defstruct default:              nil,
@@ -27,14 +27,14 @@ defmodule Braintree.PaymentMethodNonce do
   import Braintree.Util, only: [atomize: 1]
   alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
-  
+
   @doc """
   Create a payment method nonce from `token`
 
   ## Example
 
       {:ok, payment_method_nonce} = Braintree.PaymentMethodNonce.create(token)
-      
+
       payment_method_nonce.nonce
   """
   @spec create(String.t) :: {:ok, t} | {:error, Error.t}
@@ -44,11 +44,11 @@ defmodule Braintree.PaymentMethodNonce do
         {:ok, construct(payment_method_nonce)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
-      {:error, :not_found} -> 
+      {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "Token is invalid."})}
     end
   end
-  
+
   @doc """
   Find a payment method nonce, or return an error response if token invalid
 
@@ -64,11 +64,11 @@ defmodule Braintree.PaymentMethodNonce do
         {:ok, construct(payment_method_nonce)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
-      {:error, :not_found} -> 
+      {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "Token is invalid."})}
     end
   end
-  
+
   def construct(map) do
     struct(__MODULE__, atomize(map))
   end

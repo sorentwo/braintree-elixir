@@ -85,8 +85,8 @@ defmodule Braintree.Transaction do
         {:error, Error.construct(error)}
     end
   end
-  
-  
+
+
   @doc """
   Use a `transaction_id` and optional `amount` to issue a refund
   for that transaction
@@ -110,7 +110,7 @@ defmodule Braintree.Transaction do
         {:error, Error.construct(error)}
     end
   end
-  
+
   @doc """
   Use a `transaction_id` to issue a void for that transaction
 
@@ -127,11 +127,11 @@ defmodule Braintree.Transaction do
         {:ok, construct(transaction)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
-      {:error, :not_found} -> 
+      {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "Transaction ID is invalid."})}
     end
   end
-  
+
   @doc """
   Find an existing transaction by `transaction_id`
 
@@ -146,11 +146,11 @@ defmodule Braintree.Transaction do
         {:ok, construct(transaction)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
-      {:error, :not_found} -> 
+      {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "Transaction ID is invalid."})}
     end
   end
-  
+
   def construct(map) do
     struct(__MODULE__, atomize(map))
   end

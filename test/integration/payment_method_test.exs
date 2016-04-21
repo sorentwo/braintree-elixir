@@ -6,7 +6,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
   alias Braintree.PaymentMethodNonce
   alias Braintree.Testing.Nonces
   alias Braintree.Testing.CreditCardNumbers
-  
+
   @moduletag :integration
 
   test "create/1 fails when customer_id not provided" do

@@ -87,7 +87,7 @@ defmodule Braintree.Integration.TestTransactionTest do
 
     assert error.message == "Transaction ID is invalid."
   end
-  
+
   test "settlement_decline/1 succeeds if sale has been submit for settlement" do
     {:ok, transaction} = Transaction.sale(%{
       amount: "100.00",
