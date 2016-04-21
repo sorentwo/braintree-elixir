@@ -45,8 +45,7 @@ defmodule Braintree.Mixfile do
     [{:httpoison, "~> 0.8"},
      {:ex_doc, "~> 0.11", only: :dev},
      {:earmark, "~> 0.2", only: :dev},
-     {:credo, "~> 0.3", only: :dev}
-   ]
+     {:credo, "~> 0.3", only: :dev}]
   end
 
   defp aliases do
