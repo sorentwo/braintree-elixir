@@ -59,7 +59,6 @@ defmodule Braintree.PaymentMethod do
             verifications:            []
 
   alias Braintree.HTTP
-  alias Braintree.CreditCard
   alias Braintree.ErrorResponse, as: Error
   import Braintree.Util, only: [atomize: 1]
 

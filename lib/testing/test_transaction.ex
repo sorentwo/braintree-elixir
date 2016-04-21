@@ -5,8 +5,6 @@ if Mix.env == :test do
     Transition to settled, settlement_confirmed, or settlement_declined states.
     """
 
-    import Braintree.Util, only: [atomize: 1]
-
     alias Braintree.Transaction
     alias Braintree.HTTP
     alias Braintree.ErrorResponse, as: Error
