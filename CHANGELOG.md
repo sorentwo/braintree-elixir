@@ -1,3 +1,12 @@
+## v0.4.0 2016-04-20
+
+* Added: Available only during testing, `TestTransaction`, which can be used to
+  transition transactions to different states.
+* Added: Add `find`, `void`, and `refund` on `Transaction`. [Tyler Cain]
+* Added: Add support for `PaymentMethod`, `PaymentMethodNonce`. [Tyler Cain]
+* Added: Basic support for subscription management, starting with `create`.
+  [Ryan Bigg]
+
 ## v0.3.2 2016-02-26
 
 * Fixed: Log unprocessable responses rather than inspecting them to STDOUT.
