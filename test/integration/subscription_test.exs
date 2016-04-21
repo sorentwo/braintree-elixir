@@ -8,7 +8,7 @@ defmodule Braintree.Integration.SubscriptionTest do
 
   test "create/1 with a plan_id" do
     assert {:ok, customer} = Customer.create(%{payment_method_nonce: "fake-valid-nonce"})
-    card = customer.credit_cards |> List.first
+    [card] = customer.credit_cards
     assert {:ok, _subscription } = Subscription.create(%{payment_method_token: card.token, plan_id: "starter"})
   end
 end
