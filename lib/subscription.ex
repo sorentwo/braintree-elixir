@@ -1,4 +1,11 @@
 defmodule Braintree.Subscription do
+  @moduledoc """
+  Manage customer subscriptions to reocurring billing plans.
+
+  For additional reference see:
+  https://developers.braintreepayments.com/reference/request/subscription/create/ruby
+  """
+
   import Braintree.Util, only: [atomize: 1]
 
   alias Braintree.HTTP

@@ -2,7 +2,7 @@ if Mix.env == :test do
   defmodule Braintree.Testing.TestTransaction do
     @moduledoc """
     Create transasctions for testing purposes only.
-    Transition to settled, settlement_confirmed, or settlement_declined
+    Transition to settled, settlement_confirmed, or settlement_declined states.
     """
 
     import Braintree.Util, only: [atomize: 1]
@@ -12,8 +12,8 @@ if Mix.env == :test do
     alias Braintree.ErrorResponse, as: Error
 
     @doc """
-    Use a `transaction_id` to transition to settled status
-    Allows for testing of refunds
+    Use a `transaction_id` to transition to settled status. This
+    allows for testing of refunds.
 
     ## Example
 

@@ -1,7 +1,9 @@
 defmodule Braintree.Transaction do
   @moduledoc """
-  Create a new sale
-  To create a transaction, you must include an amount and either a payment_method_nonce or a payment_method_token.
+  Create a new sale.
+
+  To create a transaction, you must include an amount and either a
+  payment_method_nonce or a payment_method_token.
   """
 
   import Braintree.Util, only: [atomize: 1]
