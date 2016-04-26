@@ -73,12 +73,12 @@ defmodule Braintree.PaymentMethod do
         first_name: "Jen",
         last_name: "Smith"
       })
-      
+
       {:ok, credit_card} = Braintree.PaymentMethod.create(%{
         customer_id: customer.id,
         payment_method_nonce: Braintree.Testing.Nonces.transactable
       })
-      
+
       credit_card.type #Visa
   """
   @spec create(Map.t) :: {:ok, t} | {:error, Error.t}
@@ -92,7 +92,7 @@ defmodule Braintree.PaymentMethod do
         {:error, Error.construct(error)}
     end
   end
-  
+
   @doc """
   Update a payment method record, or return an error response with after failed
   validation.
@@ -103,19 +103,19 @@ defmodule Braintree.PaymentMethod do
         first_name: "Jen",
         last_name: "Smith"
       })
-      
+
       {:ok, credit_card} = Braintree.PaymentMethod.create(%{
         customer_id: customer.id,
         cardholder_name: "CH Name",
         payment_method_nonce: Braintree.Testing.Nonces.transactable
       })
-      
+
       {:ok, payment_method} = Braintree.PaymentMethod.update(credit_card.token,
         %{
           cardholder_name: "NEW"
         }
       )
-      
+
       payment_method.cardholder_name #NEW
   """
   @spec update(String.t, Map.t) :: {:ok, t} | {:error, Error.t}
@@ -127,12 +127,12 @@ defmodule Braintree.PaymentMethod do
         {:ok, PaypalAccount.construct(paypal_account)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
-      {:error, :not_found} -> 
+      {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "Token is invalid."})}
     end
   end
-  
-  
+
+
   @doc """
   Delete a payment method record, or return an error response if token invalid
 
@@ -148,11 +148,11 @@ defmodule Braintree.PaymentMethod do
         {:ok, "Success"}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
-      {:error, :not_found} -> 
+      {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "Token is invalid."})}
     end
   end
-  
+
   @doc """
   Find a payment method record, or return an error response if token invalid
 
@@ -170,7 +170,7 @@ defmodule Braintree.PaymentMethod do
         {:ok, PaypalAccount.construct(paypal_account)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
-      {:error, :not_found} -> 
+      {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "Token is invalid."})}
     end
   end

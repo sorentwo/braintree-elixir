@@ -37,9 +37,9 @@ defmodule Braintree.Integration.PaymentMethodTest do
     })
 
     {:ok, payment_method} = PaymentMethod.create(%{
-        customer_id: customer.id,
-        payment_method_nonce: Nonces.transactable
-      })
+      customer_id: customer.id,
+      payment_method_nonce: Nonces.transactable
+    })
 
     assert payment_method.card_type == "Visa"
     assert payment_method.bin =~ ~r/^\w+$/
@@ -60,9 +60,9 @@ defmodule Braintree.Integration.PaymentMethodTest do
     {:ok, payment_method_nonce} = PaymentMethodNonce.create(card.token)
 
     {:ok, payment_method} = PaymentMethod.create(%{
-        customer_id: customer.id,
-        payment_method_nonce: payment_method_nonce.nonce
-      })
+      customer_id: customer.id,
+      payment_method_nonce: payment_method_nonce.nonce
+    })
 
     assert payment_method.card_type == "MasterCard"
     assert payment_method.bin =~ card.bin
@@ -73,12 +73,12 @@ defmodule Braintree.Integration.PaymentMethodTest do
       first_name: "Rick",
       last_name: "Grimes"
     })
-    
+
     {:ok, paypal_account} = PaymentMethod.create(%{
-        customer_id: customer.id,
-        payment_method_nonce: Nonces.paypal_future_payment
-      })
-      
+      customer_id: customer.id,
+      payment_method_nonce: Nonces.paypal_future_payment
+    })
+
     assert paypal_account.email == "jane.doe@example.com"
     assert paypal_account.token =~ ~r/^\w+$/
   end
@@ -88,13 +88,13 @@ defmodule Braintree.Integration.PaymentMethodTest do
       first_name: "Bill",
       last_name: "Gates"
     })
-    
+
     {:ok, paypal_account} = PaymentMethod.create(%{
-        customer_id: customer.id,
-        payment_method_nonce: Nonces.paypal_future_payment,
-        options: %{make_default: true}
-      })
-      
+      customer_id: customer.id,
+      payment_method_nonce: Nonces.paypal_future_payment,
+      options: %{make_default: true}
+    })
+
     assert paypal_account.default == true
   end
 
@@ -111,30 +111,30 @@ defmodule Braintree.Integration.PaymentMethodTest do
     })
 
     {:ok, payment_method} = PaymentMethod.create(%{
-        customer_id: customer.id,
-        cardholder_name: "Bruce",
-        payment_method_nonce: Nonces.transactable
-      })
+      customer_id: customer.id,
+      cardholder_name: "Bruce",
+      payment_method_nonce: Nonces.transactable
+    })
 
     assert payment_method.cardholder_name == "Bruce"
 
-    {:ok, updated_payment_method} = PaymentMethod.update(payment_method.token, %{
-        cardholder_name: "Steve"
-      })
+    {:ok, updated_method} = PaymentMethod.update(payment_method.token, %{
+      cardholder_name: "Steve"
+    })
 
-    assert updated_payment_method.cardholder_name == "Steve"
+    assert updated_method.cardholder_name == "Steve"
   end
-  
-  test "update/2 can successfully call update on paypal payment method" do
+
+  test "update/2 can successfully call update on a paypal payment method" do
     {:ok, customer} = Customer.create(%{
       first_name: "Bill",
       last_name: "Gates"
     })
 
     {:ok, paypal_account} = PaymentMethod.create(%{
-        customer_id: customer.id,
-        payment_method_nonce: Nonces.paypal_future_payment
-      })
+      customer_id: customer.id,
+      payment_method_nonce: Nonces.paypal_future_payment
+    })
 
     {:ok, updated_paypal_account} = PaymentMethod.update(paypal_account.token, %{})
 
@@ -154,15 +154,15 @@ defmodule Braintree.Integration.PaymentMethodTest do
     })
 
     {:ok, payment_method} = PaymentMethod.create(%{
-        customer_id: customer.id,
-        payment_method_nonce: Nonces.transactable
-      })
+      customer_id: customer.id,
+      payment_method_nonce: Nonces.transactable
+    })
 
     {:ok, message} = PaymentMethod.delete(payment_method.token)
 
     assert message == "Success"
   end
-  
+
   test "delete/1 can delete paypal payment method" do
     {:ok, customer} = Customer.create(%{
       first_name: "Bill",
@@ -170,10 +170,10 @@ defmodule Braintree.Integration.PaymentMethodTest do
     })
 
     {:ok, paypal_account} = PaymentMethod.create(%{
-        customer_id: customer.id,
-        payment_method_nonce: Nonces.paypal_future_payment
-      })
-      
+      customer_id: customer.id,
+      payment_method_nonce: Nonces.paypal_future_payment
+    })
+
     {:ok, message} = PaymentMethod.delete(paypal_account.token)
 
     assert message == "Success"
@@ -192,9 +192,9 @@ defmodule Braintree.Integration.PaymentMethodTest do
     })
 
     {:ok, payment_method} = PaymentMethod.create(%{
-        customer_id: customer.id,
-        payment_method_nonce: Nonces.transactable
-      })
+      customer_id: customer.id,
+      payment_method_nonce: Nonces.transactable
+    })
 
     {:ok, found_payment} = PaymentMethod.find(payment_method.token)
 
@@ -202,7 +202,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
     assert found_payment.card_type == payment_method.card_type
     assert found_payment.token == payment_method.token
   end
-  
+
   test "find/1 can find an existing paypal payment method" do
     {:ok, customer} = Customer.create(%{
       first_name: "Bill",
@@ -210,12 +210,12 @@ defmodule Braintree.Integration.PaymentMethodTest do
     })
 
     {:ok, paypal_account} = PaymentMethod.create(%{
-        customer_id: customer.id,
-        payment_method_nonce: Nonces.paypal_future_payment
-      })
+      customer_id: customer.id,
+      payment_method_nonce: Nonces.paypal_future_payment
+    })
 
     {:ok, found_paypal_account} = PaymentMethod.find(paypal_account.token)
-    
+
     assert found_paypal_account.email == "jane.doe@example.com"
     assert found_paypal_account.token =~ ~r/^\w+$/
   end
