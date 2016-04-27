@@ -2,6 +2,11 @@ defmodule Braintree.PaymentMethodNonce do
   @moduledoc """
   Create a payment method nonce from an existing payment method token
   """
+
+  import Braintree.Util, only: [atomize: 1]
+  alias Braintree.HTTP
+  alias Braintree.ErrorResponse, as: Error
+
   @type t :: %__MODULE__{
                default:             String.t,
                description:         String.t,
@@ -23,10 +28,6 @@ defmodule Braintree.PaymentMethodNonce do
             details:              nil,
             consumed:             false,
             security_questions:   nil
-
-  import Braintree.Util, only: [atomize: 1]
-  alias Braintree.HTTP
-  alias Braintree.ErrorResponse, as: Error
 
   @doc """
   Create a payment method nonce from `token`
@@ -55,6 +56,7 @@ defmodule Braintree.PaymentMethodNonce do
   ## Example
 
       {:ok, payment_method} = Braintree.PaymentMethodNonce.find(token)
+
       payment_method.type #CreditCard
   """
   @spec find(String.t) :: {:ok, t} | {:error, Error.t}
@@ -69,6 +71,8 @@ defmodule Braintree.PaymentMethodNonce do
     end
   end
 
+  @doc false
+  @spec construct(Map.t) :: t
   def construct(map) do
     struct(__MODULE__, atomize(map))
   end

@@ -116,6 +116,7 @@ defmodule Braintree.Customer do
   end
 
   @doc false
+  @spec construct(Map.t) :: Map.t
   def construct(map) do
     company = struct(__MODULE__, atomize(map))
 

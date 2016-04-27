@@ -94,6 +94,7 @@ defmodule Braintree.PaypalAccount do
     end
   end
 
+  @doc false
   def construct(map) do
     struct(__MODULE__, atomize(map))
   end

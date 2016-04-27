@@ -62,6 +62,7 @@ defmodule Braintree.CreditCard do
             subscriptions:            [],
             verifications:            []
 
+  @doc false
   @spec construct(Map.t) :: t
   def construct(map) do
     struct(__MODULE__, atomize(map))

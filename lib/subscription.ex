@@ -82,8 +82,7 @@ defmodule Braintree.Subscription do
   ## Example
 
       {:ok, customer} = Braintree.Customer.create(%{payment_method_nonce: "fake-valid-nonce"})
-      {:ok, subscription} = Braintree.Subscription.create(%{
-      })
+      {:ok, subscription} = Braintree.Subscription.create(%{})
 
       customer.company # Braintree
   """
@@ -97,6 +96,8 @@ defmodule Braintree.Subscription do
     end
   end
 
+  @doc false
+  @spec construct(Map.t) :: t
   def construct(map) do
     struct(__MODULE__, atomize(map))
   end

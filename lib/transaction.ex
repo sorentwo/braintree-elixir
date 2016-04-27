@@ -95,11 +95,7 @@ defmodule Braintree.Transaction do
 
   ## Example
 
-      {:ok, transaction} = Transaction.refund(
-      "123",
-      %{
-        amount: "100.00"
-      })
+      {:ok, transaction} = Transaction.refund("123", %{amount: "100.00"})
 
       transaction.status # "refunded"
   """
@@ -153,6 +149,7 @@ defmodule Braintree.Transaction do
     end
   end
 
+  @doc false
   def construct(map) do
     struct(__MODULE__, atomize(map))
   end
