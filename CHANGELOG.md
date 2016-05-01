@@ -1,6 +1,6 @@
 ## v0.4.1 2016-05-1
 
-* Added: `Braintree.Plan.all` [David Salazar]
+* Added: `Braintree.Plan.all`. [David Salazar]
 
 ## v0.4.0 2016-04-20
 

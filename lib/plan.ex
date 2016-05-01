@@ -10,7 +10,7 @@ defmodule Braintree.Plan do
   alias Braintree.ErrorResponse, as: Error
 
   @doc """
-  Get all existing plans or a error response
+  Get all existing plans or a error response.
 
   ## Example
 
