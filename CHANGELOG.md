@@ -1,7 +1,3 @@
-## v0.4.1 2016-05-1
-
-* Added: `Braintree.Plan.all`. [David Salazar]
-
 ## v0.4.0 2016-04-20
 
 * Added: Available only during testing, `TestTransaction`, which can be used to

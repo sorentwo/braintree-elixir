@@ -19,15 +19,11 @@ defmodule Braintree.Plan do
       plans # All the existing plans
   """
   def all do
-    get_plans = HTTP.get("plans")
-
-    case get_plans do
+    case HTTP.get("plans") do
       {:ok, %{"plans" => plans}} ->
         plans
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
     end
-    
   end
-
 end
