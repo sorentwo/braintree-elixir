@@ -22,14 +22,14 @@ defmodule Braintree.ClientToken do
   def generate(params \\ :empty) do
     case HTTP.post("client_token", wrap_params(params)) do
       {:ok, %{"client_token" => client_token}} ->
-        {:ok, client_token["value"]}
+        {:ok, construct(client_token)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
     end
   end
 
-  defp wrap_params(:empty),
-    do: %{}
-  defp wrap_params(params),
-    do: %{client_token: params}
+  defp construct(%{"value" => value}), do: value
+
+  defp wrap_params(:empty), do: %{}
+  defp wrap_params(params), do: %{client_token: params}
 end

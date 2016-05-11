@@ -4,7 +4,7 @@ defmodule Braintree.CreditCard do
   responsees from other endpoints, such as `Braintree.Customer`.
   """
 
-  import Braintree.Util, only: [atomize: 1]
+  use Braintree.Construction
 
   @type t :: %__MODULE__{
                bin:                      String.t,
@@ -61,10 +61,4 @@ defmodule Braintree.CreditCard do
             venmo_sdk:                "Unknown",
             subscriptions:            [],
             verifications:            []
-
-  @doc false
-  @spec construct(Map.t) :: t
-  def construct(map) do
-    struct(__MODULE__, atomize(map))
-  end
 end

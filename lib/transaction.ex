@@ -6,7 +6,7 @@ defmodule Braintree.Transaction do
   payment_method_nonce or a payment_method_token.
   """
 
-  import Braintree.Util, only: [atomize: 1]
+  use Braintree.Construction
 
   alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
@@ -147,10 +147,5 @@ defmodule Braintree.Transaction do
       {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "Transaction ID is invalid."})}
     end
-  end
-
-  @doc false
-  def construct(map) do
-    struct(__MODULE__, atomize(map))
   end
 end

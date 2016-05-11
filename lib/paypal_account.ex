@@ -2,9 +2,11 @@ defmodule Braintree.PaypalAccount do
   @moduledoc """
   Find, update and delete Paypal Accounts using PaymentMethod token
   """
+
+  use Braintree.Construction
+
   alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
-  import Braintree.Util, only: [atomize: 1]
 
   @type t :: %__MODULE__{
                billing_agreement_id: String.t,
@@ -92,10 +94,5 @@ defmodule Braintree.PaypalAccount do
       {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "Token is invalid."})}
     end
-  end
-
-  @doc false
-  def construct(map) do
-    struct(__MODULE__, atomize(map))
   end
 end

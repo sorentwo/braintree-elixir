@@ -3,7 +3,8 @@ defmodule Braintree.PaymentMethodNonce do
   Create a payment method nonce from an existing payment method token
   """
 
-  import Braintree.Util, only: [atomize: 1]
+  use Braintree.Construction
+
   alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
 
@@ -69,11 +70,5 @@ defmodule Braintree.PaymentMethodNonce do
       {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "Token is invalid."})}
     end
-  end
-
-  @doc false
-  @spec construct(Map.t) :: t
-  def construct(map) do
-    struct(__MODULE__, atomize(map))
   end
 end

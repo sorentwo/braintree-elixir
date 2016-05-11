@@ -6,7 +6,7 @@ defmodule Braintree.Subscription do
   https://developers.braintreepayments.com/reference/request/subscription/create/ruby
   """
 
-  import Braintree.Util, only: [atomize: 1]
+  use Braintree.Construction
 
   alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
@@ -94,11 +94,5 @@ defmodule Braintree.Subscription do
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
     end
-  end
-
-  @doc false
-  @spec construct(Map.t) :: t
-  def construct(map) do
-    struct(__MODULE__, atomize(map))
   end
 end

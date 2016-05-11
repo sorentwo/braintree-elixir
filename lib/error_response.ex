@@ -4,7 +4,7 @@ defmodule Braintree.ErrorResponse do
   response.
   """
 
-  import Braintree.Util, only: [atomize: 1]
+  use Braintree.Construction
 
   @type t :: %__MODULE__{
                errors:  Map.t,
@@ -15,9 +15,4 @@ defmodule Braintree.ErrorResponse do
   defstruct errors: %{},
             message: "",
             params: %{}
-
-  @spec construct(Map.t) :: t
-  def construct(map) do
-    struct(__MODULE__, atomize(map))
-  end
 end

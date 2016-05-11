@@ -7,7 +7,7 @@ defmodule Braintree.Customer do
   https://developers.braintreepayments.com/reference/request/customer/create/ruby
   """
 
-  import Braintree.Util, only: [atomize: 1]
+  use Braintree.Construction
 
   alias Braintree.HTTP
   alias Braintree.CreditCard
@@ -115,15 +115,9 @@ defmodule Braintree.Customer do
     end
   end
 
-  @doc false
-  @spec construct(Map.t) :: Map.t
   def construct(map) do
-    company = struct(__MODULE__, atomize(map))
+    company = super(map)
 
-    %{company | credit_cards: construct_many(CreditCard, company.credit_cards)}
-  end
-
-  defp construct_many(module, props) do
-    Enum.map(props, &(struct(module, atomize(&1))))
+    %{company | credit_cards: CreditCard.construct(company.credit_cards)}
   end
 end
