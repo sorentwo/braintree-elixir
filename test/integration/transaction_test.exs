@@ -51,6 +51,17 @@ defmodule Braintree.Integration.TransactionTest do
     assert error.message == "Cannot submit for settlement unless status is authorized."
   end
 
+  test "submit_for_settlement/2 by default will settle the amount charged" do
+    amount_charged = "100.00"
+    {:ok, transaction} = Transaction.sale(%{
+      amount: amount_charged,
+      payment_method_nonce: Nonces.paypal_one_time_payment
+    })
+    {:ok, settled_transaction} = Transaction.submit_for_settlement(transaction.id, %{})
+
+    assert settled_transaction.amount == amount_charged
+  end
+
   test "submit_for_settlement/2 can be used for partial settlement" do
     {:ok, transaction} = Transaction.sale(%{
       amount: "100.00",
@@ -70,7 +81,6 @@ defmodule Braintree.Integration.TransactionTest do
     })
     {:error, error} = Transaction.submit_for_settlement(transaction.id, %{amount: "101.00"})
 
-    assert transaction.amount == "100.00"
     assert error.message == "Settlement amount is too large."
   end
 
