@@ -48,7 +48,7 @@ defmodule Braintree.Integration.TransactionTest do
     })
     {:error, error} = Transaction.submit_for_settlement(transaction.id, %{})
 
-    assert error.message == "Cannot submit for settlement unless status is authorized."
+    assert error.message =~ "Cannot submit for settlement unless status is authorized."
   end
 
   test "submit_for_settlement/2 by default will settle the amount charged" do
@@ -81,7 +81,7 @@ defmodule Braintree.Integration.TransactionTest do
     })
     {:error, error} = Transaction.submit_for_settlement(transaction.id, %{amount: "101.00"})
 
-    assert error.message == "Settlement amount is too large."
+    assert error.message =~ "Settlement amount is too large."
   end
 
   test "sale/1 fails with an invalid amount" do

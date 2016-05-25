@@ -148,8 +148,9 @@ defmodule Braintree.Transaction do
   Use this if `submit_for_settlement` was false while creating the charge using sale.
 
   ## Example
+
       {:ok, transaction} = Transaction.submit_for_settlement("123", %{amount: "100"})
-      transaction.status # 'settling'
+      transaction.status # "settling"
   """
   @spec submit_for_settlement(String.t, Map.t) :: {:ok, any} | {:error, Error.t}
   def submit_for_settlement(transaction_id, params) do
