@@ -143,6 +143,24 @@ defmodule Braintree.Transaction do
     end
   end
 
+  @doc """
+  Use a `transaction_id` and optional `amount` to settle the transaction.
+  Use this if `submit_for_settlement` was false while creating the charge using sale.
+
+  ## Example
+
+      {:ok, transaction} = Transaction.submit_for_settlement("123", %{amount: "100"})
+      transaction.status # "settling"
+  """
+  @spec submit_for_settlement(String.t, Map.t) :: {:ok, t} | {:error, Error.t}
+  def submit_for_settlement(transaction_id, params) do
+    case HTTP.put("transactions/#{transaction_id}/submit_for_settlement", %{transaction: params}) do
+      {:ok, %{"transaction" => transaction}} ->
+        {:ok, construct(transaction)}
+      {:error, %{"api_error_response" => error}} ->
+        {:error, Error.construct(error)}
+    end
+  end
 
   @doc """
   Use a `transaction_id` and optional `amount` to issue a refund
