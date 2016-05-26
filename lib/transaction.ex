@@ -152,7 +152,7 @@ defmodule Braintree.Transaction do
       {:ok, transaction} = Transaction.submit_for_settlement("123", %{amount: "100"})
       transaction.status # "settling"
   """
-  @spec submit_for_settlement(String.t, Map.t) :: {:ok, any} | {:error, Error.t}
+  @spec submit_for_settlement(String.t, Map.t) :: {:ok, t} | {:error, Error.t}
   def submit_for_settlement(transaction_id, params) do
     case HTTP.put("transactions/#{transaction_id}/submit_for_settlement", %{transaction: params}) do
       {:ok, %{"transaction" => transaction}} ->
