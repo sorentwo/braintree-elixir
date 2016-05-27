@@ -11,6 +11,7 @@ defmodule Braintree.Customer do
 
   alias Braintree.HTTP
   alias Braintree.CreditCard
+  alias Braintree.PaypalAccount
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
@@ -118,6 +119,7 @@ defmodule Braintree.Customer do
   def construct(map) do
     company = super(map)
 
-    %{company | credit_cards: CreditCard.construct(company.credit_cards)}
+    %{company | credit_cards: CreditCard.construct(company.credit_cards),
+                paypal_accounts: PaypalAccount.construct(company.paypal_accounts)}
   end
 end
