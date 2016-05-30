@@ -22,7 +22,7 @@ defmodule Braintree.CustomerTest do
     assert customer.paypal_accounts == []
   end
 
-  test "construct/1 converts a map to known structs" do
+  test "construct/1 converts the `credit_cards` to a list of known structs" do
     customer = Customer.construct(%{
       "company" => "Soren",
       "email" => "parker@example.com",
@@ -39,5 +39,24 @@ defmodule Braintree.CustomerTest do
 
     assert card.bin == "12345"
     assert card.card_type == "Visa"
+  end
+
+  test "construct/1 converts the `paypal_accounts` to a list of known structs" do
+    customer = Customer.construct(%{
+      "company" => "Soren",
+      "email" => "parker@example.com",
+      "paypal_accounts" => [%{
+        "email" => "parker@example.com",
+        "token" => "t0k3n"
+      }]
+    })
+
+    assert customer.company == "Soren"
+    assert Enum.any?(customer.paypal_accounts)
+
+    [paypal] = customer.paypal_accounts
+
+    assert paypal.email == "parker@example.com"
+    assert paypal.token == "t0k3n"
   end
 end
