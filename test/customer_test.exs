@@ -22,37 +22,27 @@ defmodule Braintree.CustomerTest do
     assert customer.paypal_accounts == []
   end
 
-  test "construct/1 converts the `credit_cards` to a list of known structs" do
+  test "construct/1 converts nested payment methods to a list of known structs" do
     customer = Customer.construct(%{
       "company" => "Soren",
       "email" => "parker@example.com",
       "credit_cards" => [%{
         "bin" => "12345",
         "card_type" => "Visa"
-      }]
-    })
-
-    assert customer.company == "Soren"
-    assert Enum.any?(customer.credit_cards)
-
-    [card] = customer.credit_cards
-
-    assert card.bin == "12345"
-    assert card.card_type == "Visa"
-  end
-
-  test "construct/1 converts the `paypal_accounts` to a list of known structs" do
-    customer = Customer.construct(%{
-      "company" => "Soren",
-      "email" => "parker@example.com",
+      }],
       "paypal_accounts" => [%{
         "email" => "parker@example.com",
         "token" => "t0k3n"
       }]
     })
 
-    assert customer.company == "Soren"
+    assert Enum.any?(customer.credit_cards)
     assert Enum.any?(customer.paypal_accounts)
+
+    [card] = customer.credit_cards
+
+    assert card.bin == "12345"
+    assert card.card_type == "Visa"
 
     [paypal] = customer.paypal_accounts
 

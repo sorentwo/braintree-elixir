@@ -116,6 +116,16 @@ defmodule Braintree.Customer do
     end
   end
 
+  @doc """
+  Convert a map into a Company struct along with nested payment options. Credit
+  cards and paypal accounts are converted to a list of structs as well.
+
+  ## Example
+
+      customer = Braintree.Customer.construct(%{company: "Soren",
+                                                email: "parker@example.com"})
+  """
+  @spec construct(Map.t) :: t
   def construct(map) do
     company = super(map)
 
