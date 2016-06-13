@@ -25,7 +25,7 @@ defmodule Braintree.Mixfile do
   end
 
   def application do
-    [applications: [:logger, :httpoison]]
+    [applications: [:logger, :httpoison, :xmerl]]
   end
 
   defp description do
