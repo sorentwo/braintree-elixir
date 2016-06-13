@@ -1,3 +1,13 @@
+## v0.5.0 2016-06-13
+
+* Added: Paypal endpoints for use with the vault flow [TylerCain]
+* Added: Construct Paypal accounts from customer responses
+* Added: Support `submit_for_settlement/2` to Transaction
+* Added: Typespec for the Transaction struct
+* Fixed: Typespec for the CreditCard struct
+* Fixed: Include xmerl in the list of applications to ensure that it is packaged
+  with `exrm` releases.
+
 ## v0.4.0 2016-04-20
 
 * Added: Available only during testing, `TestTransaction`, which can be used to
