@@ -41,6 +41,14 @@ config :braintree,
 Furthermore, the environment defaults ot `:sandbox`, so you'll want to configure
 it with `:production` in `prod.exs`.
 
+You can optionally configure HTTPoison timeouts with:
+
+```elixir
+config :braintree,
+  timeout: 8000,     # default, in milliseconds
+  recv_timeout: 5000 # default, in milliseconds
+```
+
 ## Usage
 
 The online [documentation][doc] for Ruby/Java/Python etc. will give you a
