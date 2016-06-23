@@ -38,6 +38,10 @@ defmodule Braintree.HTTP do
     {"Content-Type", "application/xml"}
   ]
 
+  @timeout 8000 # (mirrors HTTPoison default)
+
+  @recv_timeout 5000 # (mirrors HTTPoison default)
+
   @doc """
   Centralized request handling function. All convenience structs use this
   function to interact with the Braintree servers. This function can be used
@@ -118,6 +122,8 @@ defmodule Braintree.HTTP do
   defp base_options do
     path = Path.join(:code.priv_dir(:braintree), @cacertfile)
 
-    [hackney: [ssl_options: [cacertfile: path]]]
+    [hackney: [ssl_options: [cacertfile: path]],
+     timeout: Braintree.get_env(:timeout, @timeout),
+     recv_timeout: Braintree.get_env(:recv_timeout, @recv_timeout)]
   end
 end
