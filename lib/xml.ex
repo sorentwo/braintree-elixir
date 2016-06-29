@@ -3,11 +3,12 @@ defmodule Braintree.XML do
   Simplified XML handling module that only supports `dump` and `load`.
   """
 
-  @doctype ~s|<?xml version="1.0" encoding="UTF-8" ?>|
+  @doctype ~s|<?xml version="1.0" encoding="UTF-8" ?>\n|
 
   @type xml :: binary
 
   import Braintree.Util, only: [hyphenate: 1, underscorize: 1]
+  import Braintree.Entity, only: [decode: 1, encode: 1]
 
   @doc ~S"""
   Converts a map into the equivalent XML representation.
@@ -16,14 +17,20 @@ defmodule Braintree.XML do
 
       iex> Braintree.XML.dump(%{a: %{b: 1, c: 2}})
       ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<a>\n<b>1</b>\n<c>2</c>\n</a>|
+
+      iex> Braintree.XML.dump(%{a: %{b: "<tag>"}})
+      ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<a>\n<b>&lt;tag&gt;</b>\n</a>|
   """
   @spec dump(Map.t) :: xml
   def dump(map) do
-    generate([@doctype | Enum.into(map, [])])
-  end
+    generated =
+      map
+      |> escape_entity
+      |> Enum.into([])
+      |> generate
 
-  defp generate(term) when is_binary(term),
-    do: term
+    @doctype <> generated
+  end
 
   defp generate(term) when is_map(term),
     do: term |> Enum.into([]) |> generate
@@ -40,6 +47,18 @@ defmodule Braintree.XML do
   defp generate({name, value}),
     do: "<#{hyphenate(name)}>#{value}</#{hyphenate(name)}>"
 
+  defp escape_entity(entity) when is_map(entity),
+    do: for {key, value} <- entity, into: %{}, do: {key, escape_entity(value)}
+
+  defp escape_entity(entity) when is_list(entity),
+    do: for value <- entity, do: escape_entity(value)
+
+  defp escape_entity(entity) when is_binary(entity),
+    do: encode(entity)
+
+  defp escape_entity(entity),
+    do: entity
+
   @doc ~S"""
   Converts an XML document, or fragment, into a map. Type annotation
   attributes are respected, but all other attributes are ignored.
@@ -48,6 +67,9 @@ defmodule Braintree.XML do
 
       iex> Braintree.XML.load("<a><b type='integer'>1</b><c>2</c></a>")
       %{"a" => %{"b" => 1, "c" => "2"}}
+
+      iex> Braintree.XML.load("<a><b type='string'>Jos&#233;</b></a>")
+      %{"a" => %{"b" => "José"}}
   """
   @spec load(xml) :: Map.t
   def load(""), do: %{}
@@ -55,6 +77,7 @@ defmodule Braintree.XML do
   def load(xml) do
     {name, _, values} =
       xml
+      |> decode
       |> :erlang.bitstring_to_list
       |> :xmerl_scan.string
       |> elem(0)
