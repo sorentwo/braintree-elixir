@@ -75,7 +75,7 @@ defmodule Braintree.XML do
   def load(""), do: %{}
 
   def load(xml) do
-    {name, _, values} =
+    {name, attributes, values} =
       xml
       |> decode
       |> :erlang.bitstring_to_list
@@ -83,7 +83,10 @@ defmodule Braintree.XML do
       |> elem(0)
       |> parse
 
-    %{name => transform(values)}
+    case attributes do
+      [type: type] -> %{name => transform({attributes, values})}
+      _ -> %{name => transform(values)}
+    end
   end
 
   defp parse(elements) when is_list(elements),
@@ -127,6 +130,29 @@ defmodule Braintree.XML do
 
   defp transform({name, _, values}),
     do: {name, transform(values)}
+
+  # transforms for top level els with attributes
+  defp transform({[type: "integer"], [value]}),
+    do: String.to_integer(value)
+
+  defp transform({[type: "array"], elements}),
+    do: Enum.map(without_nil(elements), &(elem(transform(&1), 1)))
+
+  defp transform({[type: "boolean"], [value]}),
+    do: value == "true"
+
+  defp transform({[nil: "true"], []}),
+    do: nil
+
+  defp transform({_, [value]}),
+    do: value
+
+  defp transform({_, []}),
+    do: ""
+
+  defp transform({_, values}),
+    do: transform(values)
+  # end transforms for top level els with attributes
 
   defp without_nil(list),
     do: Enum.reject(list, &Kernel.==(&1, nil))
