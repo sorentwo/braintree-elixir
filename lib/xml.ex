@@ -84,7 +84,7 @@ defmodule Braintree.XML do
       |> parse
 
     case attributes do
-      [type: type] -> %{name => transform({attributes, values})}
+      [attribute] -> %{name => transform({attributes, values})}
       _ -> %{name => transform(values)}
     end
   end
