@@ -53,7 +53,7 @@ defmodule Braintree.Plan do
   no plans an empty list is returned.
 
   ## Example
-    {:ok, plans} = Braintree.Plans.all
+    {:ok, plans} = Braintree.Plan.all
   """
   @spec all() :: {:ok, t} | [{:error, Error.t}]
   def all do
