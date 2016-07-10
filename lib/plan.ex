@@ -2,6 +2,9 @@ defmodule Braintree.Plan do
   @moduledoc """
   Plans represent recurring billing plans in a Braintree merchant account.
   The API for plans is read only.
+
+  For additional reference see:
+  https://developers.braintreepayments.com/reference/request/plan/all/ruby
   """
 
   use Braintree.Construction
@@ -53,10 +56,10 @@ defmodule Braintree.Plan do
     {:ok, plans} = Braintree.Plans.all
   """
   @spec all() :: {:ok, t} | [{:error, Error.t}]
-  def all() do
+  def all do
     case HTTP.request(:get, "plans") do
       {:ok, response} ->
-        {:ok, Enum.map(response["plans"] || [], fn r -> construct(r) end)}
+        {:ok, construct(Map.get(response, "plans", []))}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
     end
