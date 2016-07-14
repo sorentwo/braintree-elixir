@@ -20,11 +20,17 @@ defmodule Braintree.Integration.SubscriptionTest do
 
   test "find/1 with a subscription_id" do
     {:ok, subscription} = create_test_subscription
-    assert {:ok, _subscription} = Subscription.find(subscription.id)
+    assert {:ok, subscription} = Subscription.find(subscription.id)
+
+    assert subscription.plan_id == "starter"
+    assert %Subscription{} = subscription
   end
 
   test "cancel/1 with a subscription_id" do
     {:ok, subscription} = create_test_subscription
-    assert {:ok, _subscription} = Subscription.cancel(subscription.id)
+    assert {:ok, subscription} = Subscription.cancel(subscription.id)
+
+    assert subscription.status == "Canceled"
+    assert %Subscription{} = subscription
   end
 end
