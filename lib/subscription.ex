@@ -95,4 +95,23 @@ defmodule Braintree.Subscription do
         {:error, Error.construct(error)}
     end
   end
+
+  @doc """
+  Find an existing subscription by `subscription_id`
+
+  ## Example
+
+      {:ok, subscription} = Subscription.find("123")
+  """
+  @spec find(String.t) :: {:ok, t} | {:error, Error.t}
+  def find(subscription_id) do
+    case HTTP.get("subscriptions/#{subscription_id}") do
+      {:ok, %{"subscription" => subscription}} ->
+        {:ok, construct(subscription)}
+      {:error, %{"api_error_response" => error}} ->
+        {:error, Error.construct(error)}
+      {:error, :not_found} ->
+        {:error, Error.construct(%{"message" => "Subscription ID is invalid."})}
+    end
+  end
 end
