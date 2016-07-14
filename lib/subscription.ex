@@ -114,4 +114,24 @@ defmodule Braintree.Subscription do
         {:error, Error.construct(%{"message" => "Subscription ID is invalid."})}
     end
   end
+
+  @doc """
+  Cancel an existing subscription by `subscription_id`. A cancelled subscription
+  cannot be reactivated, you would need to create a new one.
+
+  ## Example
+
+      {:ok, subscription} = Subscription.cancel("123")
+  """
+  @spec cancel(String.t) :: {:ok, t} | {:error, Error.t}
+  def cancel(subscription_id) do
+    case HTTP.request(:put, "subscriptions/#{subscription_id}/cancel") do
+      {:ok, %{"subscription" => subscription}} ->
+        {:ok, construct(subscription)}
+      {:error, %{"api_error_response" => error}} ->
+        {:error, Error.construct(error)}
+      {:error, :not_found} ->
+        {:error, Error.construct(%{"message" => "Subscription ID is invalid."})}
+    end
+  end
 end
