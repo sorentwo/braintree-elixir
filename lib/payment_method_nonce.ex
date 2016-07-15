@@ -47,7 +47,7 @@ defmodule Braintree.PaymentMethodNonce do
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
       {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "Token is invalid."})}
+        {:error, Error.construct(%{"message" => "payment nonce is invalid"})}
     end
   end
 

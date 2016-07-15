@@ -82,7 +82,7 @@ defmodule Braintree.Integration.CustomerTest do
     test "returns a not found error" do
       {:error, error} = Customer.find("fakecustomerid")
 
-      assert error.message =~ ~r/customer could not be found/i
+      assert error.message == "customer id is invalid"
     end
   end
 
@@ -106,7 +106,7 @@ defmodule Braintree.Integration.CustomerTest do
     test "returns a not found error" do
       {:error, error} = Customer.update("fakecustomerid", %{})
 
-      assert error.message =~ ~r/customer could not be found/i
+      assert error.message == "customer id is invalid"
     end
   end
 
@@ -120,7 +120,7 @@ defmodule Braintree.Integration.CustomerTest do
     test "exposes an error when deletion fails" do
       {:error, error} = Customer.delete("randomid")
 
-      assert error.message =~ ~r/customer could not be found/i
+      assert error.message == "customer id is invalid"
     end
   end
 

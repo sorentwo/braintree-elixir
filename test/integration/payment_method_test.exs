@@ -101,7 +101,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
   test "update/1 fails when invalid token provided" do
     {:error, error} = PaymentMethod.update("bogus")
 
-    assert error.message == "Token is invalid."
+    assert error.message == "payment token is invalid"
   end
 
   test "update/2 can successfully update existing payment_method" do
@@ -144,7 +144,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
   test "delete/1 fails when invalid token provided" do
     {:error, error} = PaymentMethod.delete("bogus")
 
-    assert error.message == "Token is invalid."
+    assert error.message == "payment token is invalid"
   end
 
   test "delete/1 succeeds when valid token provided" do
@@ -182,7 +182,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
   test "find/1 fails when invalid token provided" do
     {:error, error} = PaymentMethod.find("bogus")
 
-    assert error.message == "Token is invalid."
+    assert error.message == "payment token is invalid"
   end
 
   test "find/1 succeeds when valid token provided" do
