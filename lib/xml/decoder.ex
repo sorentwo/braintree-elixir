@@ -1,63 +1,12 @@
-defmodule Braintree.XML do
+defmodule Braintree.XML.Decoder do
   @moduledoc """
-  Simplified XML handling module that only supports `dump` and `load`.
+  XML dumping tailored to encoding params sent by Braintree.
   """
-
-  @doctype ~s|<?xml version="1.0" encoding="UTF-8" ?>\n|
 
   @type xml :: binary
 
-  import Braintree.Util, only: [hyphenate: 1, underscorize: 1]
-  import Braintree.Entity, only: [decode: 1, encode: 1]
-
-  @doc ~S"""
-  Converts a map into the equivalent XML representation.
-
-  ## Examples
-
-      iex> Braintree.XML.dump(%{a: %{b: 1, c: 2}})
-      ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<a>\n<b>1</b>\n<c>2</c>\n</a>|
-
-      iex> Braintree.XML.dump(%{a: %{b: "<tag>"}})
-      ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<a>\n<b>&lt;tag&gt;</b>\n</a>|
-  """
-  @spec dump(Map.t) :: xml
-  def dump(map) do
-    generated =
-      map
-      |> escape_entity
-      |> Enum.into([])
-      |> generate
-
-    @doctype <> generated
-  end
-
-  defp generate(term) when is_map(term),
-    do: term |> Enum.into([]) |> generate
-
-  defp generate(term) when is_list(term),
-    do: term |> Enum.map(&generate/1) |> Enum.intersperse("\n") |> Enum.join
-
-  defp generate({name, value}) when is_map(value),
-    do: "<#{hyphenate(name)}>\n#{generate(value)}\n</#{hyphenate(name)}>"
-
-  defp generate({name, value}) when is_list(value),
-    do: generate({name, "\n#{generate(value)}\n"})
-
-  defp generate({name, value}),
-    do: "<#{hyphenate(name)}>#{value}</#{hyphenate(name)}>"
-
-  defp escape_entity(entity) when is_map(entity),
-    do: for {key, value} <- entity, into: %{}, do: {key, escape_entity(value)}
-
-  defp escape_entity(entity) when is_list(entity),
-    do: for value <- entity, do: escape_entity(value)
-
-  defp escape_entity(entity) when is_binary(entity),
-    do: encode(entity)
-
-  defp escape_entity(entity),
-    do: entity
+  import Braintree.Util, only: [underscorize: 1]
+  import Braintree.XML.Entity, only: [decode: 1]
 
   @doc ~S"""
   Converts an XML document, or fragment, into a map. Type annotation
@@ -65,10 +14,10 @@ defmodule Braintree.XML do
 
   ## Examples
 
-      iex> Braintree.XML.load("<a><b type='integer'>1</b><c>2</c></a>")
+      iex> Braintree.XML.Decoder.load("<a><b type='integer'>1</b><c>2</c></a>")
       %{"a" => %{"b" => 1, "c" => "2"}}
 
-      iex> Braintree.XML.load("<a><b type='string'>Jos&#233;</b></a>")
+      iex> Braintree.XML.Decoder.load("<a><b type='string'>Jos&#233;</b></a>")
       %{"a" => %{"b" => "José"}}
   """
   @spec load(xml) :: Map.t

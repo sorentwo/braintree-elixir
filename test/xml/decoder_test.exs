@@ -1,24 +1,9 @@
-defmodule Braintree.XMLTest do
+defmodule Braintree.XML.DecoderTest do
   use ExUnit.Case, async: true
 
-  doctest Braintree.XML
+  doctest Braintree.XML.Decoder
 
-  import Braintree.XML, only: [load: 1, dump: 1]
-
-  describe "dump/1" do
-    test "with content" do
-      assert dump(%{company: "Soren", first_name: "Parker"}) ==
-        ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<first-name>Parker</first-name>|
-    end
-
-    test "with children" do
-      assert dump(%{company: "Soren", nested: %{name: "Parker"}}) ==
-        ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<nested>\n<name>Parker</name>\n</nested>|
-
-      assert dump(%{company: "Soren", nested: [%{name: "Parker"}, %{name: "Shannon"}]}) ==
-        ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<nested>\n<name>Parker</name>\n<name>Shannon</name>\n</nested>|
-    end
-  end
+  import Braintree.XML.Decoder, only: [load: 1]
 
   describe "load/1" do
     test "with an empty string" do

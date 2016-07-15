@@ -1,18 +1,18 @@
-defmodule Braintree.Entity do
-  @external_resource entities = Path.join([__DIR__, "../priv/entities.txt"])
+defmodule Braintree.XML.Entity do
+  @external_resource entities = Path.join([__DIR__, "../../priv/entities.txt"])
 
   @doc """
   Replace any escaped HTML entities with the unicode value.
 
   ## Examples
 
-      iex> Braintree.Entity.decode("&lt;tag&gt;")
+      iex> Braintree.XML.Entity.decode("&lt;tag&gt;")
       "<tag>"
 
-      iex> Braintree.Entity.decode("S&#248;ren")
+      iex> Braintree.XML.Entity.decode("S&#248;ren")
       "Søren"
 
-      iex> Braintree.Entity.decode("Normal")
+      iex> Braintree.XML.Entity.decode("Normal")
       "Normal"
   """
   def decode(string) do
@@ -25,10 +25,10 @@ defmodule Braintree.Entity do
 
   ## Examples
 
-      iex> Braintree.Entity.encode("<tag>")
+      iex> Braintree.XML.Entity.encode("<tag>")
       "&lt;tag&gt;"
 
-      iex> Braintree.Entity.encode("Here & There")
+      iex> Braintree.XML.Entity.encode("Here & There")
       "Here &amp; There"
   """
   def encode(string) do

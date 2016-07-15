@@ -20,7 +20,7 @@ defmodule Braintree.HTTP do
 
   use HTTPoison.Base
 
-  alias Braintree.XML
+  alias Braintree.XML.{Decoder, Encoder}
   alias HTTPoison.Response
 
   @endpoints [
@@ -79,7 +79,7 @@ defmodule Braintree.HTTP do
   def process_request_body(body) when body == "" or body == %{},
     do: ""
   def process_request_body(body),
-    do: XML.dump(body)
+    do: Encoder.dump(body)
 
   @doc false
   def process_request_headers(_headers) do
@@ -94,7 +94,7 @@ defmodule Braintree.HTTP do
     body
     |> :zlib.gunzip
     |> String.strip
-    |> XML.load
+    |> Decoder.load
   rescue
     ErlangError -> Logger.error("unprocessable response")
   end

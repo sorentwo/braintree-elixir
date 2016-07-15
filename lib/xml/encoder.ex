@@ -1,0 +1,61 @@
+defmodule Braintree.XML.Encoder do
+  @moduledoc """
+  XML encoding tailored to dumping Braintree compatible params.
+  """
+
+  @type xml :: binary
+
+  import Braintree.Util, only: [hyphenate: 1]
+  import Braintree.XML.Entity, only: [encode: 1]
+
+  @doctype ~s|<?xml version="1.0" encoding="UTF-8" ?>\n|
+
+  @doc ~S"""
+  Converts a map into the equivalent XML representation.
+
+  ## Examples
+
+      iex> Braintree.XML.Encoder.dump(%{a: %{b: 1, c: 2}})
+      ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<a>\n<b>1</b>\n<c>2</c>\n</a>|
+
+      iex> Braintree.XML.Encoder.dump(%{a: %{b: "<tag>"}})
+      ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<a>\n<b>&lt;tag&gt;</b>\n</a>|
+  """
+  @spec dump(Map.t) :: xml
+  def dump(map) do
+    generated =
+      map
+      |> escape_entity
+      |> Enum.into([])
+      |> generate
+
+    @doctype <> generated
+  end
+
+  defp generate(term) when is_map(term),
+    do: term |> Enum.into([]) |> generate
+
+  defp generate(term) when is_list(term),
+    do: term |> Enum.map(&generate/1) |> Enum.intersperse("\n") |> Enum.join
+
+  defp generate({name, value}) when is_map(value),
+    do: "<#{hyphenate(name)}>\n#{generate(value)}\n</#{hyphenate(name)}>"
+
+  defp generate({name, value}) when is_list(value),
+    do: generate({name, "\n#{generate(value)}\n"})
+
+  defp generate({name, value}),
+    do: "<#{hyphenate(name)}>#{value}</#{hyphenate(name)}>"
+
+  defp escape_entity(entity) when is_map(entity),
+    do: for {key, value} <- entity, into: %{}, do: {key, escape_entity(value)}
+
+  defp escape_entity(entity) when is_list(entity),
+    do: for value <- entity, do: escape_entity(value)
+
+  defp escape_entity(entity) when is_binary(entity),
+    do: encode(entity)
+
+  defp escape_entity(entity),
+    do: entity
+end
