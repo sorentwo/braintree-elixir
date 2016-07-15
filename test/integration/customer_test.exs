@@ -69,6 +69,19 @@ defmodule Braintree.Integration.CustomerTest do
     assert error.message =~ ~r/cvv is required/i
   end
 
+  test "find/1 retrieves an existing customer" do
+    {:ok, customer} = Customer.create(%{first_name: "Parker"})
+    {:ok, customer} = Customer.find(customer.id)
+
+    assert customer.first_name == "Parker"
+  end
+
+  test "find/1 returns a not found error" do
+    {:error, error} = Customer.find("fakecustomerid")
+
+    assert error.message =~ ~r/customer could not be found/i
+  end
+
   test "update/2 updates an existing customer" do
     {:ok, customer} = Customer.create(%{first_name: "Parker"})
     {:ok, customer} = Customer.update(customer.id, %{first_name: "Rekrap"})
@@ -83,6 +96,12 @@ defmodule Braintree.Integration.CustomerTest do
     {:error, error} = Customer.update(customer.id, %{company: invalid_company})
 
     assert error.message =~ ~r/company is too long/i
+  end
+
+  test "update/2 returns a not found error" do
+    {:error, error} = Customer.update("fakecustomerid", %{})
+
+    assert error.message =~ ~r/customer could not be found/i
   end
 
   test "delete/1 removes an existing customer" do

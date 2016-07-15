@@ -77,6 +77,40 @@ defmodule Braintree.Customer do
   end
 
   @doc """
+  You can delete a customer using its ID. When a customer is deleted, all
+  associated payment methods are also deleted, and all associated recurring
+  billing subscriptions are canceled.
+
+  ## Example
+
+      :ok = Braintree.Customer.delete("customer_id")
+  """
+  @spec delete(binary) :: :ok | :error
+  def delete(id) when is_binary(id) do
+    case HTTP.delete("customers/" <> id) do
+      {:ok, _response} -> :ok
+      {:error, _error} -> :error
+    end
+  end
+
+  @doc """
+  If you want to look up a single customer using its ID, use the find method.
+
+  ## Example
+
+    customer = Braintree.Customer.find("customer_id")
+  """
+  @spec find(binary) :: {:ok, t} | {:error, Error.t}
+  def find(id) when is_binary(id) do
+    case HTTP.get("customers/" <> id) do
+      {:ok, %{"customer" => customer}} ->
+        {:ok, construct(customer)}
+      {:error, :not_found} ->
+        {:error, Error.construct(%{"message" => "Customer could not be found"})}
+    end
+  end
+
+  @doc """
   To update a customer, use its ID along with new attributes. The same
   validations apply as when creating a customer. Any attribute not passed will
   remain unchanged.
@@ -96,23 +130,8 @@ defmodule Braintree.Customer do
         {:ok, construct(customer)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
-    end
-  end
-
-  @doc """
-  You can delete a customer using its ID. When a customer is deleted, all
-  associated payment methods are also deleted, and all associated recurring
-  billing subscriptions are canceled.
-
-  ## Example
-
-      :ok = Braintree.Customer.delete("customer_id")
-  """
-  @spec delete(binary) :: :ok | :error
-  def delete(id) when is_binary(id) do
-    case HTTP.delete("customers/" <> id) do
-      {:ok, _response} -> :ok
-      {:error, _error} -> :error
+      {:error, :not_found} ->
+        {:error, Error.construct(%{"message" => "Customer could not be found"})}
     end
   end
 
