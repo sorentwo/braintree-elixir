@@ -88,8 +88,10 @@ defmodule Braintree.Customer do
   @spec delete(binary) :: :ok | :error
   def delete(id) when is_binary(id) do
     case HTTP.delete("customers/" <> id) do
-      {:ok, _response} -> :ok
-      {:error, _error} -> :error
+      {:ok, _response} ->
+        :ok
+      {:error, :not_found} ->
+        {:error, Error.construct(%{"message" => "Customer could not be found"})}
     end
   end
 
