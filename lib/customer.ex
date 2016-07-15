@@ -91,7 +91,7 @@ defmodule Braintree.Customer do
       {:ok, _response} ->
         :ok
       {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "Customer could not be found"})}
+        {:error, Error.construct(%{"message" => "customer id is invalid"})}
     end
   end
 
@@ -108,7 +108,7 @@ defmodule Braintree.Customer do
       {:ok, %{"customer" => customer}} ->
         {:ok, construct(customer)}
       {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "Customer could not be found"})}
+        {:error, Error.construct(%{"message" => "customer id is invalid"})}
     end
   end
 
@@ -133,7 +133,7 @@ defmodule Braintree.Customer do
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
       {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "Customer could not be found"})}
+        {:error, Error.construct(%{"message" => "customer id is invalid"})}
     end
   end
 

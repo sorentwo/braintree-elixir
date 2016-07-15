@@ -111,7 +111,7 @@ defmodule Braintree.Subscription do
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
       {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "Subscription ID is invalid."})}
+        {:error, Error.construct(%{"message" => "subscription id is invalid"})}
     end
   end
 
@@ -131,7 +131,7 @@ defmodule Braintree.Subscription do
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
       {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "Subscription ID is invalid."})}
+        {:error, Error.construct(%{"message" => "subscription id is invalid"})}
     end
   end
 end

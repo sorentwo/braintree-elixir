@@ -49,7 +49,7 @@ defmodule Braintree.PaypalAccount do
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
       {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "Token is invalid."})}
+        {:error, Error.construct(%{"message" => "paypal token is invalid"})}
     end
   end
 
@@ -72,7 +72,7 @@ defmodule Braintree.PaypalAccount do
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
       {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "Token is invalid."})}
+        {:error, Error.construct(%{"message" => "paypal token is invalid"})}
     end
   end
 
@@ -92,7 +92,7 @@ defmodule Braintree.PaypalAccount do
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
       {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "Token is invalid."})}
+        {:error, Error.construct(%{"message" => "paypal token is invalid"})}
     end
   end
 end
