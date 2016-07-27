@@ -13,7 +13,9 @@ defmodule Braintree.HTTP do
   * public_key - Braintree public key
 
   All three must have values set or a `Braintree.ConfigError` will be raised
-  at runtime.
+  at runtime. All those config values support the `{:system, "VAR_NAME"}`
+  as a value - in that case the value will be read from the system environment
+  with `System.get_env("VAR_NAME")`.
   """
 
   require Logger
