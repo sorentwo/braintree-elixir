@@ -30,16 +30,36 @@ defmodule Braintree do
 
       iex> Braintree.get_env(:random_value)
       ** (Braintree.ConfigError) missing config for :random_value
+
+      iex> Braintree.get_env(:random_value, "random")
+      "random"
+
+      iex> Application.put_env(:braintree, :random_value, "not-random")
+      ...> value = Braintree.get_env(:random_value)
+      ...> Application.delete_env(:braintree, :random_value)
+      ...> value
+      "not-random"
+
+      iex> System.put_env("RANDOM", "not-random")
+      ...> Application.put_env(:braintree, :system_value, {:system, "RANDOM"})
+      ...> value = Braintree.get_env(:system_value)
+      ...> System.delete_env("RANDOM")
+      ...> value
+      "not-random"
   """
   @spec get_env(atom, any) :: any
   def get_env(key, default \\ nil) do
     case Application.fetch_env(:braintree, key) do
       {:ok, {:system, var}} when is_binary(var) ->
-        System.get_env(var) || raise ConfigError, key
+        fallback_or_raise(var, System.get_env(var), default)
       {:ok, value} ->
         value
       :error ->
-        raise ConfigError, key
+        fallback_or_raise(key, nil, default)
     end
   end
+
+  defp fallback_or_raise(key, nil, nil),   do: raise ConfigError, key
+  defp fallback_or_raise(_, nil, default), do: default
+  defp fallback_or_raise(_, value, _),     do: value
 end
