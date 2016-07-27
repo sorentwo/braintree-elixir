@@ -33,6 +33,13 @@ defmodule Braintree do
   """
   @spec get_env(atom, any) :: any
   def get_env(key, default \\ nil) do
-    Application.get_env(:braintree, key, default) || raise ConfigError, key
+    case Application.fetch_env(:braintree, key) do
+      {:ok, {:system, var}} when is_binary(var) ->
+        System.get_env(var) || raise ConfigError, key
+      {:ok, value} ->
+        value
+      :error ->
+        raise ConfigError, key
+    end
   end
 end

@@ -6,7 +6,7 @@ defmodule Braintree.HTTPTest do
   alias Braintree.{ConfigError, HTTP}
 
   test "process_url/1 prepends the endpoint" do
-    merchant_id = Application.get_env(:braintree, :merchant_id)
+    merchant_id = Braintree.get_env(:merchant_id)
 
     assert HTTP.process_url("customer") =~
       "sandbox.braintreegateway.com/merchants/#{merchant_id}/customer"
@@ -70,7 +70,7 @@ defmodule Braintree.HTTPTest do
     value = Application.get_env(:braintree, key)
 
     try do
-      Application.put_env(:braintree, key, nil)
+      Application.delete_env(:braintree, key)
       assert_raise ConfigError, "missing config for :#{key}", fun
     after
       Application.put_env(:braintree, key, value)
