@@ -62,23 +62,17 @@ defmodule Braintree.HTTP do
     response = :hackney.request(method, build_url(path), build_headers(), encode_body(body), build_options())
 
     case response do
-      {:ok, code, _headers, client} when code >= 200 and code <= 399 ->
-        {:ok, extract_body(client)}
-      {:ok, 401, _headers, _client} ->
+      {:ok, code, _headers, body} when code >= 200 and code <= 399 ->
+        {:ok, decode_body(body)}
+      {:ok, 401, _headers, _body} ->
         {:error, :unauthorized}
-      {:ok, 404, _headers, _client} ->
+      {:ok, 404, _headers, _body} ->
         {:error, :not_found}
-      {:ok, _code, _headers, client} ->
-        {:error, extract_body(client)}
+      {:ok, _code, _headers, body} ->
+        {:error, decode_body(body)}
       {:error, reason} ->
         {:error, reason}
     end
-  end
-
-  defp extract_body(client) do
-    {:ok, body} = :hackney.body(client)
-
-    decode_body(body)
   end
 
   for method <- ~w(get delete post put)a do
@@ -126,7 +120,8 @@ defmodule Braintree.HTTP do
   defp build_options do
     path = Path.join(:code.priv_dir(:braintree), @cacertfile)
 
-    [hackney: [ssl_options: [cacertfile: path]],
+    [:with_body,
+     ssl_options: [cacertfile: path],
      timeout: Braintree.get_env(:timeout, @timeout),
      recv_timeout: Braintree.get_env(:recv_timeout, @recv_timeout)]
   end
