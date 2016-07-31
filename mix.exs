@@ -25,7 +25,7 @@ defmodule Braintree.Mixfile do
   end
 
   def application do
-    [applications: [:logger, :httpoison, :xmerl]]
+    [applications: [:logger, :hackney, :xmerl]]
   end
 
   defp description do
@@ -42,7 +42,7 @@ defmodule Braintree.Mixfile do
   end
 
   defp deps do
-    [{:httpoison, "~> 0.8"},
+    [{:hackney, "~> 1.6"},
      {:ex_doc, "~> 0.11", only: :dev},
      {:earmark, "~> 0.2", only: :dev},
      {:credo, "~> 0.3", only: :dev}]

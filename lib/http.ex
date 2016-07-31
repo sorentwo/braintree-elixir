@@ -20,10 +20,7 @@ defmodule Braintree.HTTP do
 
   require Logger
 
-  use HTTPoison.Base
-
   alias Braintree.XML.{Decoder, Encoder}
-  alias HTTPoison.Response
 
   @endpoints [
     production: "https://api.braintreegateway.com/merchants/",
@@ -40,9 +37,9 @@ defmodule Braintree.HTTP do
     {"Content-Type", "application/xml"}
   ]
 
-  @timeout 8000 # (mirrors HTTPoison default)
+  @timeout 8000 # (mirrors Hackney default)
 
-  @recv_timeout 5000 # (mirrors HTTPoison default)
+  @recv_timeout 5000 # (mirrors Hackney default)
 
   @doc """
   Centralized request handling function. All convenience structs use this
@@ -59,18 +56,41 @@ defmodule Braintree.HTTP do
         end
       end
   """
-  @spec request(atom, binary, binary, headers, Keyword.t) ::
-        {:ok, Response.t | AsyncResponse.t} | {:error, integer, Response.t} | {:error, Error.t}
-  def request(method, url, body, headers \\ [], options \\ []) do
-    response = super(method, url, body, headers, options ++ base_options)
+  @spec request(atom, binary, binary) ::
+        {:ok, Map.t} | {:error, Map.t} | {:error, integer} | {:error, binary}
+  def request(method, path, body \\ "") do
+    response = :hackney.request(method, build_url(path), build_headers(), encode_body(body), build_options())
 
-    process_response(response)
+    case response do
+      {:ok, code, _headers, client} when code >= 200 and code <= 399 ->
+        {:ok, extract_body(client)}
+      {:ok, 401, _headers, _client} ->
+        {:error, :unauthorized}
+      {:ok, 404, _headers, _client} ->
+        {:error, :not_found}
+      {:ok, _code, _headers, client} ->
+        {:error, extract_body(client)}
+      {:error, reason} ->
+        {:error, reason}
+    end
   end
 
-  ## HTTPoison Callbacks
+  defp extract_body(client) do
+    {:ok, body} = :hackney.body(client)
+
+    decode_body(body)
+  end
+
+  for method <- ~w(get delete post put)a do
+    def unquote(method)(path, payload \\ %{}) do
+      request(unquote(method), path, payload)
+    end
+  end
+
+  ## Helper Functions
 
   @doc false
-  def process_url(path) do
+  def build_url(path) do
     environment = Braintree.get_env(:environment, :sandbox)
     merchant_id = Braintree.get_env(:merchant_id)
 
@@ -78,21 +98,11 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  def process_request_body(body) when body == "" or body == %{},
-    do: ""
-  def process_request_body(body),
-    do: Encoder.dump(body)
+  def encode_body(body) when body == "" or body == %{}, do: ""
+  def encode_body(body), do: Encoder.dump(body)
 
   @doc false
-  def process_request_headers(_headers) do
-    public  = Braintree.get_env(:public_key)
-    private = Braintree.get_env(:private_key)
-
-    [{"Authorization", basic_auth(public, private)} | @headers]
-  end
-
-  @doc false
-  def process_response_body(body) do
+  def decode_body(body) do
     body
     |> :zlib.gunzip
     |> String.strip
@@ -102,26 +112,18 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  def process_response({:ok, %{status_code: code, body: body}})
-      when code >= 200 and code <= 399,
-    do: {:ok, body}
-  def process_response({:ok, %{status_code: 401}}),
-    do: {:error, :unauthorized}
-  def process_response({:ok, %{status_code: 404}}),
-    do: {:error, :not_found}
-  def process_response({:ok, %{body: body}}),
-    do: {:error, body}
-  def process_response({_code, %HTTPoison.Error{reason: reason}}),
-    do: {:error, inspect(reason)}
-
-  ## Helpers
-
-  @doc false
   def basic_auth(user, pass) do
     "Basic " <> :base64.encode("#{user}:#{pass}")
   end
 
-  defp base_options do
+  defp build_headers do
+    public  = Braintree.get_env(:public_key)
+    private = Braintree.get_env(:private_key)
+
+    [{"Authorization", basic_auth(public, private)} | @headers]
+  end
+
+  defp build_options do
     path = Path.join(:code.priv_dir(:braintree), @cacertfile)
 
     [hackney: [ssl_options: [cacertfile: path]],

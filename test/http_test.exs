@@ -5,58 +5,47 @@ defmodule Braintree.HTTPTest do
 
   alias Braintree.{ConfigError, HTTP}
 
-  test "process_url/1 prepends the endpoint" do
+  test "build_url/1 prepends the endpoint" do
     merchant_id = Braintree.get_env(:merchant_id)
 
-    assert HTTP.process_url("customer") =~
+    assert HTTP.build_url("customer") =~
       "sandbox.braintreegateway.com/merchants/#{merchant_id}/customer"
   end
 
-  test "process_url/1 raises a helpful error message without config" do
+  test "build_url/1 raises a helpful error message without config" do
     assert_config_error :merchant_id, fn ->
-      HTTP.process_url("customer")
+      HTTP.build_url("customer")
     end
   end
 
-  test "process_request_body/1 converts the request body to xml" do
+  test "encode_body/1 converts the request body to xml" do
     params = %{company: "Soren", first_name: "Parker"}
 
-    assert HTTP.process_request_body(params) ==
+    assert HTTP.encode_body(params) ==
       ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<first-name>Parker</first-name>|
   end
 
-  test "process_request_body/1 ignores empty bodies" do
-    assert HTTP.process_request_body("") == ""
-    assert HTTP.process_request_body(%{}) == ""
+  test "encode_body/1 ignores empty bodies" do
+    assert HTTP.encode_body("") == ""
+    assert HTTP.encode_body(%{}) == ""
   end
 
-  test "process_response_body/1 converts the request back from xml" do
+  test "decode_body/1 converts the request back from xml" do
     xml = compress(~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company><name>Soren</name></company>|)
 
-    assert HTTP.process_response_body(xml) ==
+    assert HTTP.decode_body(xml) ==
       %{"company" => %{"name" => "Soren"}}
   end
 
-  test "process_response_body/1 safely handles empty responses" do
-    assert HTTP.process_response_body(compress("")) == %{}
-    assert HTTP.process_response_body(compress(" ")) == %{}
+  test "decode_body/1 safely handles empty responses" do
+    assert HTTP.decode_body(compress("")) == %{}
+    assert HTTP.decode_body(compress(" ")) == %{}
   end
 
-  test "process_response_body/1 logs unhandled errors" do
+  test "decode_body/1 logs unhandled errors" do
     assert capture_log(fn ->
-      HTTP.process_response_body("asdf")
+      HTTP.decode_body("asdf")
     end) =~ "unprocessable response"
-  end
-
-  test "process_request_headers/1 raises a helpful error message" do
-    assert_config_error :public_key, fn ->
-      HTTP.process_request_headers([])
-    end
-  end
-
-  test "process_response/1 converts a error status into errors" do
-    assert HTTP.process_response({:ok, %{status_code: 401}}) == {:error, :unauthorized}
-    assert HTTP.process_response({:ok, %{status_code: 404}}) == {:error, :not_found}
   end
 
   test "basic_auth/2 encodes credentials" do
