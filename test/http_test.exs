@@ -53,6 +53,15 @@ defmodule Braintree.HTTPTest do
       "Basic NDMyYTA0YTU1MTQyNGMyYjQxNzdkNzZlMjUyZTk5MWVmZDEyY2U0ZTplMWQ3ZDliZTM4MTc1NjU0NDRjOGI5YjkwYWQzZWYyZjNlYjI4YzBj"
   end
 
+  test "build_options/0 considers the application environment" do
+    Application.put_env(:braintree, :http_options, [timeout: 9000])
+
+    options = HTTP.build_options
+
+    assert :with_body in options
+    assert {:timeout, 9000} in options
+  end
+
   defp compress(string), do: :zlib.gzip(string)
 
   defp assert_config_error(key, fun) do

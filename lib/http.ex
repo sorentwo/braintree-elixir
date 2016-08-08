@@ -4,8 +4,6 @@ defmodule Braintree.HTTP do
   modules. This request wrapper coordinates the remote server, headers,
   authorization and SSL options.
 
-  This uses `HTTPoison.Base`, so all of the typical HTTP verbs are avialble.
-
   Using `Braintree.HTTP` requires the presence of three config values:
 
   * merchant_id - Braintree merchant id
@@ -36,10 +34,6 @@ defmodule Braintree.HTTP do
     {"X-ApiVersion", "4"},
     {"Content-Type", "application/xml"}
   ]
-
-  @timeout 8000 # (mirrors Hackney default)
-
-  @recv_timeout 5000 # (mirrors Hackney default)
 
   @doc """
   Centralized request handling function. All convenience structs use this
@@ -110,19 +104,19 @@ defmodule Braintree.HTTP do
     "Basic " <> :base64.encode("#{user}:#{pass}")
   end
 
-  defp build_headers do
+  @doc false
+  def build_headers do
     public  = Braintree.get_env(:public_key)
     private = Braintree.get_env(:private_key)
 
     [{"Authorization", basic_auth(public, private)} | @headers]
   end
 
-  defp build_options do
-    path = Path.join(:code.priv_dir(:braintree), @cacertfile)
+  @doc false
+  def build_options do
+    cacertfile = Path.join(:code.priv_dir(:braintree), @cacertfile)
+    http_opts = Braintree.get_env(:http_options, [])
 
-    [:with_body,
-     ssl_options: [cacertfile: path],
-     timeout: Braintree.get_env(:timeout, @timeout),
-     recv_timeout: Braintree.get_env(:recv_timeout, @recv_timeout)]
+    [:with_body, ssl_options: [cacertfile: cacertfile]] ++ http_opts
   end
 end

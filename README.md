@@ -6,6 +6,8 @@ A native [Braintree][braintree] client library for Elixir. Only a subset of the
 API is supported and this is a work in progress. That said, it is production
 ready and any modules that have been implemented can be used.
 
+[braintree]: http://braintree.com
+
 ## Installation
 
 Add braintree to your list of dependencies in `mix.exs`:
@@ -17,7 +19,7 @@ end
 ```
 
 Once that is configured you are all set. Braintree is a library, not an
-application, but it does rely on `HTTPoison`, which must be started.
+application, but it does rely on `hackney`, which must be started:
 
 ```elixir
 def application do
@@ -41,13 +43,17 @@ config :braintree,
 Furthermore, the environment defaults ot `:sandbox`, so you'll want to configure
 it with `:production` in `prod.exs`.
 
-You can optionally configure HTTPoison timeouts with:
+You can optionally [configure Hackney options][opts] with:
 
 ```elixir
 config :braintree,
-  timeout: 8000,     # default, in milliseconds
-  recv_timeout: 5000 # default, in milliseconds
+  http_options: [
+    timeout: 8000,     # default, in milliseconds
+    recv_timeout: 5000 # default, in milliseconds
+  ]
 ```
+
+[opts]: https://github.com/benoitc/hackney/blob/master/doc/hackney.md#request5
 
 ## Usage
 
@@ -67,9 +73,8 @@ case Customer.create(%{company: "Whale Corp"}) do
 end
 ```
 
+[doc]: https://developers.braintreepayments.com/
+
 ## License
 
 MIT License, see [LICENSE.txt](LICENSE.txt) for details.
-
-[braintree]: http://braintree.com
-[doc]: https://developers.braintreepayments.com/
