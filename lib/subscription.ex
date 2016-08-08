@@ -8,8 +8,8 @@ defmodule Braintree.Subscription do
 
   use Braintree.Construction
 
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.{HTTP, Transaction}
 
   @type t :: %__MODULE__{
                id:                         String.t,
@@ -81,10 +81,7 @@ defmodule Braintree.Subscription do
 
   ## Example
 
-      {:ok, customer} = Braintree.Customer.create(%{payment_method_nonce: "fake-valid-nonce"})
-      {:ok, subscription} = Braintree.Subscription.create(%{})
-
-      customer.company # Braintree
+      {:ok, sub} = Braintree.Subscription.create(%{payment_method_token: card.token, plan_id: "starter"})
   """
   @spec create(Map.t) :: {:ok, t} | {:error, Error.t}
   def create(params \\ %{}) do
@@ -125,7 +122,7 @@ defmodule Braintree.Subscription do
   """
   @spec cancel(String.t) :: {:ok, t} | {:error, Error.t}
   def cancel(subscription_id) do
-    case HTTP.request(:put, "subscriptions/#{subscription_id}/cancel") do
+    case HTTP.put("subscriptions/#{subscription_id}/cancel") do
       {:ok, %{"subscription" => subscription}} ->
         {:ok, construct(subscription)}
       {:error, %{"api_error_response" => error}} ->
@@ -133,5 +130,26 @@ defmodule Braintree.Subscription do
       {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "subscription id is invalid"})}
     end
+  end
+
+  @doc """
+  You can manually retry charging past due subscriptions.
+
+  By default, we will use the subscription balance when retrying the
+  transaction. If you would like to use a different amount you can optionally
+  specify the amount for the transaction.
+
+  A successful manual retry of a past due subscription will **always** reduce
+  the balance of that subscription to $0, regardless of the amount of the
+  retry.
+
+  ## Example
+
+      {:ok, transaction} = Braintree.Subscription.retry_charge(sub_id)
+      {:ok, transaction} = Braintree.Subscription.retry_charge(sub_id, "24.00")
+  """
+  @spec retry_charge(String.t, String.t) :: {:ok, Transaction.t} | {:error, Error.t}
+  def retry_charge(subscription_id, amount \\ nil) do
+    Transaction.sale(%{amount: amount, subscription_id: subscription_id})
   end
 end

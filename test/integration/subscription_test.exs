@@ -3,8 +3,7 @@ defmodule Braintree.Integration.SubscriptionTest do
 
   @moduletag :integration
 
-  alias Braintree.Customer
-  alias Braintree.Subscription
+  alias Braintree.{Customer, Subscription}
 
   def create_test_subscription do
     {:ok, customer} = Customer.create(%{payment_method_nonce: "fake-valid-nonce"})
@@ -32,5 +31,12 @@ defmodule Braintree.Integration.SubscriptionTest do
 
     assert subscription.status == "Canceled"
     assert %Subscription{} = subscription
+  end
+
+  test "retry_charge/1" do
+    {:ok, subscription} = create_test_subscription
+
+    assert {:error, error} = Subscription.retry_charge(subscription.id)
+    assert error.message =~ "Subscription status must be Past Due in order to retry."
   end
 end
