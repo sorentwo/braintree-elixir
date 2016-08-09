@@ -10,7 +10,7 @@ defmodule Braintree.TransactionTest do
       }
     }
 
-    assert transaction.id == nil
+    refute transaction.id
     assert transaction.paypal.payer_email == "nick@example.com"
   end
 end
