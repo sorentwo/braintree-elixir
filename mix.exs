@@ -14,7 +14,6 @@ defmodule Braintree.Mixfile do
      description: description,
      package: package,
 
-     aliases: aliases,
      deps: deps,
 
      name: "Braintree",
@@ -46,9 +45,5 @@ defmodule Braintree.Mixfile do
      {:ex_doc, "~> 0.11", only: :dev},
      {:earmark, "~> 0.2", only: :dev},
      {:credo, "~> 0.3", only: :dev}]
-  end
-
-  defp aliases do
-    ["test.all": "test --include integration"]
   end
 end
