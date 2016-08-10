@@ -75,6 +75,13 @@ end
 
 [doc]: https://developers.braintreepayments.com/
 
+## Testing
+
+You'll need a Braintree sandbox account to run the integration tests. Also, be
+sure that your account has [Duplicate Transaction Checking][dtc] disabled.
+
+[dtc]: https://articles.braintreepayments.com/control-panel/transactions/duplicate-checking
+
 ## License
 
 MIT License, see [LICENSE.txt](LICENSE.txt) for details.
