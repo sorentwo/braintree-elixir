@@ -1,3 +1,26 @@
+## v0.6.0 2016-08-10
+
+### Enhancements
+
+* [Braintree.HTTP] Remove dependency on HTTPoison! Instead Hackney is used
+  directly.
+* [Braintree.HTTP] Configuration options can be provided for Hackney via
+  `http_options`.
+* [Braintree] Support `{:system, VAR}` for configs
+* [Braintree.XML] Support for parsing top level arrays. Some endpoints, notably
+  `plans`, may return an array rather than an object
+* [Braintree.Plan] Added module and `all/0` for retrieving billing plans
+* [Braintree.Customer] Enhanced with `find/1`
+* [Braintree.Subscription] Enhanced with `cancel/1` and `retry_charge/1`
+
+### Bug Fixes
+
+* [Braintree.XML.Entity] XML entities are automatically encoded and decoded.
+  This prevents errors when values contain quotes, ampersands, or other
+  characters that must be escaped
+* [Braintree.Customer] Return a tagged error tuple for `delete/1`
+* [Braintree.Transaction] Use the correct `paypal` field for `Transaction` responses
+
 ## v0.5.0 2016-06-13
 
 * Added: Paypal endpoints for use with the vault flow [TylerCain]
