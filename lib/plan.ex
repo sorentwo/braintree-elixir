@@ -53,13 +53,14 @@ defmodule Braintree.Plan do
   no plans an empty list is returned.
 
   ## Example
-    {:ok, plans} = Braintree.Plan.all
+
+      {:ok, plans} = Braintree.Plan.all()
   """
-  @spec all() :: {:ok, t} | [{:error, Error.t}]
+  @spec all() :: {:ok, t} | {:error, Error.t}
   def all do
-    case HTTP.request(:get, "plans") do
-      {:ok, response} ->
-        {:ok, construct(Map.get(response, "plans", []))}
+    case HTTP.get("plans") do
+      {:ok, %{"plans" => plans}} ->
+        {:ok, construct(plans)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
     end

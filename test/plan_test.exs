@@ -43,10 +43,10 @@ defmodule Braintree.PlanTest do
       "updated_at" => "2016-07-07T21:28:00Z"
     }])
 
-    assert second_plan.discounts == []
-
     assert first_plan.add_ons == []
     assert first_plan.discounts == []
+
+    assert second_plan.discounts == []
 
     [addon] = second_plan.add_ons
 
