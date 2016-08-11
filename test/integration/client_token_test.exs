@@ -5,19 +5,31 @@ defmodule Braintree.Integration.ClientToken do
 
   alias Braintree.{ClientToken,Customer}
 
-  test "generate/1 without any params" do
-    {:ok, _client_token} = ClientToken.generate()
-  end
+  describe "generate/1" do
+    test "without any params" do
+      {:ok, client_token} = ClientToken.generate()
 
-  test "generate/1 with a customer id" do
-    {:ok, customer} = Customer.create()
-    {:ok, client_token} = ClientToken.generate(%{customer_id: customer.id})
+      assert client_token
+      assert client_token =~ ~r/.+/
+      refute client_token =~ "{\"version\":1"
+    end
 
-    assert client_token
-    assert client_token =~ ~r/.+/
-  end
+    test "with a custom version" do
+      {:ok, client_token} = ClientToken.generate(%{version: 1})
 
-  test "generate/1 with a bogus customer" do
-    assert {:error, _} = ClientToken.generate(%{customer_id: "asdfghjkl"})
+      assert client_token =~ "{\"version\":1"
+    end
+
+    test "with a customer id" do
+      {:ok, customer} = Customer.create()
+      {:ok, client_token} = ClientToken.generate(%{customer_id: customer.id, version: 1})
+
+      assert client_token
+      assert client_token =~ ~r/.+/
+    end
+
+    test "with a bogus customer" do
+      assert {:error, _} = ClientToken.generate(%{customer_id: "asdfghjkl"})
+    end
   end
 end

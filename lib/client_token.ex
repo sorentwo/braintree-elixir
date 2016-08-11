@@ -9,18 +9,30 @@ defmodule Braintree.ClientToken do
   alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
 
+  @version 2
+
   @doc """
   Create a client token, or return an error response.
 
+  ## Options
+
+  * `:version` - The default value is 2. Current supported versions are 1, 2,
+    and 3. Please check your client-side SDKs in use before changing this
+    value.
+
   ## Example
 
-      {:ok, client_token} = Braintree.ClientToken.generate()
+      {:ok, token} = Braintree.ClientToken.generate()
 
-      client_token # A new client token
+  Generate a specific token version:
+
+      {:ok, token} = Braintree.ClientToken.generate(%{version: 3})
   """
-  @spec generate(:empty | Map.t) :: {:ok, binary} | {:error, Error.t}
-  def generate(params \\ :empty) do
-    case HTTP.post("client_token", wrap_params(params)) do
+  @spec generate(Map.t) :: {:ok, binary} | {:error, Error.t}
+  def generate(params \\ %{}) when is_map(params) do
+    params = with_version(params)
+
+    case HTTP.post("client_token", %{client_token: params}) do
       {:ok, %{"client_token" => client_token}} ->
         {:ok, construct(client_token)}
       {:error, %{"api_error_response" => error}} ->
@@ -30,6 +42,6 @@ defmodule Braintree.ClientToken do
 
   defp construct(%{"value" => value}), do: value
 
-  defp wrap_params(:empty), do: %{}
-  defp wrap_params(params), do: %{client_token: params}
+  defp with_version(%{version: _} = params), do: params
+  defp with_version(params), do: Map.put(params, :version, @version)
 end
