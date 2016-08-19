@@ -152,4 +152,26 @@ defmodule Braintree.Subscription do
   def retry_charge(subscription_id, amount \\ nil) do
     Transaction.sale(%{amount: amount, subscription_id: subscription_id})
   end
+
+  @doc """
+  To update a subscription, use its ID along with new attributes. The same
+  validations apply as when creating a subscription. Any attribute not passed will
+  remain unchanged.
+  ## Example
+      {:ok, subscription} = Braintree.Subscription.update("subscription_id", %{
+        plan_id: "new_plan_id"
+      })
+      subscription.plan_id # "new_plan_id"
+  """
+  @spec update(binary, Map.t) :: {:ok, t} | {:error, Error.t}
+  def update(id, params) when is_binary(id) and is_map(params) do
+    case HTTP.put("subscriptions/" <> id, %{subscription: params}) do
+      {:ok, %{"subscription" => subscription}} ->
+        {:ok, construct(subscription)}
+      {:error, %{"api_error_response" => error}} ->
+        {:error, Error.construct(error)}
+      {:error, :not_found} ->
+        {:error, Error.construct(%{"message" => "subscription id is invalid"})}
+    end
+  end
 end
