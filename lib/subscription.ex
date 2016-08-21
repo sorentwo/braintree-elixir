@@ -157,7 +157,9 @@ defmodule Braintree.Subscription do
   To update a subscription, use its ID along with new attributes. The same
   validations apply as when creating a subscription. Any attribute not passed will
   remain unchanged.
+
   ## Example
+
       {:ok, subscription} = Braintree.Subscription.update("subscription_id", %{
         plan_id: "new_plan_id"
       })
