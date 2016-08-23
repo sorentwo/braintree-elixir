@@ -44,13 +44,11 @@ defmodule Braintree.Integration.SubscriptionTest do
     {:ok, subscription} = create_test_subscription
 
     assert {:ok, subscription} = Subscription.update(subscription.id, %{
-      id: "new_sub_id",
       plan_id: "business",
       price: "16.99"
     })
 
     assert subscription.plan_id == "business"
-    assert subscription.id == "new_sub_id"
     assert subscription.price == "16.99"
   end
 end
