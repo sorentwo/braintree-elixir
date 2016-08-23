@@ -7,10 +7,9 @@ defmodule Braintree.Integration.AddOnTest do
 
   # This test relies on there being at least one add on in the sandbox account.
   test "all/0 fetches all add ons" do
-    {:ok, add_ons} = AddOn.all()
+    {:ok, [add_on | _]} = AddOn.all()
 
-    add_on = List.first(add_ons)
-
+    assert add_on
     assert add_on.id
     assert add_on.kind
     assert add_on.name
