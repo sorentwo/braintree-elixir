@@ -1,5 +1,5 @@
 defmodule Braintree.HTTPTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   import ExUnit.CaptureLog
 
