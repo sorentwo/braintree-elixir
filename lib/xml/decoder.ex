@@ -99,5 +99,5 @@ defmodule Braintree.XML.Decoder do
   defp is_text_list?(_), do: false
 
   defp without_nil(list),
-    do: Enum.reject(list, &Kernel.==(&1, nil))
+    do: Enum.reject(list, &is_nil/1)
 end
