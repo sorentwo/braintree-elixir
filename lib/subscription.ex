@@ -148,7 +148,8 @@ defmodule Braintree.Subscription do
       {:ok, transaction} = Braintree.Subscription.retry_charge(sub_id)
       {:ok, transaction} = Braintree.Subscription.retry_charge(sub_id, "24.00")
   """
-  @spec retry_charge(String.t, String.t) :: {:ok, Transaction.t} | {:error, Error.t}
+  @spec retry_charge(String.t) :: {:ok, Transaction.t}
+  @spec retry_charge(String.t, String.t | nil) :: {:ok, Transaction.t} | {:error, Error.t}
   def retry_charge(subscription_id, amount \\ nil) do
     Transaction.sale(%{amount: amount, subscription_id: subscription_id})
   end

@@ -100,7 +100,7 @@ defmodule Braintree.Customer do
 
   ## Example
 
-    customer = Braintree.Customer.find("customer_id")
+      customer = Braintree.Customer.find("customer_id")
   """
   @spec find(binary) :: {:ok, t} | {:error, Error.t}
   def find(id) when is_binary(id) do
