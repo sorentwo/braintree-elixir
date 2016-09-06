@@ -7,7 +7,7 @@ defmodule Braintree.Integration.PlanTest do
 
   # This relies on there being at least one plan in the sandbox account.
   test "all/0 fetches all plans" do
-    {:ok, [plan | _]} = Plan.all()
+    {:ok, [%Plan{} = plan | _]} = Plan.all()
 
     assert plan
     assert plan.id
