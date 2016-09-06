@@ -146,7 +146,6 @@ defmodule Braintree.Customer do
       customer = Braintree.Customer.construct(%{company: "Soren",
                                                 email: "parker@example.com"})
   """
-  @spec construct(Map.t) :: t
   def construct(map) do
     company = super(map)
 
