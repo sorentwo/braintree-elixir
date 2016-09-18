@@ -143,8 +143,8 @@ defmodule Braintree.Customer do
 
   ## Example
 
-      customer = Braintree.Customer.construct(%{company: "Soren",
-                                                email: "parker@example.com"})
+      customer = Braintree.Customer.construct(%{"company" => "Soren",
+                                                "email" => "parker@example.com"})
   """
   def construct(map) do
     company = super(map)
