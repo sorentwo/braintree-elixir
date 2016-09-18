@@ -9,7 +9,7 @@ defmodule Braintree.Subscription do
   use Braintree.Construction
 
   alias Braintree.ErrorResponse, as: Error
-  alias Braintree.{HTTP, Transaction}
+  alias Braintree.{HTTP, Transaction, AddOn}
 
   @type t :: %__MODULE__{
                id:                         String.t,
@@ -176,5 +176,21 @@ defmodule Braintree.Subscription do
       {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "subscription id is invalid"})}
     end
+  end
+
+  @doc """
+  Convert a map into a Subscription struct. Add_ons and transactions
+  are converted to a list of structs as well.
+
+  ## Example
+
+      subscripton = Braintree.Subscription.construct(%{"plan_id" => "business",
+                                                       "status" => "Active"})
+  """
+  def construct(map) do
+    subscription = super(map)
+
+    %{subscription | add_ons: AddOn.construct(subscription.add_ons),
+                     transactions: Transaction.construct(subscription.transactions)}
   end
 end
