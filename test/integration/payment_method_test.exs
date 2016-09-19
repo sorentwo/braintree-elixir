@@ -46,7 +46,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
   end
 
   test "create/1 can create a payment method from a vaulted credit card nonce" do
-    {:ok, customer} = Customer.create(
+    {:ok, customer} = Customer.create(%{
       first_name: "Rick",
       last_name: "Grimes",
       credit_card: %{
@@ -54,7 +54,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
         expiration_date: "01/2016",
         cvv: "100"
       }
-    )
+    })
 
     [card] = customer.credit_cards
     {:ok, payment_method_nonce} = PaymentMethodNonce.create(card.token)
