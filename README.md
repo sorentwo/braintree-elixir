@@ -14,7 +14,7 @@ Add braintree to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:braintree, "~> 0.6"}]
+  [{:braintree, "~> 0.7"}]
 end
 ```
 
