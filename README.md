@@ -80,6 +80,11 @@ end
 You'll need a Braintree sandbox account to run the integration tests. Also, be
 sure that your account has [Duplicate Transaction Checking][dtc] disabled.
 
+Your environment needs to have the following:
+- Add-ons with ids: "bronze", "silver" and "gold"
+- Plans with ids: "starter", "business"
+- "business" plan needs to include the following Add-ons: "bronze" and "silver"
+
 [dtc]: https://articles.braintreepayments.com/control-panel/transactions/duplicate-checking
 
 ## License
