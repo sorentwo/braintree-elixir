@@ -11,10 +11,16 @@ defmodule Braintree.Integration.SubscriptionTest do
     Subscription.create(%{payment_method_token: card.token, plan_id: "starter"})
   end
 
-  test "create/1 with a plan_id" do
+  test "create/1 with a plan_id and add_ons" do
     assert {:ok, customer} = Customer.create(%{payment_method_nonce: "fake-valid-nonce"})
     [card] = customer.credit_cards
-    assert {:ok, _subscription} = Subscription.create(%{payment_method_token: card.token, plan_id: "starter"})
+
+    add_ons = %{add: [%{inherited_from_id: "gold"}],
+                update: [%{existing_id: "silver", quantity: 2}],
+                remove: ["bronze"]}
+
+    assert {:ok, _subscription} = Subscription.create(%{payment_method_token: card.token,
+                                                        plan_id: "business", add_ons: add_ons})
   end
 
   test "find/1 with a subscription_id" do

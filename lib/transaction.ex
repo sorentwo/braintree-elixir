@@ -10,7 +10,7 @@ defmodule Braintree.Transaction do
 
   use Braintree.Construction
 
-  alias Braintree.HTTP
+  alias Braintree.{HTTP, AddOn}
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
@@ -224,5 +224,21 @@ defmodule Braintree.Transaction do
       {:error, :not_found} ->
         {:error, Error.construct(%{"message" => "transaction id is invalid"})}
     end
+  end
+
+  @doc """
+  Convert a map into a Transaction struct.
+  Add_ons are converted to a list of structs as well.
+
+  ## Example
+
+      transaction = Braintree.Transaction.construct(%{"subscription_id" => "subxid",
+                                                      "status" => "submitted_for_settlement"})
+  """
+  def construct(list) when is_list(list),
+    do: Enum.map(list, &construct/1)
+  def construct(map) when is_map(map) do
+    transaction = super(map)
+    %{transaction | add_ons: AddOn.construct(transaction.add_ons)}
   end
 end
