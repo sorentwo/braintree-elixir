@@ -67,7 +67,7 @@ defmodule Braintree.Integration.CustomerTest do
         }
       })
 
-      assert error.message =~ ~r/do not honor/i
+      assert error.message =~ ~r/cvv is required/i
     end
   end
 
