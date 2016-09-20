@@ -37,6 +37,8 @@ defmodule Braintree.XML.Encoder do
   defp generate(term) when is_list(term),
     do: term |> Enum.map(fn item -> "<item>\n#{generate(item)}\n</item>" end) |> Enum.join("\n")
 
+  defp generate(value) when is_binary(value), do: value
+
   defp generate({name, value}) when is_map(value),
     do: "<#{hyphenate(name)}>\n#{generate(value)}\n</#{hyphenate(name)}>"
 
