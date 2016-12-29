@@ -6,7 +6,7 @@ A native [Braintree][braintree] client library for Elixir. Only a subset of the
 API is supported and this is a work in progress. That said, it is production
 ready and any modules that have been implemented can be used.
 
-[braintree]: http://braintree.com
+[braintree]: https://www.braintreepayments.com
 
 ## Installation
 
