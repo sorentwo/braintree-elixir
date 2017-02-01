@@ -41,7 +41,7 @@ defmodule Braintree.Transaction do
                order_id:                           String.t,
                payment_instrument_type:            String.t,
                paypal:                             Map.t,
-               plan_id:                            Sting.t,
+               plan_id:                            String.t,
                processor_authorization_code:       String.t,
                processor_response_code:            String.t,
                processor_response_text:            String.t,
