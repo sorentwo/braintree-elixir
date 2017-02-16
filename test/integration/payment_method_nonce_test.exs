@@ -18,7 +18,7 @@ defmodule Braintree.Integration.PaymentMethodNonceTest do
       first_name: "Rick",
       last_name: "Grimes",
       credit_card: %{
-        number: master_card,
+        number: master_card(),
         expiration_date: "01/2016",
         cvv: "100"
       }
@@ -41,7 +41,7 @@ defmodule Braintree.Integration.PaymentMethodNonceTest do
       first_name: "Rick",
       last_name: "Grimes",
       credit_card: %{
-        number: master_card,
+        number: master_card(),
         expiration_date: "01/2016",
         cvv: "100"
       }

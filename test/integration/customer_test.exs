@@ -38,7 +38,7 @@ defmodule Braintree.Integration.CustomerTest do
         first_name: "Parker",
         last_name: "Selbert",
         credit_card: %{
-          number: master_card,
+          number: master_card(),
           expiration_date: "01/2016",
           cvv: "100"
         }
@@ -49,8 +49,8 @@ defmodule Braintree.Integration.CustomerTest do
 
       [card] = customer.credit_cards
 
-      assert card.bin == String.slice(master_card, 0..5)
-      assert card.last_4 == String.slice(master_card, -4..-1)
+      assert card.bin == String.slice(master_card(), 0..5)
+      assert card.last_4 == String.slice(master_card(), -4..-1)
       assert card.expiration_month == "01"
       assert card.expiration_year == "2016"
       assert card.unique_number_identifier =~ ~r/\A\w{32}\z/
@@ -61,7 +61,7 @@ defmodule Braintree.Integration.CustomerTest do
         first_name: "Parker",
         last_name: "Selbert",
         credit_card: %{
-          number: FailsSandboxVerification.master_card,
+          number: FailsSandboxVerification.master_card(),
           expiration_date: "01/2016",
           options: %{verify_card: true}
         }

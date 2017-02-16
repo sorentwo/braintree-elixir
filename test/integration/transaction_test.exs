@@ -74,16 +74,6 @@ defmodule Braintree.Integration.TransactionTest do
     assert settled_transaction.amount == "55.00"
   end
 
-  test "submit_for_settlement/2 fails if partial settlement amount greater than charged amount" do
-    {:ok, transaction} = Transaction.sale(%{
-      amount: "100.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment
-    })
-    {:error, error} = Transaction.submit_for_settlement(transaction.id, %{amount: "101.00"})
-
-    assert error.message =~ "Settlement amount is too large."
-  end
-
   test "sale/1 fails with an invalid amount" do
     {:error, error} = Transaction.sale(%{
       amount: "2000.00",
