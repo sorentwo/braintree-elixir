@@ -11,6 +11,8 @@ defmodule Braintree.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
 
+     test_coverage: [tool: ExCoveralls],
+
      description: description(),
      package: package(),
 
@@ -40,9 +42,10 @@ defmodule Braintree.Mixfile do
   defp deps do
     [{:hackney, "~> 1.6"},
 
+     {:credo, "~> 0.6", only: :dev},
      {:ex_doc, ">= 0.0.0", only: :dev},
      {:inch_ex, ">= 0.0.0", only: :dev},
-     {:credo, "~> 0.3", only: :dev}]
+     {:excoveralls, "~> 0.6", only: [:dev, :test]}]
   end
 
   defp docs do
