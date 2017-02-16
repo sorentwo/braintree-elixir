@@ -1,6 +1,10 @@
-[![Build Status](https://travis-ci.org/sorentwo/braintree-elixir.svg?branch=master)](https://travis-ci.org/sorentwo/braintree-elixir)
-
 # Braintree
+
+[![Build Status](https://travis-ci.org/sorentwo/braintree-elixir.svg?branch=master)](https://travis-ci.org/sorentwo/braintree-elixir)
+[![Coverage Status](https://coveralls.io/repos/github/sorentwo/braintree-elixir/badge.svg?branch=master)](https://coveralls.io/github/sorentwo/braintree-elixir?branch=master)
+[![Hex version](https://img.shields.io/hexpm/v/braintree.svg "Hex version")](https://hex.pm/packages/braintree)
+[![Hex downloads](https://img.shields.io/hexpm/dt/braintree.svg "Hex downloads")](https://hex.pm/packages/braintree)
+[![Inline docs](https://inch-ci.org/github/sorentwo/braintree-elixir.svg)](https://inch-ci.org/github/sorentwo/braintree-elixir)
 
 A native [Braintree][braintree] client library for Elixir. Only a subset of the
 API is supported and this is a work in progress. That said, it is production

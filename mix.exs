@@ -6,21 +6,18 @@ defmodule Braintree.Mixfile do
   def project do
     [app: :braintree,
      version: @version,
-     elixir: "~> 1.3",
+     elixir: "~> 1.4",
      elixirc_paths: ["lib"],
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
 
-     description: description,
-     package: package,
-
-     deps: deps,
+     description: description(),
+     package: package(),
 
      name: "Braintree",
-     source_url: "https://github.com/sorentwo/braintree",
-     docs: [source_ref: "v#{@version}",
-            extras: ["README.md"],
-            main: "Braintree"]]
+
+     deps: deps(),
+     docs: docs()]
   end
 
   def application do
@@ -42,8 +39,20 @@ defmodule Braintree.Mixfile do
 
   defp deps do
     [{:hackney, "~> 1.6"},
-     {:ex_doc, "~> 0.11", only: :dev},
-     {:earmark, "~> 0.2", only: :dev},
+
+     {:ex_doc, ">= 0.0.0", only: :dev},
+     {:inch_ex, ">= 0.0.0", only: :dev},
      {:credo, "~> 0.3", only: :dev}]
+  end
+
+  defp docs do
+    [main: "readme",
+     formatter_opts: [gfm: true],
+     source_ref: @version,
+     source_url: "https://github.com/sorentwo/braintree-elixir",
+     extras: [
+       "CHANGELOG.md",
+       "README.md"
+    ]]
   end
 end
