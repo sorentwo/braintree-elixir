@@ -30,7 +30,6 @@ defmodule Braintree.HTTP do
   @headers [
     {"Accept", "application/xml"},
     {"User-Agent", "Braintree Elixir/0.1"},
-    {"Accept-Encoding", "gzip"},
     {"X-ApiVersion", "4"},
     {"Content-Type", "application/xml"}
   ]
@@ -95,11 +94,10 @@ defmodule Braintree.HTTP do
   @spec decode_body(binary) :: Map.t
   def decode_body(body) do
     body
-    |> :zlib.gunzip
     |> String.strip
     |> Decoder.load
   rescue
-    ErlangError -> Logger.error("unprocessable response")
+    ErlangError -> Logger.error("unprocessable response: #{body}")
   end
 
   @doc false
