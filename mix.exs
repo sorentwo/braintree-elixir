@@ -1,7 +1,7 @@
 defmodule Braintree.Mixfile do
   use Mix.Project
 
-  @version "0.7.0"
+  @version "0.7.1"
 
   def project do
     [app: :braintree,
@@ -40,9 +40,8 @@ defmodule Braintree.Mixfile do
   end
 
   defp deps do
-    [{:hackney, "~> 1.6"},
-
-     {:credo, "~> 0.6", only: :dev},
+    [{:hackney, "~> 1.8"},
+     {:credo, "~> 0.7", only: :dev},
      {:ex_doc, ">= 0.0.0", only: :dev},
      {:inch_ex, ">= 0.0.0", only: :dev},
      {:excoveralls, "~> 0.6", only: [:dev, :test]}]

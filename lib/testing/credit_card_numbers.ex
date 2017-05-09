@@ -9,14 +9,14 @@ defmodule Braintree.Testing.CreditCardNumbers do
   """
 
   def all do
-    am_exes ++
-    carte_blanches ++
-    diners_clubs ++
-    discovers ++
-    jcbs ++
-    master_cards ++
-    unknowns ++
-    visas
+    am_exes() ++
+    carte_blanches() ++
+    diners_clubs() ++
+    discovers() ++
+    jcbs() ++
+    master_cards() ++
+    unknowns() ++
+    visas()
   end
 
   def am_exes do
@@ -57,7 +57,7 @@ defmodule Braintree.Testing.CreditCardNumbers do
     """
 
     def all do
-      [am_ex, discover, master_card, visa]
+      [am_ex(), discover(), master_card(), visa()]
     end
 
     def am_ex do
