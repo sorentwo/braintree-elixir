@@ -85,7 +85,7 @@ defmodule Braintree.Customer do
 
       :ok = Braintree.Customer.delete("customer_id")
   """
-  @spec delete(binary) :: :ok | :error
+  @spec delete(binary) :: :ok | {:error, Error.t}
   def delete(id) when is_binary(id) do
     case HTTP.delete("customers/" <> id) do
       {:ok, _response} ->
@@ -100,7 +100,7 @@ defmodule Braintree.Customer do
 
   ## Example
 
-    customer = Braintree.Customer.find("customer_id")
+      customer = Braintree.Customer.find("customer_id")
   """
   @spec find(binary) :: {:ok, t} | {:error, Error.t}
   def find(id) when is_binary(id) do
@@ -143,10 +143,9 @@ defmodule Braintree.Customer do
 
   ## Example
 
-      customer = Braintree.Customer.construct(%{company: "Soren",
-                                                email: "parker@example.com"})
+      customer = Braintree.Customer.construct(%{"company" => "Soren",
+                                                "email" => "parker@example.com"})
   """
-  @spec construct(Map.t) :: t
   def construct(map) do
     company = super(map)
 
