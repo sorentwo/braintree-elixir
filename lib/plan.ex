@@ -56,7 +56,7 @@ defmodule Braintree.Plan do
 
       {:ok, plans} = Braintree.Plan.all()
   """
-  @spec all() :: {:ok, [t]} | {:error, Error.t}
+  @spec all() :: {:ok, t} | {:error, Error.t}
   def all do
     case HTTP.get("plans") do
       {:ok, %{"plans" => plans}} ->

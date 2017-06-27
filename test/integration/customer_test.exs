@@ -34,7 +34,7 @@ defmodule Braintree.Integration.CustomerTest do
     end
 
     test "with a credit card" do
-      {:ok, customer} = Customer.create(%{
+      {:ok, customer} = Customer.create(
         first_name: "Parker",
         last_name: "Selbert",
         credit_card: %{
@@ -42,7 +42,7 @@ defmodule Braintree.Integration.CustomerTest do
           expiration_date: "01/2016",
           cvv: "100"
         }
-      })
+      )
 
       assert customer.first_name == "Parker"
       assert customer.last_name == "Selbert"
@@ -57,7 +57,7 @@ defmodule Braintree.Integration.CustomerTest do
     end
 
     test "with card verification" do
-      {:error, error} = Customer.create(%{
+      {:error, error} = Customer.create(
         first_name: "Parker",
         last_name: "Selbert",
         credit_card: %{
@@ -65,7 +65,7 @@ defmodule Braintree.Integration.CustomerTest do
           expiration_date: "01/2016",
           options: %{verify_card: true}
         }
-      })
+      )
 
       assert error.message =~ ~r/cvv is required/i
     end

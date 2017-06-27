@@ -50,7 +50,7 @@ defmodule Braintree.HTTP do
         end
       end
   """
-  @spec request(atom, binary, binary | Map.t) ::
+  @spec request(atom, binary, binary) ::
         {:ok, Map.t} | {:error, Map.t} | {:error, integer} | {:error, binary}
   def request(method, path, body \\ "") do
     response = :hackney.request(method, build_url(path), build_headers(), encode_body(body), build_options())
@@ -78,7 +78,6 @@ defmodule Braintree.HTTP do
   ## Helper Functions
 
   @doc false
-  @spec build_url(binary) :: binary
   def build_url(path) do
     environment = Braintree.get_env(:environment, :sandbox)
     merchant_id = Braintree.get_env(:merchant_id)
@@ -87,12 +86,10 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec encode_body(binary | Map.t) :: binary
   def encode_body(body) when body == "" or body == %{}, do: ""
   def encode_body(body), do: Encoder.dump(body)
 
   @doc false
-  @spec decode_body(binary) :: Map.t
   def decode_body(body) do
     body
     |> :zlib.gunzip
@@ -103,13 +100,11 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec basic_auth(binary, binary) :: binary
   def basic_auth(user, pass) do
     "Basic " <> :base64.encode("#{user}:#{pass}")
   end
 
   @doc false
-  @spec build_headers() :: [tuple]
   def build_headers do
     public  = Braintree.get_env(:public_key)
     private = Braintree.get_env(:private_key)
@@ -118,7 +113,6 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec build_options() :: [...]
   def build_options do
     cacertfile = Path.join(:code.priv_dir(:braintree), @cacertfile)
     http_opts = Braintree.get_env(:http_options, [])

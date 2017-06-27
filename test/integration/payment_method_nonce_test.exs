@@ -14,7 +14,7 @@ defmodule Braintree.Integration.PaymentMethodNonceTest do
   end
 
   test "create/1 succeeds when provided valid token" do
-    {:ok, customer} = Customer.create(%{
+    {:ok, customer} = Customer.create(
       first_name: "Rick",
       last_name: "Grimes",
       credit_card: %{
@@ -22,7 +22,7 @@ defmodule Braintree.Integration.PaymentMethodNonceTest do
         expiration_date: "01/2016",
         cvv: "100"
       }
-    })
+    )
 
     [card] = customer.credit_cards
     {:ok, payment_method_nonce} = PaymentMethodNonce.create(card.token)

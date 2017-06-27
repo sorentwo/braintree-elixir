@@ -1,25 +1,3 @@
-## v0.7.0 2016-09-20
-
-### Enhancements
-
-* [Braintree.ClientToken] Set the default client token version to `2`.
-* [Braintree.Discount] Add support for discounts
-* [Braintree.AddOn] Add support for add-ons
-* [Braintree.SettlementBatchSummary] Add support for settlement reports
-* [Braintree.Subscription] Support updating with `update/2`
-* [Braintree.Subscription] Convert add-on and transaction lists to structs
-
-### Changes
-
-* [Braintree.XML] Strictly accept maps for generation, not keyword lists.
-
-### Bug Fixes
-
-* [Braintree.XML] Correctly handle decoding entities such as `&amp;`, `&gt;`
-  and `&lt;`.
-* [Braintree.XML] Fix encoding XML array values
-* [Braintree.XML] Add encoding of binaries
-
 ## v0.6.0 2016-08-10
 
 ### Enhancements

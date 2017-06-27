@@ -19,12 +19,6 @@ defmodule Braintree.XML.Decoder do
 
       iex> Braintree.XML.Decoder.load("<a><b type='string'>Jos&#233;</b></a>")
       %{"a" => %{"b" => "José"}}
-
-      iex> Braintree.XML.Decoder.load("<a><b type='string'>First &amp; Last</b></a>")
-      %{"a" => %{"b" => "First & Last"}}
-
-      iex> Braintree.XML.Decoder.load("<a><b type='string'>&quot;air quotes&quot;</b></a>")
-      %{"a" => %{"b" => ~s("air quotes")}}
   """
   @spec load(xml) :: Map.t
   def load(""), do: %{}
@@ -62,13 +56,8 @@ defmodule Braintree.XML.Decoder do
     |> List.first
   end
 
-  defp transform(elements) when is_list(elements) do
-    if is_text_list?(elements) do
-      Enum.join(elements, " ")
-    else
-      Enum.into(without_nil(elements), %{}, &transform/1)
-    end
-  end
+  defp transform(elements) when is_list(elements),
+    do: Enum.into(without_nil(elements), %{}, &transform/1)
 
   defp transform({[type: "array"], elements}),
     do: Enum.map(without_nil(elements), &(elem(transform(&1), 1)))
@@ -94,10 +83,6 @@ defmodule Braintree.XML.Decoder do
   defp transform({name, _, values}),
     do: {name, transform(values)}
 
-  defp is_text_list?([last]) when is_binary(last), do: true
-  defp is_text_list?([hd|rest]) when is_binary(hd), do: is_text_list?(rest)
-  defp is_text_list?(_), do: false
-
   defp without_nil(list),
-    do: Enum.reject(list, &is_nil/1)
+    do: Enum.reject(list, &Kernel.==(&1, nil))
 end

@@ -9,7 +9,7 @@ defmodule Braintree.Subscription do
   use Braintree.Construction
 
   alias Braintree.ErrorResponse, as: Error
-  alias Braintree.{HTTP, Transaction, AddOn}
+  alias Braintree.{HTTP, Transaction}
 
   @type t :: %__MODULE__{
                id:                         String.t,
@@ -148,49 +148,8 @@ defmodule Braintree.Subscription do
       {:ok, transaction} = Braintree.Subscription.retry_charge(sub_id)
       {:ok, transaction} = Braintree.Subscription.retry_charge(sub_id, "24.00")
   """
-  @spec retry_charge(String.t) :: {:ok, Transaction.t}
-  @spec retry_charge(String.t, String.t | nil) :: {:ok, Transaction.t} | {:error, Error.t}
+  @spec retry_charge(String.t, String.t) :: {:ok, Transaction.t} | {:error, Error.t}
   def retry_charge(subscription_id, amount \\ nil) do
     Transaction.sale(%{amount: amount, subscription_id: subscription_id})
-  end
-
-  @doc """
-  To update a subscription, use its ID along with new attributes. The same
-  validations apply as when creating a subscription. Any attribute not passed will
-  remain unchanged.
-
-  ## Example
-
-      {:ok, subscription} = Braintree.Subscription.update("subscription_id", %{
-        plan_id: "new_plan_id"
-      })
-      subscription.plan_id # "new_plan_id"
-  """
-  @spec update(binary, Map.t) :: {:ok, t} | {:error, Error.t}
-  def update(id, params) when is_binary(id) and is_map(params) do
-    case HTTP.put("subscriptions/" <> id, %{subscription: params}) do
-      {:ok, %{"subscription" => subscription}} ->
-        {:ok, construct(subscription)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "subscription id is invalid"})}
-    end
-  end
-
-  @doc """
-  Convert a map into a Subscription struct. Add_ons and transactions
-  are converted to a list of structs as well.
-
-  ## Example
-
-      subscripton = Braintree.Subscription.construct(%{"plan_id" => "business",
-                                                       "status" => "Active"})
-  """
-  def construct(map) do
-    subscription = super(map)
-
-    %{subscription | add_ons: AddOn.construct(subscription.add_ons),
-                     transactions: Transaction.construct(subscription.transactions)}
   end
 end

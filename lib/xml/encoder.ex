@@ -26,24 +26,23 @@ defmodule Braintree.XML.Encoder do
     generated =
       map
       |> escape_entity
+      |> Enum.into([])
       |> generate
 
     @doctype <> generated
   end
 
   defp generate(term) when is_map(term),
-    do: term |> Map.to_list() |> Enum.map(&generate/1) |> Enum.join("\n")
+    do: term |> Enum.into([]) |> generate
 
   defp generate(term) when is_list(term),
-    do: term |> Enum.map(fn item -> "<item>\n#{generate(item)}\n</item>" end) |> Enum.join("\n")
-
-  defp generate(value) when is_binary(value), do: value
+    do: term |> Enum.map(&generate/1) |> Enum.intersperse("\n") |> Enum.join
 
   defp generate({name, value}) when is_map(value),
     do: "<#{hyphenate(name)}>\n#{generate(value)}\n</#{hyphenate(name)}>"
 
   defp generate({name, value}) when is_list(value),
-    do: "<#{hyphenate(name)} type=\"array\">\n#{generate(value)}\n</#{hyphenate(name)}>"
+    do: generate({name, "\n#{generate(value)}\n"})
 
   defp generate({name, value}),
     do: "<#{hyphenate(name)}>#{value}</#{hyphenate(name)}>"

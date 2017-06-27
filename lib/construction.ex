@@ -3,10 +3,7 @@ defmodule Braintree.Construction do
     quote do
       import Braintree.Util, only: [atomize: 1]
 
-      @doc """
-      Convert a response into one or more typed structs.
-      """
-      @spec construct(Map.t | [Map.t]) :: t | [t]
+      @doc false
       def construct(params) when is_map(params) do
         struct(__MODULE__, atomize(params))
       end

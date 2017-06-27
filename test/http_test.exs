@@ -1,15 +1,15 @@
 defmodule Braintree.HTTPTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   import ExUnit.CaptureLog
 
   alias Braintree.{ConfigError, HTTP}
 
   test "build_url/1 prepends the endpoint" do
-    with_merchant_id "qwertyid", fn ->
-      assert HTTP.build_url("customer") =~
-        "sandbox.braintreegateway.com/merchants/qwertyid/customer"
-    end
+    merchant_id = Braintree.get_env(:merchant_id)
+
+    assert HTTP.build_url("customer") =~
+      "sandbox.braintreegateway.com/merchants/#{merchant_id}/customer"
   end
 
   test "build_url/1 raises a helpful error message without config" do
@@ -54,7 +54,7 @@ defmodule Braintree.HTTPTest do
   end
 
   test "build_options/0 considers the application environment" do
-    Braintree.put_env(:http_options, [timeout: 9000])
+    Application.put_env(:braintree, :http_options, [timeout: 9000])
 
     options = HTTP.build_options
 
@@ -65,24 +65,13 @@ defmodule Braintree.HTTPTest do
   defp compress(string), do: :zlib.gzip(string)
 
   defp assert_config_error(key, fun) do
-    value = Braintree.get_env(key)
+    value = Application.get_env(:braintree, key)
 
     try do
       Application.delete_env(:braintree, key)
       assert_raise ConfigError, "missing config for :#{key}", fun
     after
-      Braintree.put_env(key, value)
-    end
-  end
-
-  defp with_merchant_id(value, fun) do
-    original = Braintree.get_env(:merchant_id)
-
-    try do
-      Braintree.put_env(:merchant_id, value)
-      fun.()
-    after
-      Braintree.put_env(:merchant_id, original)
+      Application.put_env(:braintree, key, value)
     end
   end
 end

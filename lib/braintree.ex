@@ -59,21 +59,6 @@ defmodule Braintree do
     end
   end
 
-  @doc """
-  Convenience function for setting `braintree` application environment
-  variables.
-
-  ## Example
-
-      iex> Braintree.put_env(:thingy, "thing")
-      ...> Braintree.get_env(:thingy)
-      "thing"
-  """
-  @spec put_env(atom, any) :: :ok
-  def put_env(key, value) do
-    Application.put_env(:braintree, key, value)
-  end
-
   defp fallback_or_raise(key, nil, nil),   do: raise ConfigError, key
   defp fallback_or_raise(_, nil, default), do: default
   defp fallback_or_raise(_, value, _),     do: value
