@@ -82,8 +82,11 @@ defmodule Braintree.HTTP do
   def build_url(path) do
     environment = Braintree.get_env(:environment, :sandbox)
     merchant_id = Braintree.get_env(:merchant_id)
+    endpoint    = Braintree.get_env(:endpoint, @endpoints[environment])
 
-    Keyword.fetch!(@endpoints, environment) <> merchant_id <> "/" <> path
+    endpoint
+    |> URI.merge("#{merchant_id}/#{path}")
+    |> to_string
   end
 
   @doc false
