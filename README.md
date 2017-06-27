@@ -40,7 +40,7 @@ config :braintree,
   private_key: System.get_env("BRAINTREE_PRIVATE_KEY")
 ```
 
-Furthermore, the environment defaults ot `:sandbox`, so you'll want to configure
+Furthermore, the environment defaults to `:sandbox`, so you'll want to configure
 it with `:production` in `prod.exs`.
 
 You can optionally [configure Hackney options][opts] with:
