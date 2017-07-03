@@ -86,7 +86,8 @@ defmodule Braintree.SettlementBatchSummary do
   Convert a map including records into a summary struct with a list
   of record structs.
   """
-  def construct(map) do
+  @spec construct(Map.t) :: t
+  def construct(map) when is_map(map) do
     records = Record.construct(Map.get(map, "records"))
 
     struct(__MODULE__, records: records)

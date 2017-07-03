@@ -187,7 +187,8 @@ defmodule Braintree.Subscription do
       subscripton = Braintree.Subscription.construct(%{"plan_id" => "business",
                                                        "status" => "Active"})
   """
-  def construct(map) do
+  @spec construct(Map.t) :: t
+  def construct(map) when is_map(map) do
     subscription = super(map)
 
     %{subscription | add_ons: AddOn.construct(subscription.add_ons),

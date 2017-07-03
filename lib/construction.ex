@@ -1,4 +1,9 @@
 defmodule Braintree.Construction do
+  @moduledoc """
+  This module provides a `use` macro to help convert raw HTTP responses into
+  structs.
+  """
+
   defmacro __using__(_) do
     quote do
       import Braintree.Util, only: [atomize: 1]

@@ -9,9 +9,7 @@ defmodule Braintree.Customer do
 
   use Braintree.Construction
 
-  alias Braintree.HTTP
-  alias Braintree.CreditCard
-  alias Braintree.PaypalAccount
+  alias Braintree.{CreditCard, HTTP, PaypalAccount}
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
@@ -146,7 +144,8 @@ defmodule Braintree.Customer do
       customer = Braintree.Customer.construct(%{"company" => "Soren",
                                                 "email" => "parker@example.com"})
   """
-  def construct(map) do
+  @spec construct(Map.t) :: t
+  def construct(map) when is_map(map) do
     company = super(map)
 
     %{company | credit_cards: CreditCard.construct(company.credit_cards),

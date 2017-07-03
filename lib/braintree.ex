@@ -13,8 +13,14 @@ defmodule Braintree do
     Raised at runtime when a config variable is missing.
     """
 
+    @type t :: %__MODULE__{message: String.t}
+
     defexception [:message]
 
+    @doc """
+    Build a new ConfigError exception.
+    """
+    @spec exception(String.t) :: t
     def exception(value) do
       message = "missing config for :#{value}"
 

@@ -228,6 +228,7 @@ defmodule Braintree.Transaction do
 
   @doc """
   Convert a map into a Transaction struct.
+
   Add_ons are converted to a list of structs as well.
 
   ## Example
@@ -235,10 +236,11 @@ defmodule Braintree.Transaction do
       transaction = Braintree.Transaction.construct(%{"subscription_id" => "subxid",
                                                       "status" => "submitted_for_settlement"})
   """
-  def construct(list) when is_list(list),
-    do: Enum.map(list, &construct/1)
+  @spec construct(Map.t | [Map.t]) :: t | [t]
   def construct(map) when is_map(map) do
     transaction = super(map)
     %{transaction | add_ons: AddOn.construct(transaction.add_ons)}
   end
+  def construct(list) when is_list(list),
+    do: Enum.map(list, &construct/1)
 end
