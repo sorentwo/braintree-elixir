@@ -95,9 +95,9 @@ defmodule Braintree.HTTP do
   @spec decode_body(binary) :: Map.t
   def decode_body(body) do
     body
-    |> :zlib.gunzip
-    |> String.strip
-    |> Decoder.load
+    |> :zlib.gunzip()
+    |> String.trim()
+    |> Decoder.load()
   rescue
     ErlangError -> Logger.error("unprocessable response")
   end

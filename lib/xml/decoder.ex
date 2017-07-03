@@ -53,14 +53,13 @@ defmodule Braintree.XML.Decoder do
   defp parse({:xmlAttribute, name, _, _, _, _, _, _, value, _}),
     do: {name, to_string(value)}
 
-  defp parse({:xmlText, _, _, _, value, _}) do
+  defp parse({:xmlText, _, _, _, value, _}), do:
     value
-    |> to_string
-    |> String.strip
-    |> List.wrap
+    |> to_string()
+    |> String.trim()
+    |> List.wrap()
     |> Enum.reject(&(&1 == ""))
-    |> List.first
-  end
+    |> List.first()
 
   defp transform(elements) when is_list(elements) do
     if is_text_list?(elements) do
