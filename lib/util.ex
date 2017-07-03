@@ -42,9 +42,10 @@ defmodule Braintree.Util do
   @doc """
   Recursively convert a map of string keys into a map with atom keys. Intended
   to prepare responses for conversion into structs. Note that it converts any
-  string into an atom, whether it existed or not. For unknown maps with unknown
-  keys this is potentially dangerous, but should be fine when used with known
-  Braintree endpoints.
+  string into an atom, whether it existed or not.
+
+  For unknown maps with unknown keys this is potentially dangerous, but should
+  be fine when used with known Braintree endpoints.
 
   ## Example
 
