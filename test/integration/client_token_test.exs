@@ -3,7 +3,7 @@ defmodule Braintree.Integration.ClientToken do
 
   @moduletag :integration
 
-  alias Braintree.{ClientToken,Customer}
+  alias Braintree.{ClientToken, Customer}
 
   describe "generate/1" do
     test "without any params" do

@@ -41,13 +41,10 @@ defmodule Braintree.PaymentMethodNonce do
   """
   @spec create(String.t) :: {:ok, t} | {:error, Error.t}
   def create(payment_method_token) do
-    case HTTP.post("payment_methods/#{payment_method_token}/nonces", %{}) do
-      {:ok, %{"payment_method_nonce" => payment_method_nonce}} ->
-        {:ok, construct(payment_method_nonce)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "payment nonce is invalid"})}
+    path = "payment_methods/#{payment_method_token}/nonces"
+
+    with {:ok, payload} <- HTTP.post(path) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -62,13 +59,16 @@ defmodule Braintree.PaymentMethodNonce do
   """
   @spec find(String.t) :: {:ok, t} | {:error, Error.t}
   def find(nonce) do
-    case HTTP.get("payment_method_nonces/#{nonce}") do
-      {:ok, %{"payment_method_nonce" => payment_method_nonce}} ->
-        {:ok, construct(payment_method_nonce)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "payment nonce is invalid"})}
+    path = "payment_method_nonces/" <> nonce
+
+    with {:ok, payload} <- HTTP.get(path) do
+      {:ok, construct(payload)}
     end
+  end
+
+  @doc false
+  @spec construct(Map.t) :: t
+  def construct(%{"payment_method_nonce" => map}) do
+    super(map)
   end
 end

@@ -27,13 +27,8 @@ defmodule Braintree.PaymentMethod do
   """
   @spec create(Map.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
   def create(params \\ %{}) do
-    case HTTP.post("payment_methods", %{payment_method: params}) do
-      {:ok, %{"credit_card" => credit_card}} ->
-        {:ok, CreditCard.construct(credit_card)}
-      {:ok, %{"paypal_account" => paypal_account}} ->
-        {:ok, PaypalAccount.construct(paypal_account)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
+    with {:ok, payload} <- HTTP.post("payment_methods", %{payment_method: params}) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -63,15 +58,10 @@ defmodule Braintree.PaymentMethod do
   """
   @spec update(String.t, Map.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
   def update(token, params \\ %{}) do
-    case HTTP.put("payment_methods/any/#{token}", %{payment_method: params}) do
-      {:ok, %{"credit_card" => credit_card}} ->
-        {:ok, CreditCard.construct(credit_card)}
-      {:ok, %{"paypal_account" => paypal_account}} ->
-        {:ok, PaypalAccount.construct(paypal_account)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "payment token is invalid"})}
+    path = "payment_methods/any/" <> token
+
+    with {:ok, payload} <- HTTP.put(path, %{payment_method: params}) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -83,15 +73,12 @@ defmodule Braintree.PaymentMethod do
 
       {:ok, "Success"} = Braintree.PaymentMethod.delete(token)
   """
-  @spec delete(String.t) :: {:ok, binary} | {:error, Error.t}
+  @spec delete(String.t) :: :ok | {:error, Error.t}
   def delete(token) do
-    case HTTP.delete("payment_methods/any/#{token}") do
-      {:ok, %{}} ->
-        {:ok, "Success"}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "payment token is invalid"})}
+    path = "payment_methods/any/" <> token
+
+    with {:ok, _response} <- HTTP.delete(path) do
+      :ok
     end
   end
 
@@ -106,15 +93,18 @@ defmodule Braintree.PaymentMethod do
   """
   @spec find(String.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
   def find(token) do
-    case HTTP.get("payment_methods/any/#{token}") do
-      {:ok, %{"credit_card" => credit_card}} ->
-        {:ok, CreditCard.construct(credit_card)}
-      {:ok, %{"paypal_account" => paypal_account}} ->
-        {:ok, PaypalAccount.construct(paypal_account)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "payment token is invalid"})}
+    path = "payment_methods/any/" <> token
+
+    with {:ok, payload} <- HTTP.get(path) do
+      {:ok, construct(payload)}
     end
+  end
+
+  @spec construct(Map.t) :: CreditCard.t | PaypalAccount.t
+  defp construct(%{"credit_card" => credit_card}) do
+    CreditCard.construct(credit_card)
+  end
+  defp construct(%{"paypal_account" => paypal_account}) do
+    PaypalAccount.construct(paypal_account)
   end
 end

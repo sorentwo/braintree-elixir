@@ -65,12 +65,12 @@ defmodule Braintree.SettlementBatchSummary do
   @spec generate(binary, binary | nil) :: {:ok, [t]} | {:error, Error.t}
   def generate(settlement_date, custom_field \\ nil) do
     criteria = build_criteria(settlement_date, custom_field)
+    params = %{settlement_batch_summary: criteria}
 
-    case HTTP.post("settlement_batch_summary", %{settlement_batch_summary: criteria}) do
-      {:ok, %{"settlement_batch_summary" => summary}} ->
-        {:ok, construct(summary)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
+    with {:ok, payload} <- HTTP.post("settlement_batch_summary", params) do
+      %{"settlement_batch_summary" => summary} = payload
+
+      {:ok, construct(summary)}
     end
   end
 
@@ -87,9 +87,7 @@ defmodule Braintree.SettlementBatchSummary do
   of record structs.
   """
   @spec construct(Map.t) :: t
-  def construct(map) when is_map(map) do
-    records = Record.construct(Map.get(map, "records"))
-
-    struct(__MODULE__, records: records)
+  def construct(%{"records" => records}) do
+    struct(__MODULE__, records: Record.construct(records))
   end
 end

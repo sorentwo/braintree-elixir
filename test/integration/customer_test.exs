@@ -73,8 +73,8 @@ defmodule Braintree.Integration.CustomerTest do
 
   describe "find/1" do
     test "retrieves an existing customer" do
-      {:ok, customer} = Customer.create(%{first_name: "Parker"})
-      {:ok, customer} = Customer.find(customer.id)
+      {:ok, original} = Customer.create(%{first_name: "Parker"})
+      {:ok, customer} = Customer.find(original.id)
 
       assert customer.first_name == "Parker"
     end
@@ -82,14 +82,14 @@ defmodule Braintree.Integration.CustomerTest do
     test "returns a not found error" do
       {:error, error} = Customer.find("fakecustomerid")
 
-      assert error.message == "customer id is invalid"
+      assert error.message =~ "id is invalid"
     end
   end
 
   describe "update/2" do
     test "updates an existing customer" do
-      {:ok, customer} = Customer.create(%{first_name: "Parker"})
-      {:ok, customer} = Customer.update(customer.id, %{first_name: "Rekrap"})
+      {:ok, original} = Customer.create(%{first_name: "Parker"})
+      {:ok, customer} = Customer.update(original.id, %{first_name: "Rekrap"})
 
       assert customer.first_name == "Rekrap"
     end
@@ -102,25 +102,13 @@ defmodule Braintree.Integration.CustomerTest do
 
       assert error.message =~ ~r/company is too long/i
     end
-
-    test "returns a not found error" do
-      {:error, error} = Customer.update("fakecustomerid", %{})
-
-      assert error.message == "customer id is invalid"
-    end
   end
 
   describe "delete/1" do
     test "removes an existing customer" do
       {:ok, customer} = Customer.create()
 
-      :ok = Customer.delete(customer.id)
-    end
-
-    test "exposes an error when deletion fails" do
-      {:error, error} = Customer.delete("randomid")
-
-      assert error.message == "customer id is invalid"
+      assert :ok = Customer.delete(customer.id)
     end
   end
 
@@ -129,8 +117,10 @@ defmodule Braintree.Integration.CustomerTest do
   end
 
   defp repeatedly(string, len) do
-    fn -> string end
-    |> Stream.repeatedly
+    fun = fn -> string end
+
+    fun
+    |> Stream.repeatedly()
     |> Enum.take(len)
     |> Enum.join
   end

@@ -43,13 +43,10 @@ defmodule Braintree.PaypalAccount do
   """
   @spec find(String.t) :: {:ok, t} | {:error, Error.t}
   def find(token) do
-    case HTTP.get("payment_methods/paypal_account/#{token}") do
-      {:ok, %{"paypal_account" => paypal_account}} ->
-        {:ok, construct(paypal_account)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "paypal token is invalid"})}
+    path = "payment_methods/paypal_account/" <> token
+
+    with {:ok, %{"paypal_account" => map}} <- HTTP.get(path) do
+      {:ok, construct(map)}
     end
   end
 
@@ -66,13 +63,10 @@ defmodule Braintree.PaypalAccount do
   """
   @spec update(String.t, Map.t) :: {:ok, t} | {:error, Error.t}
   def update(token, params) do
-    case HTTP.put("payment_methods/paypal_account/#{token}", %{paypal_account: params}) do
-      {:ok, %{"paypal_account" => paypal_account}} ->
-        {:ok, construct(paypal_account)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "paypal token is invalid"})}
+    path = "payment_methods/paypal_account/" <> token
+
+    with {:ok, %{"paypal_account" => map}} <- HTTP.put(path, %{paypal_account: params}) do
+      {:ok, construct(map)}
     end
   end
 
@@ -86,13 +80,10 @@ defmodule Braintree.PaypalAccount do
   """
   @spec delete(String.t) :: {:ok, t} | {:error, Error.t}
   def delete(token) do
-    case HTTP.delete("payment_methods/paypal_account/#{token}") do
-      {:ok, %{}} ->
-        {:ok, "Success"}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "paypal token is invalid"})}
+    path = "payment_methods/paypal_account/" <> token
+
+    with {:ok, _payload} <- HTTP.delete(path) do
+      :ok
     end
   end
 end

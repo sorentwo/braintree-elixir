@@ -13,7 +13,6 @@ defmodule Braintree.AddOn do
   use Braintree.Construction
 
   alias Braintree.HTTP
-  alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
                id:                       String.t,
@@ -46,11 +45,8 @@ defmodule Braintree.AddOn do
   """
   @spec all() :: {:ok, [t]} | {:error, Error.t}
   def all do
-    case HTTP.get("add_ons") do
-      {:ok, %{"add_ons" => add_ons}} ->
-        {:ok, construct(add_ons)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
+    with {:ok, %{"add_ons" => add_ons}} <- HTTP.get("add_ons") do
+      {:ok, construct(add_ons)}
     end
   end
 end

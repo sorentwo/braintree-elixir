@@ -34,7 +34,7 @@ defmodule Braintree.Util do
   """
   @spec hyphenate(String.t | atom) :: String.t
   def hyphenate(value) when is_atom(value),
-    do: value |> to_string |> hyphenate
+    do: value |> to_string() |> hyphenate()
 
   def hyphenate(value) when is_binary(value),
     do: String.replace(value, "_", "-")

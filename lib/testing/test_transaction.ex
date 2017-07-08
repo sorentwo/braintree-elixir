@@ -21,14 +21,9 @@ if Mix.env == :test do
     """
     @spec settle(String.t) :: {:ok, any} | {:error, Error.t}
     def settle(transaction_id) do
-      case HTTP.put("transactions/#{transaction_id}/settle", %{}) do
-        {:ok, %{"transaction" => transaction}} ->
-          {:ok, Transaction.construct(transaction)}
-        {:error, %{"api_error_response" => error}} ->
-          {:error, Error.construct(error)}
-        {:error, :not_found} ->
-          {:error, Error.construct(%{"message" => "Transaction ID is invalid."})}
-      end
+      path = "transactions/#{transaction_id}/settle"
+
+      with {:ok, payload} <- HTTP.put(path), do: response(payload)
     end
 
     @doc """
@@ -43,14 +38,9 @@ if Mix.env == :test do
     """
     @spec settlement_confirm(String.t) :: {:ok, any} | {:error, Error.t}
     def settlement_confirm(transaction_id) do
-      case HTTP.put("transactions/#{transaction_id}/settlement_confirm", %{}) do
-        {:ok, %{"transaction" => transaction}} ->
-          {:ok, Transaction.construct(transaction)}
-        {:error, %{"api_error_response" => error}} ->
-          {:error, Error.construct(error)}
-        {:error, :not_found} ->
-          {:error, Error.construct(%{"message" => "Transaction ID is invalid."})}
-      end
+      path = "transactions/#{transaction_id}/settlement_confirm"
+
+      with {:ok, payload} <- HTTP.put(path), do: response(payload)
     end
 
     @doc """
@@ -65,14 +55,13 @@ if Mix.env == :test do
     """
     @spec settlement_decline(String.t) :: {:ok, any} | {:error, Error.t}
     def settlement_decline(transaction_id) do
-      case HTTP.put("transactions/#{transaction_id}/settlement_decline", %{}) do
-        {:ok, %{"transaction" => transaction}} ->
-          {:ok, Transaction.construct(transaction)}
-        {:error, %{"api_error_response" => error}} ->
-          {:error, Error.construct(error)}
-        {:error, :not_found} ->
-          {:error, Error.construct(%{"message" => "Transaction ID is invalid."})}
-      end
+      path = "transactions/#{transaction_id}/settlement_decline"
+
+      with {:ok, payload} <- HTTP.put(path), do: response(payload)
+    end
+
+    defp response(%{"transaction" => map}) do
+      {:ok, Transaction.construct(map)}
     end
   end
 end

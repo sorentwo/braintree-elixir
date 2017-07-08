@@ -7,7 +7,6 @@ defmodule Braintree.ClientToken do
   """
 
   alias Braintree.HTTP
-  alias Braintree.ErrorResponse, as: Error
 
   @version 2
 
@@ -30,17 +29,14 @@ defmodule Braintree.ClientToken do
   """
   @spec generate(Map.t) :: {:ok, binary} | {:error, Error.t}
   def generate(params \\ %{}) when is_map(params) do
-    params = with_version(params)
+    params = %{client_token: with_version(params)}
 
-    case HTTP.post("client_token", %{client_token: params}) do
-      {:ok, %{"client_token" => client_token}} ->
-        {:ok, construct(client_token)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
+    with {:ok, payload} <- HTTP.post("client_token", params) do
+      %{"client_token" => %{"value" => value}} = payload
+
+      {:ok, value}
     end
   end
-
-  defp construct(%{"value" => value}), do: value
 
   defp with_version(%{version: _} = params), do: params
   defp with_version(params), do: Map.put(params, :version, @version)

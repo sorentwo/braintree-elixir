@@ -66,11 +66,8 @@ defmodule Braintree.Customer do
   """
   @spec create(Map.t) :: {:ok, t} | {:error, Error.t}
   def create(params \\ %{}) do
-    case HTTP.post("customers", %{customer: params}) do
-      {:ok, %{"customer" => customer}} ->
-        {:ok, construct(customer)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
+    with {:ok, payload} <- HTTP.post("customers", %{customer: params}) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -85,11 +82,8 @@ defmodule Braintree.Customer do
   """
   @spec delete(binary) :: :ok | {:error, Error.t}
   def delete(id) when is_binary(id) do
-    case HTTP.delete("customers/" <> id) do
-      {:ok, _response} ->
-        :ok
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "customer id is invalid"})}
+    with {:ok, _response} <- HTTP.delete("customers/" <> id) do
+      :ok
     end
   end
 
@@ -102,11 +96,8 @@ defmodule Braintree.Customer do
   """
   @spec find(binary) :: {:ok, t} | {:error, Error.t}
   def find(id) when is_binary(id) do
-    case HTTP.get("customers/" <> id) do
-      {:ok, %{"customer" => customer}} ->
-        {:ok, construct(customer)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "customer id is invalid"})}
+    with {:ok, payload} <- HTTP.get("customers/" <> id) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -125,13 +116,8 @@ defmodule Braintree.Customer do
   """
   @spec update(binary, Map.t) :: {:ok, t} | {:error, Error.t}
   def update(id, params) when is_binary(id) and is_map(params) do
-    case HTTP.put("customers/" <> id, %{customer: params}) do
-      {:ok, %{"customer" => customer}} ->
-        {:ok, construct(customer)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "customer id is invalid"})}
+    with {:ok, payload} <- HTTP.put("customers/" <> id, %{customer: params}) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -145,10 +131,13 @@ defmodule Braintree.Customer do
                                                 "email" => "parker@example.com"})
   """
   @spec construct(Map.t) :: t
+  def construct(%{"customer" => map}) do
+    construct(map)
+  end
   def construct(map) when is_map(map) do
-    company = super(map)
+    customer = super(map)
 
-    %{company | credit_cards: CreditCard.construct(company.credit_cards),
-                paypal_accounts: PaypalAccount.construct(company.paypal_accounts)}
+    %{customer | credit_cards: CreditCard.construct(customer.credit_cards),
+                 paypal_accounts: PaypalAccount.construct(customer.paypal_accounts)}
   end
 end

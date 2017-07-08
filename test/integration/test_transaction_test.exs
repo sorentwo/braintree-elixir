@@ -35,7 +35,7 @@ defmodule Braintree.Integration.TestTransactionTest do
   test "settle/1 fails if transaction id is invalid" do
     {:error, error} = TestTransaction.settle("bogus")
 
-    assert error.message == "Transaction ID is invalid."
+    assert error.message =~ "id is invalid"
   end
 
   test "settle_confirm/1 fails if sale is authorized only" do
@@ -54,7 +54,7 @@ defmodule Braintree.Integration.TestTransactionTest do
   test "settlement_confirm/1 fails if transaction id is invalid" do
     {:error, error} = TestTransaction.settlement_confirm("bogus")
 
-    assert error.message == "Transaction ID is invalid."
+    assert error.message =~ "id is invalid"
   end
 
   test "settlement_confirm/1 succeeds if sale has been submit for settlement" do
@@ -85,7 +85,7 @@ defmodule Braintree.Integration.TestTransactionTest do
   test "settlement_decline/1 fails if transaction id is invalid" do
     {:error, error} = TestTransaction.settlement_decline("bogus")
 
-    assert error.message == "Transaction ID is invalid."
+    assert error.message =~ "id is invalid"
   end
 
   test "settlement_decline/1 succeeds if sale has been submit for settlement" do
