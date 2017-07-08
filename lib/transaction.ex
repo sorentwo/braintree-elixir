@@ -10,7 +10,7 @@ defmodule Braintree.Transaction do
 
   use Braintree.Construction
 
-  alias Braintree.{HTTP, AddOn}
+  alias Braintree.{AddOn, HTTP}
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
@@ -135,11 +135,8 @@ defmodule Braintree.Transaction do
   def sale(params) do
     sale_params = Map.merge(params, %{type: "sale"})
 
-    case HTTP.post("transactions", %{transaction: sale_params}) do
-      {:ok, %{"transaction" => transaction}} ->
-        {:ok, construct(transaction)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
+    with {:ok, payload} <- HTTP.post("transactions", %{transaction: sale_params}) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -154,13 +151,10 @@ defmodule Braintree.Transaction do
   """
   @spec submit_for_settlement(String.t, Map.t) :: {:ok, t} | {:error, Error.t}
   def submit_for_settlement(transaction_id, params) do
-    case HTTP.put("transactions/#{transaction_id}/submit_for_settlement", %{transaction: params}) do
-      {:ok, %{"transaction" => transaction}} ->
-        {:ok, construct(transaction)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "transaction id is invalid"})}
+    path = "transactions/#{transaction_id}/submit_for_settlement"
+
+    with {:ok, payload} <- HTTP.put(path, %{transaction: params}) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -176,13 +170,10 @@ defmodule Braintree.Transaction do
   """
   @spec refund(String.t, Map.t) :: {:ok, t} | {:error, Error.t}
   def refund(transaction_id, params) do
-    case HTTP.post("transactions/#{transaction_id}/refund", %{transaction: params}) do
-      {:ok, %{"transaction" => transaction}} ->
-        {:ok, construct(transaction)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "transaction id is invalid"})}
+    path = "transactions/#{transaction_id}/refund"
+
+    with {:ok, payload} <- HTTP.post(path, %{transaction: params}) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -197,13 +188,10 @@ defmodule Braintree.Transaction do
   """
   @spec void(String.t) :: {:ok, t} | {:error, Error.t}
   def void(transaction_id) do
-    case HTTP.put("transactions/#{transaction_id}/void", %{}) do
-      {:ok, %{"transaction" => transaction}} ->
-        {:ok, construct(transaction)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "transaction id is invalid"})}
+    path = "transactions/#{transaction_id}/void"
+
+    with {:ok, payload} <- HTTP.put(path) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -216,13 +204,10 @@ defmodule Braintree.Transaction do
   """
   @spec find(String.t) :: {:ok, t} | {:error, Error.t}
   def find(transaction_id) do
-    case HTTP.get("transactions/#{transaction_id}") do
-      {:ok, %{"transaction" => transaction}} ->
-        {:ok, construct(transaction)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "transaction id is invalid"})}
+    path = "transactions/#{transaction_id}"
+
+    with {:ok, payload} <- HTTP.get(path) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -237,10 +222,15 @@ defmodule Braintree.Transaction do
                                                       "status" => "submitted_for_settlement"})
   """
   @spec construct(Map.t | [Map.t]) :: t | [t]
+  def construct(%{"transaction" => map}) do
+    construct(map)
+  end
   def construct(map) when is_map(map) do
     transaction = super(map)
+
     %{transaction | add_ons: AddOn.construct(transaction.add_ons)}
   end
-  def construct(list) when is_list(list),
-    do: Enum.map(list, &construct/1)
+  def construct(list) when is_list(list) do
+    Enum.map(list, &construct/1)
+  end
 end

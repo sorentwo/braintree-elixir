@@ -18,6 +18,7 @@ defmodule Braintree.HTTP do
 
   require Logger
 
+  alias Braintree.ErrorResponse
   alias Braintree.XML.{Decoder, Encoder}
 
   @endpoints [
@@ -51,8 +52,8 @@ defmodule Braintree.HTTP do
       end
   """
   @spec request(atom, binary, binary | Map.t) ::
-        {:ok, Map.t} | {:error, Map.t} | {:error, integer} | {:error, binary}
-  def request(method, path, body \\ "") do
+        {:ok, Map.t | {:error, atom}} | {:error, ErrorResponse.t} | {:error, binary}
+  def request(method, path, body \\ %{}) do
     response = :hackney.request(method, build_url(path), build_headers(), encode_body(body), build_options())
 
     case response do
@@ -61,9 +62,15 @@ defmodule Braintree.HTTP do
       {:ok, 401, _headers, _body} ->
         {:error, :unauthorized}
       {:ok, 404, _headers, _body} ->
-        {:error, :not_found}
+        {:error, ErrorResponse.construct(%{"message" => "Not found, id is invalid."})}
       {:ok, _code, _headers, body} ->
-        {:error, decode_body(body)}
+        error =
+          body
+          |> decode_body()
+          |> Map.get("api_error_response")
+          |> ErrorResponse.construct()
+
+        {:error, error}
       {:error, reason} ->
         {:error, reason}
     end

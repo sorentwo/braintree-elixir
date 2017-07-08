@@ -8,8 +8,8 @@ defmodule Braintree.Subscription do
 
   use Braintree.Construction
 
-  alias Braintree.ErrorResponse, as: Error
   alias Braintree.{HTTP, Transaction, AddOn}
+  alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
                id:                         String.t,
@@ -81,15 +81,15 @@ defmodule Braintree.Subscription do
 
   ## Example
 
-      {:ok, sub} = Braintree.Subscription.create(%{payment_method_token: card.token, plan_id: "starter"})
+      {:ok, sub} = Braintree.Subscription.create(%{
+        payment_method_token: card.token,
+        plan_id: "starter"
+      })
   """
   @spec create(Map.t) :: {:ok, t} | {:error, Error.t}
   def create(params \\ %{}) do
-    case HTTP.post("subscriptions", %{subscription: params}) do
-      {:ok, %{"subscription" => subscription}} ->
-        {:ok, construct(subscription)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
+    with {:ok, payload} <- HTTP.post("subscriptions", %{subscription: params}) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -102,13 +102,8 @@ defmodule Braintree.Subscription do
   """
   @spec find(String.t) :: {:ok, t} | {:error, Error.t}
   def find(subscription_id) do
-    case HTTP.get("subscriptions/#{subscription_id}") do
-      {:ok, %{"subscription" => subscription}} ->
-        {:ok, construct(subscription)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "subscription id is invalid"})}
+    with {:ok, payload} <- HTTP.get("subscriptions/#{subscription_id}") do
+      {:ok, construct(payload)}
     end
   end
 
@@ -122,13 +117,8 @@ defmodule Braintree.Subscription do
   """
   @spec cancel(String.t) :: {:ok, t} | {:error, Error.t}
   def cancel(subscription_id) do
-    case HTTP.put("subscriptions/#{subscription_id}/cancel") do
-      {:ok, %{"subscription" => subscription}} ->
-        {:ok, construct(subscription)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "subscription id is invalid"})}
+    with {:ok, payload} <- HTTP.put("subscriptions/#{subscription_id}/cancel") do
+      {:ok, construct(payload)}
     end
   end
 
@@ -168,13 +158,8 @@ defmodule Braintree.Subscription do
   """
   @spec update(binary, Map.t) :: {:ok, t} | {:error, Error.t}
   def update(id, params) when is_binary(id) and is_map(params) do
-    case HTTP.put("subscriptions/" <> id, %{subscription: params}) do
-      {:ok, %{"subscription" => subscription}} ->
-        {:ok, construct(subscription)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "subscription id is invalid"})}
+    with {:ok, payload} <- HTTP.put("subscriptions/" <> id, %{subscription: params}) do
+      {:ok, construct(payload)}
     end
   end
 
@@ -188,6 +173,9 @@ defmodule Braintree.Subscription do
                                                        "status" => "Active"})
   """
   @spec construct(Map.t) :: t
+  def construct(%{"subscription" => map}) do
+    construct(map)
+  end
   def construct(map) when is_map(map) do
     subscription = super(map)
 

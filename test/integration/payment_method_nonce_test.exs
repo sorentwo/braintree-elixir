@@ -7,12 +7,6 @@ defmodule Braintree.Integration.PaymentMethodNonceTest do
 
   @moduletag :integration
 
-  test "create/1 throws error message when provided invalid token" do
-    {:error, error} = PaymentMethodNonce.create("invalid_token")
-
-    assert error.message == "payment nonce is invalid"
-  end
-
   test "create/1 succeeds when provided valid token" do
     {:ok, customer} = Customer.create(%{
       first_name: "Rick",
@@ -33,7 +27,7 @@ defmodule Braintree.Integration.PaymentMethodNonceTest do
   test "find/1 fails when invalid nonce provided" do
     {:error, error} = PaymentMethodNonce.find("bogus")
 
-    assert error.message == "payment nonce is invalid"
+    assert error.message =~ "id is invalid"
   end
 
   test "find/1 succeeds when valid token provided" do

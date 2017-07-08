@@ -46,11 +46,10 @@ defmodule Braintree.Discount do
   """
   @spec all() :: {:ok, t} | {:error, Error.t}
   def all do
-    case HTTP.get("discounts") do
-      {:ok, %{"discounts" => discounts}} ->
-        {:ok, construct(discounts)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
+    with {:ok, payload} <- HTTP.get("discounts") do
+      %{"discounts" => discounts} = payload
+
+      {:ok, construct(discounts)}
     end
   end
 end

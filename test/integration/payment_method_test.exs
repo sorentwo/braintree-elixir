@@ -101,7 +101,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
   test "update/1 fails when invalid token provided" do
     {:error, error} = PaymentMethod.update("bogus")
 
-    assert error.message == "payment token is invalid"
+    assert error.message =~ "id is invalid"
   end
 
   test "update/2 can successfully update existing payment_method" do
@@ -141,12 +141,6 @@ defmodule Braintree.Integration.PaymentMethodTest do
     assert updated_paypal_account.email == "jane.doe@example.com"
   end
 
-  test "delete/1 fails when invalid token provided" do
-    {:error, error} = PaymentMethod.delete("bogus")
-
-    assert error.message == "payment token is invalid"
-  end
-
   test "delete/1 succeeds when valid token provided" do
     {:ok, customer} = Customer.create(%{
       first_name: "Bill",
@@ -158,9 +152,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
       payment_method_nonce: Nonces.transactable
     })
 
-    {:ok, message} = PaymentMethod.delete(payment_method.token)
-
-    assert message == "Success"
+    assert :ok = PaymentMethod.delete(payment_method.token)
   end
 
   test "delete/1 can delete paypal payment method" do
@@ -174,15 +166,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
       payment_method_nonce: Nonces.paypal_future_payment
     })
 
-    {:ok, message} = PaymentMethod.delete(paypal_account.token)
-
-    assert message == "Success"
-  end
-
-  test "find/1 fails when invalid token provided" do
-    {:error, error} = PaymentMethod.find("bogus")
-
-    assert error.message == "payment token is invalid"
+    assert :ok = PaymentMethod.delete(paypal_account.token)
   end
 
   test "find/1 succeeds when valid token provided" do
