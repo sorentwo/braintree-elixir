@@ -136,7 +136,7 @@ defmodule Braintree.Transaction do
     sale_params = Map.merge(params, %{type: "sale"})
 
     with {:ok, payload} <- HTTP.post("transactions", %{transaction: sale_params}) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -154,7 +154,7 @@ defmodule Braintree.Transaction do
     path = "transactions/#{transaction_id}/submit_for_settlement"
 
     with {:ok, payload} <- HTTP.put(path, %{transaction: params}) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -173,7 +173,7 @@ defmodule Braintree.Transaction do
     path = "transactions/#{transaction_id}/refund"
 
     with {:ok, payload} <- HTTP.post(path, %{transaction: params}) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -191,7 +191,7 @@ defmodule Braintree.Transaction do
     path = "transactions/#{transaction_id}/void"
 
     with {:ok, payload} <- HTTP.put(path) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -207,7 +207,7 @@ defmodule Braintree.Transaction do
     path = "transactions/#{transaction_id}"
 
     with {:ok, payload} <- HTTP.get(path) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -218,19 +218,19 @@ defmodule Braintree.Transaction do
 
   ## Example
 
-      transaction = Braintree.Transaction.construct(%{"subscription_id" => "subxid",
+      transaction = Braintree.Transaction.new(%{"subscription_id" => "subxid",
                                                       "status" => "submitted_for_settlement"})
   """
-  @spec construct(Map.t | [Map.t]) :: t | [t]
-  def construct(%{"transaction" => map}) do
-    construct(map)
+  @spec new(Map.t | [Map.t]) :: t | [t]
+  def new(%{"transaction" => map}) do
+    new(map)
   end
-  def construct(map) when is_map(map) do
+  def new(map) when is_map(map) do
     transaction = super(map)
 
-    %{transaction | add_ons: AddOn.construct(transaction.add_ons)}
+    %{transaction | add_ons: AddOn.new(transaction.add_ons)}
   end
-  def construct(list) when is_list(list) do
-    Enum.map(list, &construct/1)
+  def new(list) when is_list(list) do
+    Enum.map(list, &new/1)
   end
 end

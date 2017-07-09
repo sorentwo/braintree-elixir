@@ -67,7 +67,7 @@ defmodule Braintree.Customer do
   @spec create(Map.t) :: {:ok, t} | {:error, Error.t}
   def create(params \\ %{}) do
     with {:ok, payload} <- HTTP.post("customers", %{customer: params}) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -97,7 +97,7 @@ defmodule Braintree.Customer do
   @spec find(binary) :: {:ok, t} | {:error, Error.t}
   def find(id) when is_binary(id) do
     with {:ok, payload} <- HTTP.get("customers/" <> id) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -117,7 +117,7 @@ defmodule Braintree.Customer do
   @spec update(binary, Map.t) :: {:ok, t} | {:error, Error.t}
   def update(id, params) when is_binary(id) and is_map(params) do
     with {:ok, payload} <- HTTP.put("customers/" <> id, %{customer: params}) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -127,17 +127,17 @@ defmodule Braintree.Customer do
 
   ## Example
 
-      customer = Braintree.Customer.construct(%{"company" => "Soren",
-                                                "email" => "parker@example.com"})
+      customer = Braintree.Customer.new(%{"company" => "Soren",
+                                          "email" => "parker@example.com"})
   """
-  @spec construct(Map.t) :: t
-  def construct(%{"customer" => map}) do
-    construct(map)
+  @spec new(Map.t) :: t
+  def new(%{"customer" => map}) do
+    new(map)
   end
-  def construct(map) when is_map(map) do
+  def new(map) when is_map(map) do
     customer = super(map)
 
-    %{customer | credit_cards: CreditCard.construct(customer.credit_cards),
-                 paypal_accounts: PaypalAccount.construct(customer.paypal_accounts)}
+    %{customer | credit_cards: CreditCard.new(customer.credit_cards),
+                 paypal_accounts: PaypalAccount.new(customer.paypal_accounts)}
   end
 end

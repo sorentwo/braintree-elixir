@@ -73,7 +73,7 @@ defmodule Braintree.HTTP do
           body
           |> decode_body()
           |> Map.get("api_error_response")
-          |> Error.construct()
+          |> Error.new()
 
         {:error, error}
       {:ok, code, _headers, _body} when code >= 401 and code <= 504 ->

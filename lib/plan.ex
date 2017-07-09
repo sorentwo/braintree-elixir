@@ -59,7 +59,7 @@ defmodule Braintree.Plan do
   @spec all() :: {:ok, [t]} | {:error, Error.t}
   def all do
     with {:ok, %{"plans" => plans}} <- HTTP.get("plans") do
-      {:ok, construct(plans)}
+      {:ok, new(plans)}
     end
   end
 end

@@ -22,8 +22,8 @@ defmodule Braintree.CustomerTest do
     assert customer.paypal_accounts == []
   end
 
-  test "construct/1 converts nested payment methods to a list of known structs" do
-    customer = Customer.construct(%{
+  test "new/1 converts nested payment methods to a list of known structs" do
+    customer = Customer.new(%{
       "company" => "Soren",
       "email" => "parker@example.com",
       "credit_cards" => [%{

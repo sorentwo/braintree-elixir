@@ -3,8 +3,8 @@ defmodule Braintree.PlanTest do
 
   alias Braintree.Plan
 
-  test "construct/1 constructs a list of plans with nested maps available" do
-    [first_plan, second_plan] = Plan.construct([%{
+  test "new/1 constructs a list of plans with nested maps available" do
+    [first_plan, second_plan] = Plan.new([%{
       "add_ons" => [],
       "balance" => nil,
       "billing_day_of_month" => nil,

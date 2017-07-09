@@ -49,7 +49,7 @@ defmodule Braintree.Discount do
     with {:ok, payload} <- HTTP.get("discounts") do
       %{"discounts" => discounts} = payload
 
-      {:ok, construct(discounts)}
+      {:ok, new(discounts)}
     end
   end
 end

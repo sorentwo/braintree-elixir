@@ -35,7 +35,7 @@ defmodule Braintree.ErrorResponseTest do
       }
     }
 
-    error_response = ErrorResponse.construct(response)
+    error_response = ErrorResponse.new(response)
 
     assert error_response.message == "CVV is required."
     refute error_response.errors == %{}

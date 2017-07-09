@@ -46,7 +46,7 @@ defmodule Braintree.AddOn do
   @spec all() :: {:ok, [t]} | {:error, Error.t}
   def all do
     with {:ok, %{"add_ons" => add_ons}} <- HTTP.get("add_ons") do
-      {:ok, construct(add_ons)}
+      {:ok, new(add_ons)}
     end
   end
 end

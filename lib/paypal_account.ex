@@ -46,7 +46,7 @@ defmodule Braintree.PaypalAccount do
     path = "payment_methods/paypal_account/" <> token
 
     with {:ok, %{"paypal_account" => map}} <- HTTP.get(path) do
-      {:ok, construct(map)}
+      {:ok, new(map)}
     end
   end
 
@@ -66,7 +66,7 @@ defmodule Braintree.PaypalAccount do
     path = "payment_methods/paypal_account/" <> token
 
     with {:ok, %{"paypal_account" => map}} <- HTTP.put(path, %{paypal_account: params}) do
-      {:ok, construct(map)}
+      {:ok, new(map)}
     end
   end
 
