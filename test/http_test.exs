@@ -62,6 +62,14 @@ defmodule Braintree.HTTPTest do
     assert {:timeout, 9000} in options
   end
 
+  describe "request/3" do
+    test "unauthorized response with an invalid merchant id" do
+      with_merchant_id "junkmerchantid", fn ->
+        assert {:error, :unauthorized} = HTTP.request(:get, "customers")
+      end
+    end
+  end
+
   defp compress(string), do: :zlib.gzip(string)
 
   defp assert_config_error(key, fun) do

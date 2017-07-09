@@ -18,8 +18,8 @@ defmodule Braintree.HTTP do
 
   require Logger
 
-  alias Braintree.ErrorResponse
   alias Braintree.XML.{Decoder, Encoder}
+  alias Braintree.ErrorResponse, as: Error
 
   @endpoints [
     production: "https://api.braintreegateway.com/merchants/",
@@ -35,6 +35,15 @@ defmodule Braintree.HTTP do
     {"X-ApiVersion", "4"},
     {"Content-Type", "application/xml"}
   ]
+
+  @statuses %{
+    401 => :unauthorized,
+    403 => :forbidden,
+    404 => :not_found,
+    426 => :upgrade_required,
+    500 => :server_error,
+    503 => :service_unavailable
+  }
 
   @doc """
   Centralized request handling function. All convenience structs use this
@@ -52,25 +61,23 @@ defmodule Braintree.HTTP do
       end
   """
   @spec request(atom, binary, binary | Map.t) ::
-        {:ok, Map.t | {:error, atom}} | {:error, ErrorResponse.t} | {:error, binary}
+        {:ok, Map.t | {:error, atom}} | {:error, Error.t} | {:error, binary}
   def request(method, path, body \\ %{}) do
     response = :hackney.request(method, build_url(path), build_headers(), encode_body(body), build_options())
 
     case response do
       {:ok, code, _headers, body} when code >= 200 and code <= 399 ->
         {:ok, decode_body(body)}
-      {:ok, 401, _headers, _body} ->
-        {:error, :unauthorized}
-      {:ok, 404, _headers, _body} ->
-        {:error, ErrorResponse.construct(%{"message" => "Not found, id is invalid."})}
-      {:ok, _code, _headers, body} ->
+      {:ok, 422, _headers, body} ->
         error =
           body
           |> decode_body()
           |> Map.get("api_error_response")
-          |> ErrorResponse.construct()
+          |> Error.construct()
 
         {:error, error}
+      {:ok, code, _headers, _body} when code >= 401 and code <= 504 ->
+        {:error, code_to_reason(code)}
       {:error, reason} ->
         {:error, reason}
     end
@@ -131,5 +138,13 @@ defmodule Braintree.HTTP do
     http_opts = Braintree.get_env(:http_options, [])
 
     [:with_body, ssl_options: [cacertfile: cacertfile]] ++ http_opts
+  end
+
+  @doc false
+  @spec code_to_reason(integer | atom) :: integer
+  def code_to_reason(integer)
+
+  for {code, status} <- @statuses do
+    def code_to_reason(unquote(code)), do: unquote(status)
   end
 end
