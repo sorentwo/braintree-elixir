@@ -3,9 +3,9 @@ defmodule Braintree.DiscountTest do
 
   alias Braintree.Discount
 
-  describe "construct/1" do
+  describe "new/1" do
     test "builds a sane struct" do
-      discount = Discount.construct(%{
+      discount = Discount.new(%{
         "id" => "asdf1234",
         "amount" => "25.00"
       })

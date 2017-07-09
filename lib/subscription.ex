@@ -89,7 +89,7 @@ defmodule Braintree.Subscription do
   @spec create(Map.t) :: {:ok, t} | {:error, Error.t}
   def create(params \\ %{}) do
     with {:ok, payload} <- HTTP.post("subscriptions", %{subscription: params}) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -103,7 +103,7 @@ defmodule Braintree.Subscription do
   @spec find(String.t) :: {:ok, t} | {:error, Error.t}
   def find(subscription_id) do
     with {:ok, payload} <- HTTP.get("subscriptions/#{subscription_id}") do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -118,7 +118,7 @@ defmodule Braintree.Subscription do
   @spec cancel(String.t) :: {:ok, t} | {:error, Error.t}
   def cancel(subscription_id) do
     with {:ok, payload} <- HTTP.put("subscriptions/#{subscription_id}/cancel") do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -159,7 +159,7 @@ defmodule Braintree.Subscription do
   @spec update(binary, Map.t) :: {:ok, t} | {:error, Error.t}
   def update(id, params) when is_binary(id) and is_map(params) do
     with {:ok, payload} <- HTTP.put("subscriptions/" <> id, %{subscription: params}) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -169,17 +169,17 @@ defmodule Braintree.Subscription do
 
   ## Example
 
-      subscripton = Braintree.Subscription.construct(%{"plan_id" => "business",
-                                                       "status" => "Active"})
+      subscripton = Braintree.Subscription.new(%{"plan_id" => "business",
+                                                 "status" => "Active"})
   """
-  @spec construct(Map.t) :: t
-  def construct(%{"subscription" => map}) do
-    construct(map)
+  @spec new(Map.t) :: t
+  def new(%{"subscription" => map}) do
+    new(map)
   end
-  def construct(map) when is_map(map) do
+  def new(map) when is_map(map) do
     subscription = super(map)
 
-    %{subscription | add_ons: AddOn.construct(subscription.add_ons),
-                     transactions: Transaction.construct(subscription.transactions)}
+    %{subscription | add_ons: AddOn.new(subscription.add_ons),
+                     transactions: Transaction.new(subscription.transactions)}
   end
 end

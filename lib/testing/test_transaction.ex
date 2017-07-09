@@ -61,7 +61,7 @@ if Mix.env == :test do
     end
 
     defp response(%{"transaction" => map}) do
-      {:ok, Transaction.construct(map)}
+      {:ok, Transaction.new(map)}
     end
   end
 end

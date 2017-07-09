@@ -3,14 +3,14 @@ defmodule Braintree.SettlementBatchSummaryTest do
 
   alias Braintree.SettlementBatchSummary, as: Summary
 
-  describe "construct/1" do
+  describe "new/1" do
     test "creates a struct with record structs" do
       records = [%{"card_type" => "MasterCard",
                    "kind" => "sale",
                    "count" => "12",
                    "custom_field_1" => "value"}]
 
-      summary = Summary.construct(%{"records" => records})
+      summary = Summary.new(%{"records" => records})
 
       [record] = summary.records
 

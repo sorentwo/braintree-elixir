@@ -35,7 +35,8 @@ defmodule Braintree.SettlementBatchSummary do
     Convert a list of records into structs, including any custom fields that
     were used as the grouping value.
     """
-    def construct(params) when is_map(params) do
+    @spec new(Map.t | [Map.t]) :: t | [t]
+    def new(params) when is_map(params) do
       atomized = atomize(params)
       summary = struct(__MODULE__, atomized)
 
@@ -44,8 +45,8 @@ defmodule Braintree.SettlementBatchSummary do
                    _ -> summary
       end
     end
-    def construct(params) when is_list(params) do
-      Enum.map(params, &construct/1)
+    def new(params) when is_list(params) do
+      Enum.map(params, &new/1)
     end
   end
 
@@ -70,7 +71,7 @@ defmodule Braintree.SettlementBatchSummary do
     with {:ok, payload} <- HTTP.post("settlement_batch_summary", params) do
       %{"settlement_batch_summary" => summary} = payload
 
-      {:ok, construct(summary)}
+      {:ok, new(summary)}
     end
   end
 
@@ -86,8 +87,8 @@ defmodule Braintree.SettlementBatchSummary do
   Convert a map including records into a summary struct with a list
   of record structs.
   """
-  @spec construct(Map.t) :: t
-  def construct(%{"records" => records}) do
-    struct(__MODULE__, records: Record.construct(records))
+  @spec new(Map.t) :: t
+  def new(%{"records" => records}) do
+    struct(__MODULE__, records: Record.new(records))
   end
 end

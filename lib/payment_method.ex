@@ -28,7 +28,7 @@ defmodule Braintree.PaymentMethod do
   @spec create(Map.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
   def create(params \\ %{}) do
     with {:ok, payload} <- HTTP.post("payment_methods", %{payment_method: params}) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -61,7 +61,7 @@ defmodule Braintree.PaymentMethod do
     path = "payment_methods/any/" <> token
 
     with {:ok, payload} <- HTTP.put(path, %{payment_method: params}) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -96,15 +96,15 @@ defmodule Braintree.PaymentMethod do
     path = "payment_methods/any/" <> token
 
     with {:ok, payload} <- HTTP.get(path) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
-  @spec construct(Map.t) :: CreditCard.t | PaypalAccount.t
-  defp construct(%{"credit_card" => credit_card}) do
-    CreditCard.construct(credit_card)
+  @spec new(Map.t) :: CreditCard.t | PaypalAccount.t
+  defp new(%{"credit_card" => credit_card}) do
+    CreditCard.new(credit_card)
   end
-  defp construct(%{"paypal_account" => paypal_account}) do
-    PaypalAccount.construct(paypal_account)
+  defp new(%{"paypal_account" => paypal_account}) do
+    PaypalAccount.new(paypal_account)
   end
 end

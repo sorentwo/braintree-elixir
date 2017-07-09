@@ -44,7 +44,7 @@ defmodule Braintree.PaymentMethodNonce do
     path = "payment_methods/#{payment_method_token}/nonces"
 
     with {:ok, payload} <- HTTP.post(path) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
@@ -62,13 +62,13 @@ defmodule Braintree.PaymentMethodNonce do
     path = "payment_method_nonces/" <> nonce
 
     with {:ok, payload} <- HTTP.get(path) do
-      {:ok, construct(payload)}
+      {:ok, new(payload)}
     end
   end
 
   @doc false
-  @spec construct(Map.t) :: t
-  def construct(%{"payment_method_nonce" => map}) do
+  @spec new(Map.t) :: t
+  def new(%{"payment_method_nonce" => map}) do
     super(map)
   end
 end
