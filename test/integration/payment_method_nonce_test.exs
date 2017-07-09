@@ -25,9 +25,7 @@ defmodule Braintree.Integration.PaymentMethodNonceTest do
   end
 
   test "find/1 fails when invalid nonce provided" do
-    {:error, error} = PaymentMethodNonce.find("bogus")
-
-    assert error.message =~ "id is invalid"
+    assert {:error, :not_found} = PaymentMethodNonce.find("bogus")
   end
 
   test "find/1 succeeds when valid token provided" do

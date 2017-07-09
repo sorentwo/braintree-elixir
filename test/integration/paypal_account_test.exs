@@ -26,9 +26,7 @@ defmodule Braintree.Integration.PaypalAccountTest do
   end
 
   test "find/1 fails with an invalid token" do
-    {:error, error} = PaypalAccount.find("bogus")
-
-    assert error.message =~ "id is invalid"
+    assert {:error, :not_found} = PaypalAccount.find("bogus")
   end
 
   test "update/2 can successfully update a paypal account" do

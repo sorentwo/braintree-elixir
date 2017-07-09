@@ -99,9 +99,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
   end
 
   test "update/1 fails when invalid token provided" do
-    {:error, error} = PaymentMethod.update("bogus")
-
-    assert error.message =~ "id is invalid"
+    assert {:error, :not_found} = PaymentMethod.update("bogus")
   end
 
   test "update/2 can successfully update existing payment_method" do

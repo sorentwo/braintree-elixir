@@ -125,9 +125,7 @@ defmodule Braintree.Integration.TransactionTest do
   end
 
   test "find/1 fails for invalid transaction id" do
-    {:error, error}  = Transaction.find("bogus")
-
-    assert error.message =~ "id is invalid"
+    assert {:error, :not_found}  = Transaction.find("bogus")
   end
 
   test "find/1 suceeds for existing transaction" do

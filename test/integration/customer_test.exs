@@ -80,9 +80,7 @@ defmodule Braintree.Integration.CustomerTest do
     end
 
     test "returns a not found error" do
-      {:error, error} = Customer.find("fakecustomerid")
-
-      assert error.message =~ "id is invalid"
+      assert {:error, :not_found} = Customer.find("fakecustomerid")
     end
   end
 
