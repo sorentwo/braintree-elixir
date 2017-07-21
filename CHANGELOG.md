@@ -1,3 +1,10 @@
+## v0.7.1 2017-05-09
+
+### Changes
+
+* Update to dependencies - `hackney` going from 1.6.1 to 1.8.0
+* Added parenthesis to funcitons in `lib/testing/credit_card_numbers.ex`
+
 ## v0.7.0 2016-09-20
 
 ### Enhancements
