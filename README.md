@@ -47,6 +47,10 @@ config :braintree,
 Furthermore, the environment defaults to `:sandbox`, so you'll want to configure
 it with `:production` in `prod.exs`.
 
+You may optionally pass directly those configuration keys to all functions
+performing an API call. In that case, those keys will be used to perform the
+call.
+
 You can optionally [configure Hackney options][opts] with:
 
 ```elixir
