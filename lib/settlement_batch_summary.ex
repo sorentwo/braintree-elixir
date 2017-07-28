@@ -63,12 +63,12 @@ defmodule Braintree.SettlementBatchSummary do
 
       Braintree.SettlementBatchSummary("2016-9-5", "custom_field_1")
   """
-  @spec generate(binary, binary | nil) :: {:ok, [t]} | {:error, Error.t}
-  def generate(settlement_date, custom_field \\ nil) do
+  @spec generate(binary, binary | nil, Keyword.t) :: {:ok, [t]} | {:error, Error.t}
+  def generate(settlement_date, custom_field \\ nil, opts \\ []) do
     criteria = build_criteria(settlement_date, custom_field)
     params = %{settlement_batch_summary: criteria}
 
-    with {:ok, payload} <- HTTP.post("settlement_batch_summary", params) do
+    with {:ok, payload} <- HTTP.post("settlement_batch_summary", params, opts) do
       %{"settlement_batch_summary" => summary} = payload
 
       {:ok, new(summary)}

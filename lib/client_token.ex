@@ -27,11 +27,11 @@ defmodule Braintree.ClientToken do
 
       {:ok, token} = Braintree.ClientToken.generate(%{version: 3})
   """
-  @spec generate(Map.t) :: {:ok, binary} | {:error, Error.t}
-  def generate(params \\ %{}) when is_map(params) do
+  @spec generate(Map.t, Keyword.t) :: {:ok, binary} | {:error, Error.t}
+  def generate(params \\ %{}, opts \\ []) when is_map(params) do
     params = %{client_token: with_version(params)}
 
-    with {:ok, payload} <- HTTP.post("client_token", params) do
+    with {:ok, payload} <- HTTP.post("client_token", params, opts) do
       %{"client_token" => %{"value" => value}} = payload
 
       {:ok, value}

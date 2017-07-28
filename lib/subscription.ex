@@ -86,9 +86,9 @@ defmodule Braintree.Subscription do
         plan_id: "starter"
       })
   """
-  @spec create(Map.t) :: {:ok, t} | {:error, Error.t}
-  def create(params \\ %{}) do
-    with {:ok, payload} <- HTTP.post("subscriptions", %{subscription: params}) do
+  @spec create(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def create(params \\ %{}, opts \\ []) do
+    with {:ok, payload} <- HTTP.post("subscriptions", %{subscription: params}, opts) do
       {:ok, new(payload)}
     end
   end
@@ -100,9 +100,9 @@ defmodule Braintree.Subscription do
 
       {:ok, subscription} = Subscription.find("123")
   """
-  @spec find(String.t) :: {:ok, t} | {:error, Error.t}
-  def find(subscription_id) do
-    with {:ok, payload} <- HTTP.get("subscriptions/#{subscription_id}") do
+  @spec find(String.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def find(subscription_id, opts \\ []) do
+    with {:ok, payload} <- HTTP.get("subscriptions/#{subscription_id}", opts) do
       {:ok, new(payload)}
     end
   end
@@ -115,9 +115,9 @@ defmodule Braintree.Subscription do
 
       {:ok, subscription} = Subscription.cancel("123")
   """
-  @spec cancel(String.t) :: {:ok, t} | {:error, Error.t}
-  def cancel(subscription_id) do
-    with {:ok, payload} <- HTTP.put("subscriptions/#{subscription_id}/cancel") do
+  @spec cancel(String.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def cancel(subscription_id, opts \\ []) do
+    with {:ok, payload} <- HTTP.put("subscriptions/#{subscription_id}/cancel", opts) do
       {:ok, new(payload)}
     end
   end
@@ -139,9 +139,9 @@ defmodule Braintree.Subscription do
       {:ok, transaction} = Braintree.Subscription.retry_charge(sub_id, "24.00")
   """
   @spec retry_charge(String.t) :: {:ok, Transaction.t}
-  @spec retry_charge(String.t, String.t | nil) :: {:ok, Transaction.t} | {:error, Error.t}
-  def retry_charge(subscription_id, amount \\ nil) do
-    Transaction.sale(%{amount: amount, subscription_id: subscription_id})
+  @spec retry_charge(String.t, String.t | nil, Keyword.t) :: {:ok, Transaction.t} | {:error, Error.t}
+  def retry_charge(subscription_id, amount \\ nil, opts \\ []) do
+    Transaction.sale(%{amount: amount, subscription_id: subscription_id}, opts)
   end
 
   @doc """
@@ -156,9 +156,9 @@ defmodule Braintree.Subscription do
       })
       subscription.plan_id # "new_plan_id"
   """
-  @spec update(binary, Map.t) :: {:ok, t} | {:error, Error.t}
-  def update(id, params) when is_binary(id) and is_map(params) do
-    with {:ok, payload} <- HTTP.put("subscriptions/" <> id, %{subscription: params}) do
+  @spec update(binary, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def update(id, params, opts \\ []) when is_binary(id) and is_map(params) do
+    with {:ok, payload} <- HTTP.put("subscriptions/" <> id, %{subscription: params}, opts) do
       {:ok, new(payload)}
     end
   end

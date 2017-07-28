@@ -56,9 +56,9 @@ defmodule Braintree.Plan do
 
       {:ok, plans} = Braintree.Plan.all()
   """
-  @spec all() :: {:ok, [t]} | {:error, Error.t}
-  def all do
-    with {:ok, %{"plans" => plans}} <- HTTP.get("plans") do
+  @spec all(Keyword.t) :: {:ok, [t]} | {:error, Error.t}
+  def all(opts \\ []) do
+    with {:ok, %{"plans" => plans}} <- HTTP.get("plans", opts) do
       {:ok, new(plans)}
     end
   end

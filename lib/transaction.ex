@@ -131,11 +131,11 @@ defmodule Braintree.Transaction do
 
       transaction.status # "settling"
   """
-  @spec sale(Map.t) :: {:ok, t} | {:error, Error.t}
-  def sale(params) do
+  @spec sale(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def sale(params, opts \\ []) do
     sale_params = Map.merge(params, %{type: "sale"})
 
-    with {:ok, payload} <- HTTP.post("transactions", %{transaction: sale_params}) do
+    with {:ok, payload} <- HTTP.post("transactions", %{transaction: sale_params}, opts) do
       {:ok, new(payload)}
     end
   end
@@ -149,11 +149,11 @@ defmodule Braintree.Transaction do
       {:ok, transaction} = Transaction.submit_for_settlement("123", %{amount: "100"})
       transaction.status # "settling"
   """
-  @spec submit_for_settlement(String.t, Map.t) :: {:ok, t} | {:error, Error.t}
-  def submit_for_settlement(transaction_id, params) do
+  @spec submit_for_settlement(String.t, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def submit_for_settlement(transaction_id, params, opts \\ []) do
     path = "transactions/#{transaction_id}/submit_for_settlement"
 
-    with {:ok, payload} <- HTTP.put(path, %{transaction: params}) do
+    with {:ok, payload} <- HTTP.put(path, %{transaction: params}, opts) do
       {:ok, new(payload)}
     end
   end
@@ -168,11 +168,11 @@ defmodule Braintree.Transaction do
 
       transaction.status # "refunded"
   """
-  @spec refund(String.t, Map.t) :: {:ok, t} | {:error, Error.t}
-  def refund(transaction_id, params) do
+  @spec refund(String.t, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def refund(transaction_id, params, opts \\ []) do
     path = "transactions/#{transaction_id}/refund"
 
-    with {:ok, payload} <- HTTP.post(path, %{transaction: params}) do
+    with {:ok, payload} <- HTTP.post(path, %{transaction: params}, opts) do
       {:ok, new(payload)}
     end
   end
@@ -186,11 +186,11 @@ defmodule Braintree.Transaction do
 
       transaction.status # "voided"
   """
-  @spec void(String.t) :: {:ok, t} | {:error, Error.t}
-  def void(transaction_id) do
+  @spec void(String.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def void(transaction_id, opts \\ []) do
     path = "transactions/#{transaction_id}/void"
 
-    with {:ok, payload} <- HTTP.put(path) do
+    with {:ok, payload} <- HTTP.put(path, opts) do
       {:ok, new(payload)}
     end
   end
@@ -202,11 +202,11 @@ defmodule Braintree.Transaction do
 
       {:ok, transaction} = Transaction.find("123")
   """
-  @spec find(String.t) :: {:ok, t} | {:error, Error.t}
-  def find(transaction_id) do
+  @spec find(String.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def find(transaction_id, opts \\ []) do
     path = "transactions/#{transaction_id}"
 
-    with {:ok, payload} <- HTTP.get(path) do
+    with {:ok, payload} <- HTTP.get(path, opts) do
       {:ok, new(payload)}
     end
   end

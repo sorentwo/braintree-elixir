@@ -62,10 +62,10 @@ defmodule Braintree.HTTP do
         end
       end
   """
-  @spec request(atom, binary, binary | Map.t) ::
+  @spec request(atom, binary, binary | Map.t, Keyword.t) ::
         {:ok, Map.t | {:error, atom}} | {:error, Error.t} | {:error, binary}
-  def request(method, path, body \\ %{}) do
-    response = :hackney.request(method, build_url(path), build_headers(), encode_body(body), build_options())
+  def request(method, path, body \\ %{}, opts \\ []) do
+    response = :hackney.request(method, build_url(path, opts), build_headers(opts), encode_body(body), build_options())
 
     case response do
       {:ok, code, _headers, body} when code >= 200 and code <= 399 ->
@@ -86,18 +86,18 @@ defmodule Braintree.HTTP do
   end
 
   for method <- ~w(get delete post put)a do
-    def unquote(method)(path, payload \\ %{}) do
-      request(unquote(method), path, payload)
+    def unquote(method)(path, payload \\ %{}, opts \\ []) do
+      request(unquote(method), path, payload, opts)
     end
   end
 
   ## Helper Functions
 
   @doc false
-  @spec build_url(binary) :: binary
-  def build_url(path) do
-    environment = Braintree.get_env(:environment, :sandbox)
-    merchant_id = Braintree.get_env(:merchant_id)
+  @spec build_url(binary, Keyword.t) :: binary
+  def build_url(path, opts) do
+    environment = Keyword.get(opts, :environment, Braintree.get_env(:environment, :sandbox))
+    merchant_id = Keyword.get(opts, :merchant_id, Braintree.get_env(:merchant_id))
 
     Keyword.fetch!(@endpoints, environment) <> merchant_id <> "/" <> path
   end
@@ -125,10 +125,10 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec build_headers() :: [tuple]
-  def build_headers do
-    public  = Braintree.get_env(:public_key)
-    private = Braintree.get_env(:private_key)
+  @spec build_headers(Keyword.t) :: [tuple]
+  def build_headers(opts) do
+    public  = Keyword.get(opts, :public_key, Braintree.get_env(:public_key))
+    private = Keyword.get(opts, :private_key, Braintree.get_env(:private_key))
 
     [{"Authorization", basic_auth(public, private)} | @headers]
   end
