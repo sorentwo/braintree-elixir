@@ -25,9 +25,9 @@ defmodule Braintree.PaymentMethod do
 
       credit_card.type # "Visa"
   """
-  @spec create(Map.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
-  def create(params \\ %{}) do
-    with {:ok, payload} <- HTTP.post("payment_methods", %{payment_method: params}) do
+  @spec create(Map.t, Keyword.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
+  def create(params \\ %{}, opts \\ []) do
+    with {:ok, payload} <- HTTP.post("payment_methods", %{payment_method: params}, opts) do
       {:ok, new(payload)}
     end
   end
@@ -56,11 +56,11 @@ defmodule Braintree.PaymentMethod do
 
       payment_method.cardholder_name # "NEW"
   """
-  @spec update(String.t, Map.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
-  def update(token, params \\ %{}) do
+  @spec update(String.t, Map.t, Keyword.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
+  def update(token, params \\ %{}, opts \\ []) do
     path = "payment_methods/any/" <> token
 
-    with {:ok, payload} <- HTTP.put(path, %{payment_method: params}) do
+    with {:ok, payload} <- HTTP.put(path, %{payment_method: params}, opts) do
       {:ok, new(payload)}
     end
   end
@@ -73,11 +73,11 @@ defmodule Braintree.PaymentMethod do
 
       {:ok, "Success"} = Braintree.PaymentMethod.delete(token)
   """
-  @spec delete(String.t) :: :ok | {:error, Error.t}
-  def delete(token) do
+  @spec delete(String.t, Keyword.t) :: :ok | {:error, Error.t}
+  def delete(token, opts \\ []) do
     path = "payment_methods/any/" <> token
 
-    with {:ok, _response} <- HTTP.delete(path) do
+    with {:ok, _response} <- HTTP.delete(path, opts) do
       :ok
     end
   end
@@ -91,11 +91,11 @@ defmodule Braintree.PaymentMethod do
 
       payment_method.type # CreditCard
   """
-  @spec find(String.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
-  def find(token) do
+  @spec find(String.t, Keyword.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
+  def find(token, opts \\ []) do
     path = "payment_methods/any/" <> token
 
-    with {:ok, payload} <- HTTP.get(path) do
+    with {:ok, payload} <- HTTP.get(path, opts) do
       {:ok, new(payload)}
     end
   end

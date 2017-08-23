@@ -39,11 +39,11 @@ defmodule Braintree.PaymentMethodNonce do
 
       payment_method_nonce.nonce
   """
-  @spec create(String.t) :: {:ok, t} | {:error, Error.t}
-  def create(payment_method_token) do
+  @spec create(String.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def create(payment_method_token, opts \\ []) do
     path = "payment_methods/#{payment_method_token}/nonces"
 
-    with {:ok, payload} <- HTTP.post(path) do
+    with {:ok, payload} <- HTTP.post(path, opts) do
       {:ok, new(payload)}
     end
   end
@@ -57,11 +57,11 @@ defmodule Braintree.PaymentMethodNonce do
 
       payment_method.type #CreditCard
   """
-  @spec find(String.t) :: {:ok, t} | {:error, Error.t}
-  def find(nonce) do
+  @spec find(String.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def find(nonce, opts \\ []) do
     path = "payment_method_nonces/" <> nonce
 
-    with {:ok, payload} <- HTTP.get(path) do
+    with {:ok, payload} <- HTTP.get(path, opts) do
       {:ok, new(payload)}
     end
   end

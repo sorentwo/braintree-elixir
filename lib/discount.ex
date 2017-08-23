@@ -44,9 +44,9 @@ defmodule Braintree.Discount do
 
       {:ok, discounts} = Braintree.Discount.all()
   """
-  @spec all() :: {:ok, t} | {:error, Error.t}
-  def all do
-    with {:ok, payload} <- HTTP.get("discounts") do
+  @spec all(Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def all(opts \\ []) do
+    with {:ok, payload} <- HTTP.get("discounts", opts) do
       %{"discounts" => discounts} = payload
 
       {:ok, new(discounts)}

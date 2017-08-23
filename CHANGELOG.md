@@ -1,3 +1,11 @@
+## master
+
+### Enhancements
+
+* Ability to optionally pass environment and API keys as options to all
+  functions doing API calls. The default behaviour of reading from the global
+  config is kept if those keys are not passed as arguments.
+
 ## v0.7.0 2016-09-20
 
 ### Enhancements
