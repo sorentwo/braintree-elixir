@@ -39,6 +39,7 @@ defmodule Braintree.HTTP do
   ]
 
   @statuses %{
+    400 => :bad_request,
     401 => :unauthorized,
     403 => :forbidden,
     404 => :not_found,
@@ -78,7 +79,7 @@ defmodule Braintree.HTTP do
           |> Error.new()
 
         {:error, error}
-      {:ok, code, _headers, _body} when code >= 401 and code <= 504 ->
+      {:ok, code, _headers, _body} when code >= 400 and code <= 504 ->
         {:error, code_to_reason(code)}
       {:error, reason} ->
         {:error, reason}
