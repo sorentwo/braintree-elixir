@@ -44,15 +44,15 @@ defmodule Braintree.Mixfile do
 
      {:credo, "~> 0.8", only: :dev},
      {:ex_doc, ">= 0.0.0", only: :dev},
+     {:earmark, ">= 0.0.0", only: :dev},
      {:inch_ex, ">= 0.0.0", only: :dev},
      {:excoveralls, "~> 0.7", only: [:dev, :test]}]
   end
 
   defp docs do
     [main: "readme",
-     formatter_opts: [gfm: true],
      source_ref: @version,
-     source_url: "https://github.com/sorentwo/braintree-elixir",
+     formatter_opts: [gfm: true],
      extras: [
        "CHANGELOG.md",
        "README.md"
