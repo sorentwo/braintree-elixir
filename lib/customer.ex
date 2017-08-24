@@ -64,9 +64,9 @@ defmodule Braintree.Customer do
 
       customer.company # Braintree
   """
-  @spec create(Map.t) :: {:ok, t} | {:error, Error.t}
-  def create(params \\ %{}) do
-    with {:ok, payload} <- HTTP.post("customers", %{customer: params}) do
+  @spec create(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def create(params \\ %{}, opts \\ []) do
+    with {:ok, payload} <- HTTP.post("customers", %{customer: params}, opts) do
       {:ok, new(payload)}
     end
   end
@@ -80,9 +80,9 @@ defmodule Braintree.Customer do
 
       :ok = Braintree.Customer.delete("customer_id")
   """
-  @spec delete(binary) :: :ok | {:error, Error.t}
-  def delete(id) when is_binary(id) do
-    with {:ok, _response} <- HTTP.delete("customers/" <> id) do
+  @spec delete(binary, Keyword.t) :: :ok | {:error, Error.t}
+  def delete(id, opts \\ []) when is_binary(id) do
+    with {:ok, _response} <- HTTP.delete("customers/" <> id, opts) do
       :ok
     end
   end
@@ -94,9 +94,9 @@ defmodule Braintree.Customer do
 
       customer = Braintree.Customer.find("customer_id")
   """
-  @spec find(binary) :: {:ok, t} | {:error, Error.t}
-  def find(id) when is_binary(id) do
-    with {:ok, payload} <- HTTP.get("customers/" <> id) do
+  @spec find(binary, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def find(id, opts \\ []) when is_binary(id) do
+    with {:ok, payload} <- HTTP.get("customers/" <> id, opts) do
       {:ok, new(payload)}
     end
   end
@@ -114,9 +114,9 @@ defmodule Braintree.Customer do
 
       customer.company # "New Company Name"
   """
-  @spec update(binary, Map.t) :: {:ok, t} | {:error, Error.t}
-  def update(id, params) when is_binary(id) and is_map(params) do
-    with {:ok, payload} <- HTTP.put("customers/" <> id, %{customer: params}) do
+  @spec update(binary, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def update(id, params, opts \\ []) when is_binary(id) and is_map(params) do
+    with {:ok, payload} <- HTTP.put("customers/" <> id, %{customer: params}, opts) do
       {:ok, new(payload)}
     end
   end

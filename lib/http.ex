@@ -23,6 +23,10 @@ defmodule Braintree.HTTP do
   alias Braintree.XML.{Decoder, Encoder}
   alias Braintree.ErrorResponse, as: Error
 
+  @type response :: {:ok, Map.t | {:error, atom}} |
+                    {:error, Error.t} |
+                    {:error, binary}
+
   @endpoints [
     production: "https://api.braintreegateway.com/merchants/",
     sandbox: "https://api.sandbox.braintreegateway.com/merchants/"
@@ -39,6 +43,7 @@ defmodule Braintree.HTTP do
   ]
 
   @statuses %{
+    400 => :bad_request,
     401 => :unauthorized,
     403 => :forbidden,
     404 => :not_found,
@@ -62,10 +67,9 @@ defmodule Braintree.HTTP do
         end
       end
   """
-  @spec request(atom, binary, binary | Map.t) ::
-        {:ok, Map.t | {:error, atom}} | {:error, Error.t} | {:error, binary}
-  def request(method, path, body \\ %{}) do
-    response = :hackney.request(method, build_url(path), build_headers(), encode_body(body), build_options())
+  @spec request(atom, binary, binary | Map.t, Keyword.t) :: response
+  def request(method, path, body \\ %{}, opts \\ []) do
+    response = :hackney.request(method, build_url(path, opts), build_headers(opts), encode_body(body), build_options())
 
     case response do
       {:ok, code, _headers, body} when code >= 200 and code <= 399 ->
@@ -78,7 +82,7 @@ defmodule Braintree.HTTP do
           |> Error.new()
 
         {:error, error}
-      {:ok, code, _headers, _body} when code >= 401 and code <= 504 ->
+      {:ok, code, _headers, _body} when code >= 400 and code <= 504 ->
         {:error, code_to_reason(code)}
       {:error, reason} ->
         {:error, reason}
@@ -86,18 +90,30 @@ defmodule Braintree.HTTP do
   end
 
   for method <- ~w(get delete post put)a do
-    def unquote(method)(path, payload \\ %{}) do
-      request(unquote(method), path, payload)
+    @spec unquote(method)(binary) :: response
+    @spec unquote(method)(binary, map | list) :: response
+    @spec unquote(method)(binary, map, list) :: response
+    def unquote(method)(path) do
+      request(unquote(method), path, %{}, [])
+    end
+    def unquote(method)(path, payload) when is_map(payload) do
+      request(unquote(method), path, payload, [])
+    end
+    def unquote(method)(path, opts) when is_list(opts) do
+      request(unquote(method), path, %{}, opts)
+    end
+    def unquote(method)(path, payload, opts) do
+      request(unquote(method), path, payload, opts)
     end
   end
 
   ## Helper Functions
 
   @doc false
-  @spec build_url(binary) :: binary
-  def build_url(path) do
-    environment = Braintree.get_env(:environment, :sandbox)
-    merchant_id = Braintree.get_env(:merchant_id)
+  @spec build_url(binary, Keyword.t) :: binary
+  def build_url(path, opts) do
+    environment = Keyword.get(opts, :environment, Braintree.get_env(:environment, :sandbox))
+    merchant_id = Keyword.get(opts, :merchant_id, Braintree.get_env(:merchant_id))
 
     Keyword.fetch!(@endpoints, environment) <> merchant_id <> "/" <> path
   end
@@ -125,10 +141,10 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec build_headers() :: [tuple]
-  def build_headers do
-    public  = Braintree.get_env(:public_key)
-    private = Braintree.get_env(:private_key)
+  @spec build_headers(Keyword.t) :: [tuple]
+  def build_headers(opts) do
+    public  = Keyword.get(opts, :public_key, Braintree.get_env(:public_key))
+    private = Keyword.get(opts, :private_key, Braintree.get_env(:private_key))
 
     [{"Authorization", basic_auth(public, private)} | @headers]
   end
