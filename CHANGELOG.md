@@ -1,11 +1,24 @@
-## Unreleased
+## v0.8.0 2017-08-24
 
 ### Enhancements
 
+* [Braintree.ErrorResponse] Include full transaction details in the
+  `ErrorResponse` struct. This displays the underlying reason a request failed,
+  helping developers diagnose failing requests.
 * [Braintree.HTTP] Ability to optionally pass environment and API keys as
   options to all functions doing API calls. The default behaviour of reading
   from the global config is kept if those keys are not passed as arguments.
   Submitted by @manukall and @nicolasblanco
+
+### Changes
+
+* [Braintree.Construction] Use `new/1` to build structs, rather than the unusual
+  `construct/1` function.
+
+### Bug Fixes
+
+* [Braintree.HTTP] Catch and return `400 Bad Request` error tuples, rather than
+  generating a case clause error.
 
 ## v0.7.0 2016-09-20
 
