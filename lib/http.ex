@@ -1,19 +1,21 @@
 defmodule Braintree.HTTP do
   @moduledoc """
   Base client for all server interaction, used by all endpoint specific
-  modules. This request wrapper coordinates the remote server, headers,
-  authorization and SSL options.
+  modules.
+
+  This request wrapper coordinates the remote server, headers, authorization
+  and SSL options.
 
   Using `Braintree.HTTP` requires the presence of three config values:
 
-  * merchant_id - Braintree merchant id
-  * private_key - Braintree private key
-  * public_key - Braintree public key
+  * `merchant_id` - Braintree merchant id
+  * `private_key` - Braintree private key
+  * `public_key` - Braintree public key
 
-  All three must have values set or a `Braintree.ConfigError` will be raised
-  at runtime. All those config values support the `{:system, "VAR_NAME"}`
-  as a value - in that case the value will be read from the system environment
-  with `System.get_env("VAR_NAME")`.
+  All three values must be set or a `Braintree.ConfigError` will be raised at
+  runtime. All those config values support the `{:system, "VAR_NAME"}` as a
+  value - in which case the value will be read from the system environment with
+  `System.get_env("VAR_NAME")`.
   """
 
   require Logger
