@@ -23,6 +23,10 @@ defmodule Braintree.HTTP do
   alias Braintree.XML.{Decoder, Encoder}
   alias Braintree.ErrorResponse, as: Error
 
+  @type response :: {:ok, Map.t | {:error, atom}} |
+                    {:error, Error.t} |
+                    {:error, binary}
+
   @endpoints [
     production: "https://api.braintreegateway.com/merchants/",
     sandbox: "https://api.sandbox.braintreegateway.com/merchants/"
@@ -63,8 +67,7 @@ defmodule Braintree.HTTP do
         end
       end
   """
-  @spec request(atom, binary, binary | Map.t, Keyword.t) ::
-        {:ok, Map.t | {:error, atom}} | {:error, Error.t} | {:error, binary}
+  @spec request(atom, binary, binary | Map.t, Keyword.t) :: response
   def request(method, path, body \\ %{}, opts \\ []) do
     response = :hackney.request(method, build_url(path, opts), build_headers(opts), encode_body(body), build_options())
 
@@ -87,7 +90,19 @@ defmodule Braintree.HTTP do
   end
 
   for method <- ~w(get delete post put)a do
-    def unquote(method)(path, payload \\ %{}, opts \\ []) do
+    @spec unquote(method)(binary) :: response
+    @spec unquote(method)(binary, map | list) :: response
+    @spec unquote(method)(binary, map, list) :: response
+    def unquote(method)(path) do
+      request(unquote(method), path, %{}, [])
+    end
+    def unquote(method)(path, payload) when is_map(payload) do
+      request(unquote(method), path, payload, [])
+    end
+    def unquote(method)(path, opts) when is_list(opts) do
+      request(unquote(method), path, %{}, opts)
+    end
+    def unquote(method)(path, payload, opts) do
       request(unquote(method), path, payload, opts)
     end
   end
