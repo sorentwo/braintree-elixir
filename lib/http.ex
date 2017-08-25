@@ -112,8 +112,8 @@ defmodule Braintree.HTTP do
   @doc false
   @spec build_url(binary, Keyword.t) :: binary
   def build_url(path, opts) do
-    environment = Keyword.get(opts, :environment, Braintree.get_env(:environment, :sandbox))
-    merchant_id = Keyword.get(opts, :merchant_id, Braintree.get_env(:merchant_id))
+    environment = Keyword.get_lazy(opts, :environment, fn -> Braintree.get_env(:environment, :sandbox) end)
+    merchant_id = Keyword.get_lazy(opts, :merchant_id, fn -> Braintree.get_env(:merchant_id) end)
 
     Keyword.fetch!(@endpoints, environment) <> merchant_id <> "/" <> path
   end
@@ -143,8 +143,8 @@ defmodule Braintree.HTTP do
   @doc false
   @spec build_headers(Keyword.t) :: [tuple]
   def build_headers(opts) do
-    public  = Keyword.get(opts, :public_key, Braintree.get_env(:public_key))
-    private = Keyword.get(opts, :private_key, Braintree.get_env(:private_key))
+    public  = Keyword.get_lazy(opts, :public_key, fn -> Braintree.get_env(:public_key) end)
+    private = Keyword.get_lazy(opts, :private_key, fn -> Braintree.get_env(:private_key) end)
 
     [{"Authorization", basic_auth(public, private)} | @headers]
   end
