@@ -48,6 +48,7 @@ defmodule Braintree.HTTP do
     403 => :forbidden,
     404 => :not_found,
     426 => :upgrade_required,
+    429 => :too_many_requests,
     500 => :server_error,
     503 => :service_unavailable
   }
