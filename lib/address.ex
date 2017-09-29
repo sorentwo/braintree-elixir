@@ -115,13 +115,12 @@ defmodule Braintree.Address do
   end
 
   @doc """
-  Convert a map into a Address struct along with nested payment options.
+  Convert a map into a Address struct.
 
   ## Example
 
       address = Braintree.Address.new(%{"company" => "Braintree"})
   """
   @spec new(Map.t) :: t
-  def new(%{"address" => map}), do: new(map)
-  def new(map) when is_map(map), do: super(map)
+  def new(%{"address" => map}), do: super(map)
 end
