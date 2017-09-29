@@ -88,6 +88,10 @@ end
 You'll need a Braintree sandbox account to run the integration tests. Also, be
 sure that your account has [Duplicate Transaction Checking][dtc] disabled.
 
+In order to test the merchant account features, your sandbox account needs to 
+have a master merchant account and it needs to be added to your environment 
+variables (only needed in test).
+
 Your environment needs to have the following:
 - Add-ons with ids: "bronze", "silver" and "gold"
 - Plans with ids: "starter", "business"

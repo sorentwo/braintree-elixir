@@ -45,11 +45,10 @@ defmodule Braintree.Integration.AddressTest do
     end
 
     test "with invalid customer id" do
-      assert {:error, :not_found} = Address.create("invalid-customer", %{
-                                        first_name: "Jenna",
-                                        last_name: "Smith",
-                                      })
-
+      assert {:error, :not_found} = Address.create(
+        "invalid-customer",
+        %{first_name: "Jenna", last_name: "Smith" }
+      )
     end
   end
 
