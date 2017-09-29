@@ -1,6 +1,9 @@
 defmodule Braintree.Address do
   @moduledoc """
+  You can create an address for a customer only although the structure is also used for a merchant account.
 
+  For additional reference see:
+  https://developers.braintreepayments.com/reference/request/address/create/ruby
   """
 
   use Braintree.Construction
