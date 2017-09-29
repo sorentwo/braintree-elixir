@@ -49,11 +49,11 @@ defmodule Braintree.Address do
 
 
   @doc """
-  Create an address record, or return an error response with after failed validation.
+  Create an address record, or return an error response after failed validation.
 
   ## Example
 
-    {:ok, address} = Braintree.Address.create(%{
+    {:ok, address} = Braintree.Address.create("customer_id", %{
       first_name: "Jenna"
     })
 
