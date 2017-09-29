@@ -11,20 +11,20 @@ defmodule Braintree.Merchant.Individual do
   alias Braintree.Address
 
   @type t :: %__MODULE__{
-    address_details: Address.t,
+    address: Address.t,
     first_name: String.t,
     last_name: String.t,
     email: String.t,
     phone: String.t,
     date_of_birth: String.t,
-    ssn: String.t,
+    ssn_last_4: String.t,
   }
 
-  defstruct address_details: %Address{},
+  defstruct address: %Address{},
             first_name: nil,
             last_name: nil,
             email: nil,
             phone: nil,
             date_of_birth: nil,
-            ssn: nil
+            ssn_last_4: nil
 end

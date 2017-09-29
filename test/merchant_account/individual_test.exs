@@ -11,8 +11,8 @@ defmodule Braintree.Merchant.IndividualTest do
       email: "smith@braintree.com",
       phone: "1234567890",
       date_of_birth: "01-09-1990",
-      ssn: "000112222",
-      address_details: %Address{
+      ssn_last_4: "2222",
+      address: %Address{
         street_address: "101 N Main St"
       }
     }
@@ -22,19 +22,19 @@ defmodule Braintree.Merchant.IndividualTest do
     assert individual.email == "smith@braintree.com"
     assert individual.phone == "1234567890"
     assert individual.date_of_birth == "01-09-1990"
-    assert individual.ssn == "000112222"
-    assert individual.address_details.street_address == "101 N Main St"
+    assert individual.ssn_last_4 == "2222"
+    assert individual.address.street_address == "101 N Main St"
   end
 
   test "new/1 with address" do
     individual = Individual.new(%{
-                                  "address_details" => %{
+                                  "address" => %{
                                     "street_address" => "101 N Main St"
                                   },
                                   "first_name" => "Jenna"
                                 })
 
     assert individual.first_name == "Jenna"
-    assert individual.address_details.street_address == "101 N Main St"
+    assert individual.address.street_address == "101 N Main St"
   end
 end

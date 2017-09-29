@@ -11,13 +11,13 @@ defmodule Braintree.Merchant.Business do
   alias Braintree.Address
 
   @type t :: %__MODULE__{
-    address_details: Address.t,
+    address: Address.t,
     legal_name: String.t,
     dba_name: String.t,
     tax_id: String.t
   }
 
-  defstruct address_details: %Address{},
+  defstruct address: %Address{},
             legal_name: nil,
             dba_name: nil,
             tax_id: nil

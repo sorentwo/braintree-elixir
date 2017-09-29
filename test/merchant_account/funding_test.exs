@@ -10,7 +10,7 @@ defmodule Braintree.Merchant.FundingTest do
       email: "email@braintree.com",
       mobile_phone: "1234567890",
       routing_number: "00001111",
-      account_number: "42424141"
+      account_number_last_4: "4141"
     }
 
     assert funding.descriptor == "descriptor"
@@ -18,7 +18,7 @@ defmodule Braintree.Merchant.FundingTest do
     assert funding.email == "email@braintree.com"
     assert funding.mobile_phone == "1234567890"
     assert funding.routing_number == "00001111"
-    assert funding.account_number == "42424141"
+    assert funding.account_number_last_4 == "4141"
   end
 
   test "new/1 creates struct" do

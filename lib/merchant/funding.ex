@@ -14,7 +14,7 @@ defmodule Braintree.Merchant.Funding do
     email: String.t,
     mobile_phone: String.t,
     routing_number: String.t,
-    account_number: String.t
+    account_number_last_4: String.t
   }
 
   defstruct descriptor: nil,
@@ -22,5 +22,5 @@ defmodule Braintree.Merchant.Funding do
             email: nil,
             mobile_phone: nil,
             routing_number: nil,
-            account_number: nil
+            account_number_last_4: nil
 end
