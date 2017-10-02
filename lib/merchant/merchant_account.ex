@@ -37,7 +37,7 @@ defmodule Braintree.MerchantAccount do
 
   ## Example
 
-    {:ok, } = Braintree.MerchantAccount.create(%{
+    {:ok, merchant} = Braintree.MerchantAccount.create(%{
       tos_accepted: true,
     })
   """
@@ -49,9 +49,9 @@ defmodule Braintree.MerchantAccount do
   end
 
   @doc """
-  To update a merchant, use its ID along with new attributes. The same
-  validations apply as when creating a merchant. Any attribute not passed will
-  remain unchanged.
+  To update a merchant, use its ID along with new attributes.
+  The same validations apply as when creating a merchant.
+  Any attribute not passed will remain unchanged.
 
   ## Example
 

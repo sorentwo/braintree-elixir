@@ -1,6 +1,7 @@
 defmodule Braintree.Testing.TestTransaction do
   @moduledoc """
-  Create transasctions for testing purposes only.
+  Create transactions for testing purposes only.
+
   Transition to settled, settlement_confirmed, or settlement_declined states.
   """
 

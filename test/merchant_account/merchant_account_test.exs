@@ -55,7 +55,6 @@ defmodule Braintree.MerchantAccountTest do
       }
     }
 
-
     merchant = MerchantAccount.new(data)
 
     assert merchant.id == "ladders-merchant"

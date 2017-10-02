@@ -1,6 +1,7 @@
 defmodule Braintree.Address do
   @moduledoc """
-  You can create an address for a customer only although the structure is also used for a merchant account.
+  You can create an address for a customer only although the structure
+  is also used for a merchant account.
 
   For additional reference see:
   https://developers.braintreepayments.com/reference/request/address/create/ruby
@@ -47,7 +48,6 @@ defmodule Braintree.Address do
             customer_id: nil,
             extended_address: nil
 
-
   @doc """
   Create an address record, or return an error response after failed validation.
 
@@ -81,9 +81,9 @@ defmodule Braintree.Address do
   end
 
   @doc """
-  To update an address, use a customer ID with its ID along with new attributes. The same
-  validations apply as when creating an address. Any attribute not passed will
-  remain unchanged.
+  To update an address, use a customer's ID with an address's ID along with 
+  new attributes. The same validations apply as when creating an address. 
+  Any attribute not passed will remain unchanged.
 
   ## Example
 
@@ -101,7 +101,8 @@ defmodule Braintree.Address do
   end
 
   @doc """
-  If you want to look up a single address for a customer using the customer ID and the address ID, use the find method.
+  If you want to look up a single address for a customer using the customer ID and
+  the address ID, use the find method.
 
   ## Example
 
