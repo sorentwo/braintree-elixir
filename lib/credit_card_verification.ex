@@ -28,21 +28,22 @@ defmodule Braintree.CreditCardVerification do
                 status:                             String.t
             }
 
-  defstruct amount:                     nil,
-            avs_error_response_code:    nil,
-            avs_postal_response_code:   nil,
-            billing:                    %Address{},
-            created_at:                 nil,
-            credit_card:                %CreditCard{},
-            currency_iso_code:          nil,
-            cvv_response_code:          nil,
-            gateway_rejection_reason:   nil,
-            id:                         nil,
-            merchant_account_id:        nil,
-            processor_response_code:    nil,
-            processor_response_text:    nil,
-            risk_data:                  %{},
-            status:                     nil
+  defstruct amount:                             nil,
+            avs_error_response_code:            nil,
+            avs_postal_code_response_code:      nil,
+            avs_street_address_response_code:   nil,
+            billing:                            %Address{},
+            created_at:                         nil,
+            credit_card:                        %CreditCard{},
+            currency_iso_code:                  nil,
+            cvv_response_code:                  nil,
+            gateway_rejection_reason:           nil,
+            id:                                 nil,
+            merchant_account_id:                nil,
+            processor_response_code:            nil,
+            processor_response_text:            nil,
+            risk_data:                          %{},
+            status:                             nil
 
   @doc """
   To search for credit card verifications, pass a map of search parameters.
@@ -57,7 +58,7 @@ defmodule Braintree.CreditCardVerification do
   """
   @spec search(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def search(params, opts \\ []) when is_map(params) do
-    Search.perform(params, "credit_card_verifications", &new/1, opts)
+    Search.perform(params, "verifications", &new/1, opts)
   end
 
   @doc """

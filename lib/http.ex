@@ -47,6 +47,7 @@ defmodule Braintree.HTTP do
     401 => :unauthorized,
     403 => :forbidden,
     404 => :not_found,
+    422 => :unprocessable_entity,
     426 => :upgrade_required,
     429 => :too_many_requests,
     500 => :server_error,
@@ -168,5 +169,5 @@ defmodule Braintree.HTTP do
   def resolve_unprocessable_entity_error(%{"api_error_response" => api_error_response}),
     do: Error.new(api_error_response)
   def resolve_unprocessable_entity_error(%{"unprocessable_entity" => api_response}),
-    do: Error.new(api_response)
+    do: :unprocessable_entity
 end
