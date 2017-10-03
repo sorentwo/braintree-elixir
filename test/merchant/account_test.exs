@@ -1,11 +1,11 @@
-defmodule Braintree.MerchantAccountTest do
+defmodule Braintree.Merchant.AccountTest do
   use ExUnit.Case, async: true
 
-  alias Braintree.{Address, MerchantAccount}
-  alias Braintree.Merchant.{Individual, Business, Funding}
+  alias Braintree.Address
+  alias Braintree.Merchant.{Account, Business, Funding, Individual}
 
   test "merchant account includes all attributes" do
-    merchant = %MerchantAccount{
+    merchant = %Account{
       id: "ladders-merchant",
       status: "pending",
       currency_iso_code: "USD",
@@ -55,7 +55,7 @@ defmodule Braintree.MerchantAccountTest do
       }
     }
 
-    merchant = MerchantAccount.new(data)
+    merchant = Account.new(data)
 
     assert merchant.id == "ladders-merchant"
     assert merchant.status == "pending"

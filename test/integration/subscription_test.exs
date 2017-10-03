@@ -19,8 +19,11 @@ defmodule Braintree.Integration.SubscriptionTest do
                 update: [%{existing_id: "silver", quantity: 2}],
                 remove: ["bronze"]}
 
-    assert {:ok, _subscription} = Subscription.create(%{payment_method_token: card.token,
-                                                        plan_id: "business", add_ons: add_ons})
+    assert {:ok, _subscription} = Subscription.create(%{
+      payment_method_token: card.token,
+      plan_id: "business",
+      add_ons: add_ons
+    })
   end
 
   test "find/1 with a subscription_id" do

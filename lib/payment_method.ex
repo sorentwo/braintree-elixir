@@ -65,7 +65,6 @@ defmodule Braintree.PaymentMethod do
     end
   end
 
-
   @doc """
   Delete a payment method record, or return an error response if token invalid
 

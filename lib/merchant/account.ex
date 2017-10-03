@@ -1,4 +1,4 @@
-defmodule Braintree.MerchantAccount do
+defmodule Braintree.Merchant.Account do
   @moduledoc """
   Represents a merchant account in a marketplace.
 
@@ -37,7 +37,7 @@ defmodule Braintree.MerchantAccount do
 
   ## Example
 
-    {:ok, merchant} = Braintree.MerchantAccount.create(%{
+    {:ok, merchant} = Braintree.Merchant.Account.create(%{
       tos_accepted: true,
     })
   """
@@ -83,7 +83,7 @@ defmodule Braintree.MerchantAccount do
   end
 
   @doc """
-  Convert a map into a MerchantAccount struct.
+  Convert a map into a `Braintree.Merchant.Account` struct.
   """
   @spec new(Map.t) :: t
   def new(%{"merchant_account" => map}), do: super(map)
