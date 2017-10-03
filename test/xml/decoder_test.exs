@@ -78,5 +78,29 @@ defmodule Braintree.XML.DecoderTest do
         %{"id" => 2, "merchant_id" => 2}
       ]}
     end
+
+    test "with a top level collection" do
+      xml = """
+        <customers type="collection">
+          <current-page-number type="integer">1</current-page-number>
+          <page-size type="integer">50</page-size>
+          <total-items type="integer">2</total-items>
+          <customer>
+            <id>1</id>
+            <first-name>Jenna</first-name>
+          </customer>
+          <customer>
+            <id>2</id>
+            <first-name>Jenna</first-name>
+          </customer>
+        </customers>
+      """
+
+      assert load(xml) == %{"customers" => [
+          %{"id" => "1", "first_name" => "Jenna"},
+          %{"id" => "2", "first_name" => "Jenna"}
+        ],
+      }
+    end
   end
 end
