@@ -122,15 +122,12 @@ defmodule Braintree.Customer do
   end
 
   @doc """
-  To search for customers, pass a map of search parameters. Keys are
-  the name of the fields to search, values are supposed to be a map
-  of an operator for key and a string for value.
+  To search for customers, pass a map of search parameters.
 
-  See README for reference.
 
-  Example:
+  ## Example:
 
-    {:ok, customer} = Customer.search(%{first_name: %{is: "Jenna"}})
+    {:ok, customers} = Braintree.Customer.search(%{first_name: %{is: "Jenna"}})
   """
   @spec search(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def search(params, opts \\ []) when is_map(params) do

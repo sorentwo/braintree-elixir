@@ -111,7 +111,7 @@ defmodule Braintree.Integration.CustomerTest do
   end
 
   describe "search/1" do
-    test "searches for text fields" do
+    test "with valid params" do
       {:ok, _customer} = Customer.create(%{
         first_name: "Jenna",
         last_name: "Smith",

@@ -79,7 +79,7 @@ defmodule Braintree.HTTP do
       {:ok, 422, _headers, body} ->
         {:error, body
                  |> decode_body()
-                 |> resolve_unprocessable_entity_error()}
+                 |> resolve_error_response()}
       {:ok, code, _headers, _body} when code >= 400 and code <= 504 ->
         {:error, code_to_reason(code)}
       {:error, reason} ->
@@ -164,10 +164,10 @@ defmodule Braintree.HTTP do
     def code_to_reason(unquote(code)), do: unquote(status)
   end
 
-  @doc false
-  @spec resolve_unprocessable_entity_error(Map.t) :: Error.t
-  def resolve_unprocessable_entity_error(%{"api_error_response" => api_error_response}),
-    do: Error.new(api_error_response)
-  def resolve_unprocessable_entity_error(%{"unprocessable_entity" => api_response}),
-    do: :unprocessable_entity
+  defp resolve_error_response(%{"api_error_response" => api_error_response}) do
+    Error.new(api_error_response)
+  end
+  defp resolve_error_response(%{"unprocessable_entity" => _}) do
+    Error.new(%{message: "Unprocessable Entity"})
+  end
 end

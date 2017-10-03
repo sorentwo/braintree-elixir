@@ -1,6 +1,6 @@
 defmodule Braintree.Subscription do
   @moduledoc """
-  Manage customer subscriptions to reocurring billing plans.
+  Manage customer subscriptions to recurring billing plans.
 
   For additional reference see:
   https://developers.braintreepayments.com/reference/request/subscription/create/ruby
@@ -164,15 +164,11 @@ defmodule Braintree.Subscription do
   end
 
   @doc """
-  To search for subscriptions, pass a map of search parameters. Keys are expected to be
-  the name of the fields to search, values are supposed to be a map
-  of an operator for key and a string for value.
+  To search for subscriptions, pass a map of search parameters.
 
-  See docs for more operators.
+  ## Example:
 
-  Example:
-
-    {:ok, subscriptions} = Subscription.search(%{plan_id: %{is: "gold"}})
+    {:ok, subscriptions} = Braintree.Subscription.search(%{plan_id: %{is: "starter"}})
   """
   @spec search(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def search(params, opts \\ []) when is_map(params) do
