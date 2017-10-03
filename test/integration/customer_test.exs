@@ -117,14 +117,21 @@ defmodule Braintree.Integration.CustomerTest do
         last_name: "Smith",
       })
 
-      {:ok, [%Customer{} = customer | _]} = Customer.search(%{first_name: %{is: "Jenna"}, last_name: %{is: "Smith"}})
+      search_params = %{first_name: %{is: "Jenna"},
+        last_name: %{
+          starts_with: "Smith",
+          contains: "ith",
+          is_not: "Smithsonian"
+        },
+    }
+      {:ok, [%Customer{} = customer | _]} = Customer.search(search_params)
 
       assert customer.first_name == "Jenna"
       assert customer.last_name == "Smith"
     end
 
-    test "returns empty array if no result" do
-      assert {:ok, []} = Customer.search(%{first_name: %{is: "Mickael"}})
+    test "returns not found if no result" do
+      assert {:error, :not_found} = Customer.search(%{first_name: %{is: "Mickael"}})
     end
 
     test "returns server error for invalid search params" do

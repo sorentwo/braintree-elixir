@@ -70,8 +70,8 @@ defmodule Braintree.Integration.SubscriptionTest do
       assert search_subscription == subscription
     end
 
-    test "returns empty array if no result" do
-      assert {:ok, []} = Subscription.search(%{plan_id: %{is: "invalid-starter"}})
+    test "returns not found if no result" do
+      assert {:error, :not_found} = Subscription.search(%{plan_id: %{is: "invalid-starter"}})
     end
 
     test "returns server error for invalid search params" do
