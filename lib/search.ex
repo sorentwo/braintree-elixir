@@ -30,6 +30,8 @@ defmodule Braintree.Search do
           |> List.flatten}
   end
 
+  # Credit card verification is an odd case because path to endpoints is different
+  # from the object name in the XML
   defp fetch_ids_chunk(ids, "verifications"=resource, initializer, opts) when is_list(ids) do
     search_params = %{search: %{ids: ids}}
     with {:ok, %{"credit_card_verifications" => data}} <- HTTP.post(resource <> "/advanced_search", search_params, opts) do
