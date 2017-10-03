@@ -9,7 +9,7 @@ defmodule Braintree.Customer do
 
   use Braintree.Construction
 
-  alias Braintree.{CreditCard, HTTP, PaypalAccount}
+  alias Braintree.{CreditCard, HTTP, PaypalAccount, Search}
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
@@ -122,6 +122,22 @@ defmodule Braintree.Customer do
   end
 
   @doc """
+  To search for customers, pass a map of search parameters. Keys are
+  the name of the fields to search, values are supposed to be a map
+  of an operator for key and a string for value.
+
+  See README for reference.
+
+  Example:
+
+    {:ok, customer} = Customer.search(%{first_name: %{is: "Jenna"}})
+  """
+  @spec search(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def search(params, opts \\ []) when is_map(params) do
+    Search.perform(params, "customers", &new/1, opts)
+  end
+
+  @doc """
   Convert a map into a Company struct along with nested payment options. Credit
   cards and paypal accounts are converted to a list of structs as well.
 
@@ -130,7 +146,7 @@ defmodule Braintree.Customer do
       customer = Braintree.Customer.new(%{"company" => "Soren",
                                           "email" => "parker@example.com"})
   """
-  @spec new(Map.t) :: t
+  @spec new(Map.t | [Map.t]) :: t | [t]
   def new(%{"customer" => map}) do
     new(map)
   end
@@ -139,5 +155,8 @@ defmodule Braintree.Customer do
 
     %{customer | credit_cards: CreditCard.new(customer.credit_cards),
                  paypal_accounts: PaypalAccount.new(customer.paypal_accounts)}
+  end
+  def new(list) when is_list(list) do
+    Enum.map(list, &new/1)
   end
 end

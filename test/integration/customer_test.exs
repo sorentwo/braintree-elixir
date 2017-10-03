@@ -110,6 +110,28 @@ defmodule Braintree.Integration.CustomerTest do
     end
   end
 
+  describe "search/1" do
+    test "searches for text fields" do
+      {:ok, _customer} = Customer.create(%{
+        first_name: "Jenna",
+        last_name: "Smith",
+      })
+
+      {:ok, [%Customer{} = customer | _]} = Customer.search(%{first_name: %{is: "Jenna"}, last_name: %{is: "Smith"}})
+
+      assert customer.first_name == "Jenna"
+      assert customer.last_name == "Smith"
+    end
+
+    test "returns empty array if no result" do
+      assert {:ok, []} = Customer.search(%{first_name: %{is: "Mickael"}})
+    end
+
+    test "returns server error for invalid search params" do
+      assert {:error, :server_error} = Customer.search(%{})
+    end
+  end
+
   defp master_card do
     CreditCardNumbers.master_cards() |> List.first
   end
