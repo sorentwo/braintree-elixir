@@ -1,6 +1,6 @@
 defmodule Braintree.Subscription do
   @moduledoc """
-  Manage customer subscriptions to reocurring billing plans.
+  Manage customer subscriptions to recurring billing plans.
 
   For additional reference see:
   https://developers.braintreepayments.com/reference/request/subscription/create/ruby

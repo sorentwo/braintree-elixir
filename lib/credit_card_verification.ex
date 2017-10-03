@@ -1,7 +1,9 @@
 defmodule Braintree.CreditCardVerification do
   @moduledoc """
+  Manage credit card verifications.
 
-
+  For additional reference see:
+  https://developers.braintreepayments.com/reference/response/credit-card-verification/ruby
   """
 
   use Braintree.Construction
