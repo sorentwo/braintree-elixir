@@ -90,7 +90,8 @@ search_params = %{first_name: %{is: "Jenna"},
                     contains: "ith",
                     is_not: "Smithsonian"
                   },
-                  email: %{ends_with: "gmail.com"},
+                  email: %{ends_with: "gmail.com"}
+                }
  {:ok, customers} = Customer.search(search_params)
 
 # Searching for credit card verifications
