@@ -62,7 +62,7 @@ defmodule Braintree.Integration.SubscriptionTest do
   end
 
   describe "search/1" do
-    test "searches for text fields" do
+    test "with valid params" do
       {:ok, subscription} = create_test_subscription()
 
       {:ok, [%Subscription{} = search_subscription | _]} = Subscription.search(%{plan_id: %{is: "starter"}})
