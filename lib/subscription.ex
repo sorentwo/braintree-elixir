@@ -164,11 +164,9 @@ defmodule Braintree.Subscription do
   end
 
   @doc """
-  To search for subscriptions, pass a map of search parameters. Keys are expected to be
-  the name of the fields to search, values are supposed to be a map
-  of an operator for key and a string for value.
+  To search for subscriptions, pass a map of search parameters.
 
-  See docs for more operators.
+  See README for examples.
 
   Example:
 

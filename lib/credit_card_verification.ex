@@ -47,10 +47,8 @@ defmodule Braintree.CreditCardVerification do
 
   @doc """
   To search for credit card verifications, pass a map of search parameters.
-  Keys are expected to be the name of the fields to search, values are
-  supposed to be a map of an operator for key and a string for value.
 
-  See docs for more operators.
+  See README for examples.
 
   Example:
 

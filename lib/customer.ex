@@ -122,11 +122,9 @@ defmodule Braintree.Customer do
   end
 
   @doc """
-  To search for customers, pass a map of search parameters. Keys are
-  the name of the fields to search, values are supposed to be a map
-  of an operator for key and a string for value.
+  To search for customers, pass a map of search parameters.
 
-  See README for reference.
+  See README for examples.
 
   Example:
 
