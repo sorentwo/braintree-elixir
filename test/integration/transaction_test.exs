@@ -19,6 +19,23 @@ defmodule Braintree.Integration.TransactionTest do
     assert transaction.id =~ ~r/^\w+$/
   end
 
+  test "sale/1 submits billing information" do
+    {:ok, transaction} = Transaction.sale(%{
+      amount: "100.00",
+      payment_method_nonce: Nonces.paypal_one_time_payment,
+      billing: %{
+        postal_code: "95014"
+      },
+      options: %{submit_for_settlement: true}
+    })
+
+    assert transaction.billing.postal_code == "95014"
+
+    # Reload transaction to be sure
+    {:ok, transaction} = Transaction.find(transaction.id)
+    assert transaction.billing.postal_code == "95014"
+  end
+
   test "sale/1 status is authorized when not submit for settlement" do
     {:ok, transaction} = Transaction.sale(%{
       amount: "100.00",
