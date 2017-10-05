@@ -107,5 +107,5 @@ defmodule Braintree.XML.Decoder do
   defp only_collection(elements),
     do: elements
         |> without_nil()
-        |> Enum.reject(fn {_, value} -> value != [] end)
+        |> Enum.reject(fn {_, value, _} -> value != [] end)
 end
