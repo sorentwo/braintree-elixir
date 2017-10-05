@@ -8,7 +8,7 @@ defmodule Braintree.CreditCardVerification do
 
   use Braintree.Construction
 
-  alias Braintree.{HTTP, Address, CreditCard, Search}
+  alias Braintree.{Address, CreditCard, Search}
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{

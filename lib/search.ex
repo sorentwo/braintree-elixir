@@ -1,9 +1,9 @@
 defmodule Braintree.Search do
   @moduledoc """
-    This module performs advanced search on a resource.
+  This module performs advanced search on a resource.
 
-    For additional reference see:
-    https://developers.braintreepayments.com/reference/general/searching/search-fields/ruby
+  For additional reference see:
+  https://developers.braintreepayments.com/reference/general/searching/search-fields/ruby
   """
 
   alias Braintree.HTTP
