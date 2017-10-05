@@ -39,9 +39,9 @@ defmodule Braintree.XML.Decoder do
       |> parse
 
     case attributes do
-      [type: "array"] -> %{name => transform({attributes, values})}
+      [type: "array"]      -> %{name => transform({attributes, values})}
       [type: "collection"] -> %{name => transform({attributes, values})}
-                    _ -> %{name => transform(values)}
+                         _ -> %{name => transform(values)}
     end
   end
 
