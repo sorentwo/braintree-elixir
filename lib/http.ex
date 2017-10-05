@@ -164,10 +164,8 @@ defmodule Braintree.HTTP do
     def code_to_reason(unquote(code)), do: unquote(status)
   end
 
-  @doc false
-  @spec resolve_unprocessable_entity_error(Map.t) :: Error.t
-  def resolve_unprocessable_entity_error(%{"api_error_response" => api_error_response}),
+  defp resolve_unprocessable_entity_error(%{"api_error_response" => api_error_response}),
     do: Error.new(api_error_response)
-  def resolve_unprocessable_entity_error(%{"unprocessable_entity" => api_response}),
+  defp resolve_unprocessable_entity_error(%{"unprocessable_entity" => _}),
     do: :unprocessable_entity
 end

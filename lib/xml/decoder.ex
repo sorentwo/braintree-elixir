@@ -73,9 +73,8 @@ defmodule Braintree.XML.Decoder do
   defp transform({[type: "array"], elements}),
     do: Enum.map(without_nil(elements), &(elem(transform(&1), 1)))
 
-  defp transform({[type: "collection"], elements}) do
-    Enum.map(only_collection(elements), &(elem(transform(&1), 1)))
-  end
+  defp transform({[type: "collection"], elements}),
+    do: Enum.map(only_collection(elements), &(elem(transform(&1), 1)))
 
   defp transform({name, [type: "integer"], [value]}),
     do: {name, String.to_integer(value)}
@@ -108,5 +107,5 @@ defmodule Braintree.XML.Decoder do
   defp only_collection(elements),
     do: elements
         |> without_nil()
-        |> Enum.reject(fn e -> elem(e, 1) != [] end)
+        |> Enum.reject(fn {_, value} -> value != [] end)
 end

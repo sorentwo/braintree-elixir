@@ -166,11 +166,9 @@ defmodule Braintree.Subscription do
   @doc """
   To search for subscriptions, pass a map of search parameters.
 
-  See README for examples.
+  ## Example:
 
-  Example:
-
-    {:ok, subscriptions} = Subscription.search(%{plan_id: %{is: "gold"}})
+    {:ok, subscriptions} = Braintree.Subscription.search(%{plan_id: %{is: "starter"}})
   """
   @spec search(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def search(params, opts \\ []) when is_map(params) do

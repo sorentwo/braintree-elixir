@@ -82,6 +82,7 @@ end
 ```
 
 Here is how to use the search endpoints:
+
 ```elixir
 # Searching for a customer
 search_params = %{first_name: %{is: "Jenna"},
@@ -92,7 +93,7 @@ search_params = %{first_name: %{is: "Jenna"},
                   },
                   email: %{ends_with: "gmail.com"}
                 }
- {:ok, customers} = Customer.search(search_params)
+ {:ok, customers} = Braintree.Customer.search(search_params)
 
 # Searching for credit card verifications
 search_params = %{amount: %{
@@ -101,7 +102,7 @@ search_params = %{amount: %{
                   },
                   status: ["approved", "pending"]
                 }
-  {:ok, verifications} = CreditCardVerification.search(search_params)
+  {:ok, verifications} = Braintree.CreditCardVerification.search(search_params)
 ```
 
 

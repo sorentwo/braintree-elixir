@@ -50,11 +50,12 @@ defmodule Braintree.CreditCardVerification do
   @doc """
   To search for credit card verifications, pass a map of search parameters.
 
-  See README for examples.
+  ## Example:
 
-  Example:
+    search_params = %{amount: %{min: "10.0", max: "15.0"},
+                      status: ["approved", "pending"]}
 
-    {:ok, verifications} = CreditCardVerification.search(%{customer: %{id: %{is: "1231231"}}})
+    {:ok, verifications} = Braintree.CreditCardVerification.search(search_params)
   """
   @spec search(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def search(params, opts \\ []) when is_map(params) do
@@ -69,10 +70,13 @@ defmodule Braintree.CreditCardVerification do
       verification = Braintree.CreditCardVerification.new(%{"credit_card_card_type" => "Visa"})
   """
   @spec new(Map.t | [Map.t]) :: t | [t]
-  def new(%{"credit_card_verification" => map}),
-    do: new(map)
-  def new(map) when is_map(map),
-    do: super(map)
-  def new(list) when is_list(list),
-    do: Enum.map(list, &new/1)
+  def new(%{"credit_card_verification" => map}) do
+    new(map)
+  end
+  def new(map) when is_map(map) do
+    super(map)
+  end
+  def new(list) when is_list(list) do
+    Enum.map(list, &new/1)
+  end
 end

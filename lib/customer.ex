@@ -124,11 +124,10 @@ defmodule Braintree.Customer do
   @doc """
   To search for customers, pass a map of search parameters.
 
-  See README for examples.
 
-  Example:
+  ## Example:
 
-    {:ok, customer} = Customer.search(%{first_name: %{is: "Jenna"}})
+    {:ok, customers} = Braintree.Customer.search(%{first_name: %{is: "Jenna"}})
   """
   @spec search(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def search(params, opts \\ []) when is_map(params) do

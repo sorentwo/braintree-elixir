@@ -1,45 +1,52 @@
 defmodule Braintree.Search do
-  alias Braintree.{HTTP}
+  @moduledoc """
+    This module performs advanced search on a resource.
+
+    For additional reference see:
+    https://developers.braintreepayments.com/reference/general/searching/search-fields/ruby
+  """
+
+  alias Braintree.HTTP
+  alias Braintree.Error, as: Error
 
   @doc """
   Perform an advanced search on a given resource and create new structs
   based on the initializer given.
-  """
 
+  ## Example
+    search_params = %{first_name: %{is: "Jenna"}}
+    {:ok, customers} = Braintree.Search.perform(search_params, "customers", &Braintree.Customer.new/1)
+
+  """
+  @spec perform(Map.t, String.t, &().t, Keyword.t) :: {:ok, [t]} | {:error, Error.t}
   def perform(params, resource, initializer, opts \\ []) when is_map(params) do
     with {:ok, payload} <- HTTP.post(resource <> "/advanced_search_ids", %{search: params}, opts) do
-      ids(payload, resource, initializer, opts)
+      fetch_all_records(payload, resource, initializer, opts)
     end
   end
 
-  defp ids(payload, resource, initializer, opts) when is_map(payload) do
-    search_results = Map.get(payload, "search_results")
-    page_size      = Map.get(search_results, "page_size")
-    ids            = Map.get(search_results, "ids")
-
-    fetch_all_ids(ids, page_size, resource, initializer, opts)
+  defp fetch_all_records(%{"search_results" => %{"ids" => []}}, _resource, _initializer, _opts) do
+    {:error, :not_found}
   end
 
-  defp fetch_all_ids([], _page_size, _resource, _initializer, _opts),
-    do: {:error, :not_found}
-  defp fetch_all_ids(ids, page_size, resource, initializer, opts) do
-    {:ok, Enum.chunk_every(ids, page_size)
-          |> Enum.reduce([], fn ids_chunk, acc ->
-            acc ++ [fetch_ids_chunk(ids_chunk, resource, initializer, opts)]
-          end)
-          |> List.flatten}
+  defp fetch_all_records(%{"search_results" => %{"page_size" => page_size, "ids" => ids}}, resource, initializer, opts) do
+    records = ids
+              |> Enum.chunk_every(page_size)
+              |> Enum.map(fn ids_chunk -> fetch_records_chunk(ids_chunk, resource, initializer, opts) end)
+
+    {:ok, records}
   end
 
   # Credit card verification is an odd case because path to endpoints is different
   # from the object name in the XML
-  defp fetch_ids_chunk(ids, "verifications"=resource, initializer, opts) when is_list(ids) do
+  defp fetch_records_chunk(ids, "verifications", initializer, opts) when is_list(ids) do
     search_params = %{search: %{ids: ids}}
     with {:ok, %{"credit_card_verifications" => data}} <- HTTP.post(resource <> "/advanced_search", search_params, opts) do
       initializer.(data)
     end
   end
 
-  defp fetch_ids_chunk(ids, resource, initializer, opts) when is_list(ids) do
+  defp fetch_records_chunk(ids, resource, initializer, opts) when is_list(ids) do
     search_params = %{search: %{ids: ids}}
     with {:ok, %{^resource => data}} <- HTTP.post(resource <> "/advanced_search", search_params, opts) do
       initializer.(data)
