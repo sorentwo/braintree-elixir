@@ -1,6 +1,6 @@
 defmodule Braintree.Subscription do
   @moduledoc """
-  Manage customer subscriptions to reocurring billing plans.
+  Manage customer subscriptions to recurring billing plans.
 
   For additional reference see:
   https://developers.braintreepayments.com/reference/request/subscription/create/ruby
@@ -8,7 +8,7 @@ defmodule Braintree.Subscription do
 
   use Braintree.Construction
 
-  alias Braintree.{HTTP, Transaction, AddOn}
+  alias Braintree.{HTTP, Transaction, AddOn, Search}
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
@@ -164,6 +164,18 @@ defmodule Braintree.Subscription do
   end
 
   @doc """
+  To search for subscriptions, pass a map of search parameters.
+
+  ## Example:
+
+    {:ok, subscriptions} = Braintree.Subscription.search(%{plan_id: %{is: "starter"}})
+  """
+  @spec search(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  def search(params, opts \\ []) when is_map(params) do
+    Search.perform(params, "subscriptions", &new/1, opts)
+  end
+
+  @doc """
   Convert a map into a Subscription struct. Add_ons and transactions
   are converted to a list of structs as well.
 
@@ -172,7 +184,7 @@ defmodule Braintree.Subscription do
       subscripton = Braintree.Subscription.new(%{"plan_id" => "business",
                                                  "status" => "Active"})
   """
-  @spec new(Map.t) :: t
+  @spec new(Map.t | [Map.t]) :: t | [t]
   def new(%{"subscription" => map}) do
     new(map)
   end
@@ -181,5 +193,8 @@ defmodule Braintree.Subscription do
 
     %{subscription | add_ons: AddOn.new(subscription.add_ons),
                      transactions: Transaction.new(subscription.transactions)}
+  end
+  def new(list) when is_list(list) do
+    Enum.map(list, &new/1)
   end
 end

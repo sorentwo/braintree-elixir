@@ -39,8 +39,9 @@ defmodule Braintree.XML.Decoder do
       |> parse
 
     case attributes do
-      [type: "array"] -> %{name => transform({attributes, values})}
-                    _ -> %{name => transform(values)}
+      [type: "array"]      -> %{name => transform({attributes, values})}
+      [type: "collection"] -> %{name => transform({attributes, values})}
+                         _ -> %{name => transform(values)}
     end
   end
 
@@ -72,6 +73,9 @@ defmodule Braintree.XML.Decoder do
   defp transform({[type: "array"], elements}),
     do: Enum.map(without_nil(elements), &(elem(transform(&1), 1)))
 
+  defp transform({[type: "collection"], elements}),
+    do: Enum.map(only_collection(elements), &(elem(transform(&1), 1)))
+
   defp transform({name, [type: "integer"], [value]}),
     do: {name, String.to_integer(value)}
 
@@ -99,4 +103,9 @@ defmodule Braintree.XML.Decoder do
 
   defp without_nil(list),
     do: Enum.reject(list, &is_nil/1)
+
+  defp only_collection(elements),
+    do: elements
+        |> without_nil()
+        |> Enum.reject(fn {_, value, _} -> value != [] end)
 end

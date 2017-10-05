@@ -47,6 +47,7 @@ defmodule Braintree.HTTP do
     401 => :unauthorized,
     403 => :forbidden,
     404 => :not_found,
+    422 => :unprocessable_entity,
     426 => :upgrade_required,
     429 => :too_many_requests,
     500 => :server_error,
@@ -76,13 +77,9 @@ defmodule Braintree.HTTP do
       {:ok, code, _headers, body} when code >= 200 and code <= 399 ->
         {:ok, decode_body(body)}
       {:ok, 422, _headers, body} ->
-        error =
-          body
-          |> decode_body()
-          |> Map.get("api_error_response")
-          |> Error.new()
-
-        {:error, error}
+        {:error, body
+                 |> decode_body()
+                 |> resolve_error_response()}
       {:ok, code, _headers, _body} when code >= 400 and code <= 504 ->
         {:error, code_to_reason(code)}
       {:error, reason} ->
@@ -165,5 +162,12 @@ defmodule Braintree.HTTP do
 
   for {code, status} <- @statuses do
     def code_to_reason(unquote(code)), do: unquote(status)
+  end
+
+  defp resolve_error_response(%{"api_error_response" => api_error_response}) do
+    Error.new(api_error_response)
+  end
+  defp resolve_error_response(%{"unprocessable_entity" => _}) do
+    Error.new(%{message: "Unprocessable Entity"})
   end
 end

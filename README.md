@@ -81,6 +81,31 @@ case Customer.create(%{company: "Whale Corp"}) do
 end
 ```
 
+Here is how to use the search endpoints:
+
+```elixir
+# Searching for a customer
+search_params = %{first_name: %{is: "Jenna"},
+                  last_name: %{
+                    starts_with: "Smith",
+                    contains: "ith",
+                    is_not: "Smithsonian"
+                  },
+                  email: %{ends_with: "gmail.com"}
+                }
+ {:ok, customers} = Braintree.Customer.search(search_params)
+
+# Searching for credit card verifications
+search_params = %{amount: %{
+                    min: "10.0",
+                    max: "15.0"
+                  },
+                  status: ["approved", "pending"]
+                }
+  {:ok, verifications} = Braintree.CreditCardVerification.search(search_params)
+```
+
+
 [doc]: https://developers.braintreepayments.com/
 
 ## Testing
