@@ -63,6 +63,7 @@ defmodule Braintree do
       :error ->
         fallback_or_raise(key, nil, default)
     end
+    |> format(key)
   end
 
   @doc """
@@ -83,4 +84,7 @@ defmodule Braintree do
   defp fallback_or_raise(key, nil, nil),   do: raise ConfigError, key
   defp fallback_or_raise(_, nil, default), do: default
   defp fallback_or_raise(_, value, _),     do: value
+
+  defp format(value, :environment) when is_binary(value), do: String.to_existing_atom(value)
+  defp format(value, _key),                               do: value
 end
