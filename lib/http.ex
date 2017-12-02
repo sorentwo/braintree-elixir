@@ -23,9 +23,10 @@ defmodule Braintree.HTTP do
   alias Braintree.XML.{Decoder, Encoder}
   alias Braintree.ErrorResponse, as: Error
 
-  @type response :: {:ok, Map.t | {:error, atom}} |
-                    {:error, Error.t} |
-                    {:error, binary}
+  @type response ::
+          {:ok, Map.t() | {:error, atom}}
+          | {:error, Error.t()}
+          | {:error, binary}
 
   @endpoints [
     production: "https://api.braintreegateway.com/merchants/",
@@ -69,19 +70,32 @@ defmodule Braintree.HTTP do
         end
       end
   """
-  @spec request(atom, binary, binary | Map.t, Keyword.t) :: response
+  @spec request(atom, binary, binary | Map.t(), Keyword.t()) :: response
   def request(method, path, body \\ %{}, opts \\ []) do
-    response = :hackney.request(method, build_url(path, opts), build_headers(opts), encode_body(body), build_options())
+    response =
+      :hackney.request(
+        method,
+        build_url(path, opts),
+        build_headers(opts),
+        encode_body(body),
+        build_options()
+      )
 
     case response do
       {:ok, code, _headers, body} when code >= 200 and code <= 399 ->
         {:ok, decode_body(body)}
+
       {:ok, 422, _headers, body} ->
-        {:error, body
-                 |> decode_body()
-                 |> resolve_error_response()}
+        {
+          :error,
+          body
+          |> decode_body()
+          |> resolve_error_response()
+        }
+
       {:ok, code, _headers, _body} when code >= 400 and code <= 504 ->
         {:error, code_to_reason(code)}
+
       {:error, reason} ->
         {:error, reason}
     end
@@ -94,12 +108,15 @@ defmodule Braintree.HTTP do
     def unquote(method)(path) do
       request(unquote(method), path, %{}, [])
     end
+
     def unquote(method)(path, payload) when is_map(payload) do
       request(unquote(method), path, payload, [])
     end
+
     def unquote(method)(path, opts) when is_list(opts) do
       request(unquote(method), path, %{}, opts)
     end
+
     def unquote(method)(path, payload, opts) do
       request(unquote(method), path, payload, opts)
     end
@@ -108,21 +125,28 @@ defmodule Braintree.HTTP do
   ## Helper Functions
 
   @doc false
-  @spec build_url(binary, Keyword.t) :: binary
+  @spec build_url(binary, Keyword.t()) :: binary
   def build_url(path, opts) do
-    environment = Keyword.get_lazy(opts, :environment, fn -> Braintree.get_env(:environment, :sandbox) end)
-    merchant_id = Keyword.get_lazy(opts, :merchant_id, fn -> Braintree.get_env(:merchant_id) end)
+    environment = opts |> get_lazy_env(:environment) |> maybe_to_atom()
+    merchant_id = get_lazy_env(opts, :merchant_id)
 
     Keyword.fetch!(@endpoints, environment) <> merchant_id <> "/" <> path
   end
 
+  defp get_lazy_env(opts, key) do
+    Keyword.get_lazy(opts, key, fn -> Braintree.get_env(key) end)
+  end
+
+  defp maybe_to_atom(value) when is_binary(value), do: String.to_existing_atom(value)
+  defp maybe_to_atom(value) when is_atom(value), do: value
+
   @doc false
-  @spec encode_body(binary | Map.t) :: binary
+  @spec encode_body(binary | Map.t()) :: binary
   def encode_body(body) when body == "" or body == %{}, do: ""
   def encode_body(body), do: Encoder.dump(body)
 
   @doc false
-  @spec decode_body(binary) :: Map.t
+  @spec decode_body(binary) :: Map.t()
   def decode_body(body) do
     body
     |> :zlib.gunzip()
@@ -139,9 +163,9 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec build_headers(Keyword.t) :: [tuple]
+  @spec build_headers(Keyword.t()) :: [tuple]
   def build_headers(opts) do
-    public  = Keyword.get_lazy(opts, :public_key, fn -> Braintree.get_env(:public_key) end)
+    public = Keyword.get_lazy(opts, :public_key, fn -> Braintree.get_env(:public_key) end)
     private = Keyword.get_lazy(opts, :private_key, fn -> Braintree.get_env(:private_key) end)
 
     [{"Authorization", basic_auth(public, private)} | @headers]
@@ -167,6 +191,7 @@ defmodule Braintree.HTTP do
   defp resolve_error_response(%{"api_error_response" => api_error_response}) do
     Error.new(api_error_response)
   end
+
   defp resolve_error_response(%{"unprocessable_entity" => _}) do
     Error.new(%{message: "Unprocessable Entity"})
   end

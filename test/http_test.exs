@@ -13,7 +13,7 @@ defmodule Braintree.HTTPTest do
   end
 
   test "build_url/2 builds a url from provided options" do
-    assert HTTP.build_url("customer", environment: :production, merchant_id: "opts_merchant_id") =~
+    assert HTTP.build_url("customer", environment: "production", merchant_id: "opts_merchant_id") =~
       "api.braintreegateway.com/merchants/opts_merchant_id/customer"
   end
 
