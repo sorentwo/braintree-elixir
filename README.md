@@ -39,9 +39,9 @@ sourced by `config.exs`, or read the values in from the environment:
 ```elixir
 config :braintree,
   environment: :sandbox,
-  merchant_id: System.get_env("BRAINTREE_MERCHANT_ID"),
-  public_key:  System.get_env("BRAINTREE_PUBLIC_KEY"),
-  private_key: System.get_env("BRAINTREE_PRIVATE_KEY")
+  merchant_id: {:system, "BRAINTREE_MERCHANT_ID"},
+  public_key:  {:system, "BRAINTREE_PUBLIC_KEY"},
+  private_key: {:system, "BRAINTREE_PRIVATE_KEY"}
 ```
 
 Furthermore, the environment defaults to `:sandbox`, so you'll want to configure
