@@ -59,7 +59,7 @@ defmodule Braintree.Address do
 
     address.company # Braintree
   """
-  @spec create(binary, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec create(binary, map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def create(customer_id, params \\ %{}, opts \\ []) when is_binary(customer_id) do
     with {:ok, payload} <- HTTP.post("customers/#{customer_id}/addresses/", %{address: params}, opts) do
       {:ok, new(payload)}
@@ -81,8 +81,8 @@ defmodule Braintree.Address do
   end
 
   @doc """
-  To update an address, use a customer's ID with an address's ID along with 
-  new attributes. The same validations apply as when creating an address. 
+  To update an address, use a customer's ID with an address's ID along with
+  new attributes. The same validations apply as when creating an address.
   Any attribute not passed will remain unchanged.
 
   ## Example
@@ -93,7 +93,7 @@ defmodule Braintree.Address do
 
       address.company # "New Company Name"
   """
-  @spec update(binary, binary, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec update(binary, binary, map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def update(customer_id, id, params, opts \\ []) when is_binary(customer_id) and is_binary(id) do
     with {:ok, payload} <- HTTP.put("customers/#{customer_id}/addresses/" <> id, %{address: params}, opts) do
       {:ok, new(payload)}
@@ -122,6 +122,5 @@ defmodule Braintree.Address do
 
       address = Braintree.Address.new(%{"company" => "Braintree"})
   """
-  @spec new(Map.t) :: t
   def new(%{"address" => map}), do: super(map)
 end

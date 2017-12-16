@@ -52,7 +52,7 @@ defmodule Braintree.Util do
       iex> Braintree.Util.atomize(%{"a" => 1, "b" => %{"c" => 2}})
       %{a: 1, b: %{c: 2}}
   """
-  @spec atomize(Map.t) :: Map.t
+  @spec atomize(map) :: map
   def atomize(map) when is_map(map) do
     Enum.into(map, %{}, fn
       {key, val} when is_map(val) -> {String.to_atom(key), atomize(val)}

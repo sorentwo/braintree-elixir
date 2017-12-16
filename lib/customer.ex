@@ -23,11 +23,11 @@ defmodule Braintree.Customer do
                website:           String.t,
                created_at:        String.t,
                updated_at:        String.t,
-               custom_fields:     %{},
-               addresses:         [],
-               credit_cards:      [],
-               paypal_accounts:   [],
-               coinbase_accounts: []
+               custom_fields:     map,
+               addresses:         [map],
+               credit_cards:      [CreditCard.t],
+               paypal_accounts:   [PaypalAccount.t],
+               coinbase_accounts: [map]
              }
 
   defstruct id:                nil,
@@ -64,7 +64,7 @@ defmodule Braintree.Customer do
 
       customer.company # Braintree
   """
-  @spec create(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec create(map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("customers", %{customer: params}, opts) do
       {:ok, new(payload)}
@@ -114,7 +114,7 @@ defmodule Braintree.Customer do
 
       customer.company # "New Company Name"
   """
-  @spec update(binary, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec update(binary, map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def update(id, params, opts \\ []) when is_binary(id) and is_map(params) do
     with {:ok, payload} <- HTTP.put("customers/" <> id, %{customer: params}, opts) do
       {:ok, new(payload)}
@@ -129,7 +129,7 @@ defmodule Braintree.Customer do
 
     {:ok, customers} = Braintree.Customer.search(%{first_name: %{is: "Jenna"}})
   """
-  @spec search(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec search(map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def search(params, opts \\ []) when is_map(params) do
     Search.perform(params, "customers", &new/1, opts)
   end
@@ -143,7 +143,6 @@ defmodule Braintree.Customer do
       customer = Braintree.Customer.new(%{"company" => "Soren",
                                           "email" => "parker@example.com"})
   """
-  @spec new(Map.t | [Map.t]) :: t | [t]
   def new(%{"customer" => map}) do
     new(map)
   end

@@ -14,14 +14,14 @@ defmodule Braintree.Plan do
 
   @type t :: %__MODULE__{
                id:                       String.t,
-               add_ons:                  [],
+               add_ons:                  [any],
                balance:                  String.t,
                billing_day_of_month:     String.t,
                billing_frequency:        String.t,
                created_at:               String.t,
                currency_iso_code:        String.t,
                description:              String.t,
-               discounts:                [],
+               discounts:                [any],
                name:                     String.t,
                number_of_billing_cycles: String.t,
                price:                    String.t,

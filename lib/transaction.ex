@@ -14,33 +14,33 @@ defmodule Braintree.Transaction do
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
-               add_ons:                            [],
+               add_ons:                            [AddOn.t],
                additional_processor_response:      String.t,
                amount:                             number,
                apple_pay_details:                  String.t,
                avs_error_response_code:            String.t,
                avs_postal_code_response_code:      String.t,
                avs_street_address_response_code:   String.t,
-               billing:                            Map.t,
+               billing:                            map,
                channel:                            String.t,
                coinbase_details:                   String.t,
                created_at:                         String.t,
-               credit_card_details:                Map.t,
+               credit_card_details:                map,
                currency_iso_code:                  String.t,
-               custom_fields:                      Map.t,
-               customer_details:                   Map.t,
+               custom_fields:                      map,
+               customer_details:                   map,
                cvv_response_code:                  String.t,
-               descriptor:                         Map.t,
-               disbursement_details:               Map.t,
-               discounts:                          [],
-               disputes:                           [],
+               descriptor:                         map,
+               disbursement_details:               map,
+               discounts:                          [any],
+               disputes:                           [any],
                escrow_status:                      String.t,
                gateway_rejection_reason:           String.t,
                id:                                 String.t,
                merchant_account_id:                String.t,
                order_id:                           String.t,
                payment_instrument_type:            String.t,
-               paypal:                             Map.t,
+               paypal:                             map,
                plan_id:                            String.t,
                processor_authorization_code:       String.t,
                processor_response_code:            String.t,
@@ -54,10 +54,10 @@ defmodule Braintree.Transaction do
                risk_data:                          String.t,
                service_fee_amount:                 number,
                settlement_batch_id:                String.t,
-               shipping_details:                   Map.t,
+               shipping_details:                   map,
                status:                             String.t,
                status_history:                     String.t,
-               subscription_details:               Map.t,
+               subscription_details:               map,
                subscription_id:                    String.t,
                tax_amount:                         number,
                tax_exempt:                         boolean,
@@ -131,7 +131,7 @@ defmodule Braintree.Transaction do
 
       transaction.status # "settling"
   """
-  @spec sale(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec sale(map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def sale(params, opts \\ []) do
     sale_params = Map.merge(params, %{type: "sale"})
 
@@ -149,7 +149,7 @@ defmodule Braintree.Transaction do
       {:ok, transaction} = Transaction.submit_for_settlement("123", %{amount: "100"})
       transaction.status # "settling"
   """
-  @spec submit_for_settlement(String.t, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec submit_for_settlement(String.t, map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def submit_for_settlement(transaction_id, params, opts \\ []) do
     path = "transactions/#{transaction_id}/submit_for_settlement"
 
@@ -168,7 +168,7 @@ defmodule Braintree.Transaction do
 
       transaction.status # "refunded"
   """
-  @spec refund(String.t, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec refund(String.t, map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def refund(transaction_id, params, opts \\ []) do
     path = "transactions/#{transaction_id}/refund"
 
@@ -221,7 +221,6 @@ defmodule Braintree.Transaction do
       transaction = Braintree.Transaction.new(%{"subscription_id" => "subxid",
                                                       "status" => "submitted_for_settlement"})
   """
-  @spec new(Map.t | [Map.t]) :: t | [t]
   def new(%{"transaction" => map}) do
     new(map)
   end

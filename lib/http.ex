@@ -24,8 +24,8 @@ defmodule Braintree.HTTP do
   alias Braintree.ErrorResponse, as: Error
 
   @type response ::
-          {:ok, Map.t() | {:error, atom}}
-          | {:error, Error.t()}
+          {:ok, map | {:error, atom}}
+          | {:error, Error.t}
           | {:error, binary}
 
   @endpoints [
@@ -70,7 +70,7 @@ defmodule Braintree.HTTP do
         end
       end
   """
-  @spec request(atom, binary, binary | Map.t(), Keyword.t()) :: response
+  @spec request(atom, binary, binary | map, Keyword.t) :: response
   def request(method, path, body \\ %{}, opts \\ []) do
     response =
       :hackney.request(
@@ -125,7 +125,7 @@ defmodule Braintree.HTTP do
   ## Helper Functions
 
   @doc false
-  @spec build_url(binary, Keyword.t()) :: binary
+  @spec build_url(binary, Keyword.t) :: binary
   def build_url(path, opts) do
     environment = opts |> get_lazy_env(:environment) |> maybe_to_atom()
     merchant_id = get_lazy_env(opts, :merchant_id)
@@ -141,12 +141,12 @@ defmodule Braintree.HTTP do
   defp maybe_to_atom(value) when is_atom(value), do: value
 
   @doc false
-  @spec encode_body(binary | Map.t()) :: binary
+  @spec encode_body(binary | map) :: binary
   def encode_body(body) when body == "" or body == %{}, do: ""
   def encode_body(body), do: Encoder.dump(body)
 
   @doc false
-  @spec decode_body(binary) :: Map.t()
+  @spec decode_body(binary) :: map
   def decode_body(body) do
     body
     |> :zlib.gunzip()
@@ -163,7 +163,7 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec build_headers(Keyword.t()) :: [tuple]
+  @spec build_headers(Keyword.t) :: [tuple]
   def build_headers(opts) do
     public = Keyword.get_lazy(opts, :public_key, fn -> Braintree.get_env(:public_key) end)
     private = Keyword.get_lazy(opts, :private_key, fn -> Braintree.get_env(:private_key) end)
@@ -181,7 +181,7 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec code_to_reason(integer | atom) :: integer
+  @spec code_to_reason(integer) :: atom
   def code_to_reason(integer)
 
   for {code, status} <- @statuses do

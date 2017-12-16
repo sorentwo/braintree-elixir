@@ -11,7 +11,7 @@ defmodule Braintree.Construction do
       @doc """
       Convert a response into one or more typed structs.
       """
-      @spec new(Map.t | [Map.t]) :: t | [t]
+      @spec new(map | [map]) :: t | [t]
       def new(params) when is_map(params) do
         struct(__MODULE__, atomize(params))
       end

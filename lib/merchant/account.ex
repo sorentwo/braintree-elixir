@@ -41,7 +41,7 @@ defmodule Braintree.Merchant.Account do
       tos_accepted: true,
     })
   """
-  @spec create(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec create(map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("merchant_accounts/create_via_api", %{merchant_account: params}, opts) do
       {:ok, new(payload)}
@@ -61,7 +61,7 @@ defmodule Braintree.Merchant.Account do
 
       merchant.funding_details.account_number # "1234567890"
   """
-  @spec update(binary, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec update(binary, map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def update(id, params, opts \\ []) when is_binary(id) do
     with {:ok, payload} <- HTTP.put("merchant_accounts/#{id}/update_via_api", %{merchant_account: params}, opts) do
       {:ok, new(payload)}
@@ -85,6 +85,5 @@ defmodule Braintree.Merchant.Account do
   @doc """
   Convert a map into a `Braintree.Merchant.Account` struct.
   """
-  @spec new(Map.t) :: t
   def new(%{"merchant_account" => map}), do: super(map)
 end

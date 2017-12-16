@@ -21,7 +21,7 @@ defmodule Braintree.XML.Encoder do
       iex> Braintree.XML.Encoder.dump(%{a: %{b: "<tag>"}})
       ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<a>\n<b>&lt;tag&gt;</b>\n</a>|
   """
-  @spec dump(Map.t) :: xml
+  @spec dump(map) :: xml
   def dump(map) do
     generated =
       map
