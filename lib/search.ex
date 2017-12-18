@@ -7,7 +7,7 @@ defmodule Braintree.Search do
   """
 
   alias Braintree.HTTP
-  alias Braintree.Error, as: Error
+  alias Braintree.ErrorResponse, as: Error
 
   @doc """
   Perform an advanced search on a given resource and create new structs
@@ -18,7 +18,7 @@ defmodule Braintree.Search do
     {:ok, customers} = Braintree.Search.perform(search_params, "customers", &Braintree.Customer.new/1)
 
   """
-  @spec perform(Map.t, String.t, fun(), Keyword.t) :: {:ok, List.t} | {:error, Error.t}
+  @spec perform(map, String.t, fun(), Keyword.t) :: {:ok, [any]} | {:error, Error.t}
   def perform(params, resource, initializer, opts \\ []) when is_map(params) do
     with {:ok, payload} <- HTTP.post(resource <> "/advanced_search_ids", %{search: params}, opts) do
       fetch_all_records(payload, resource, initializer, opts)

@@ -31,8 +31,8 @@ defmodule Braintree.CreditCard do
                created_at:               String.t,
                updated_at:               String.t,
                venmo_sdk:                boolean,
-               subscriptions:            [],
-               verifications:            []
+               subscriptions:            [any],
+               verifications:            [any]
              }
 
   defstruct bin:                      nil,

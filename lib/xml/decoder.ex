@@ -26,7 +26,7 @@ defmodule Braintree.XML.Decoder do
       iex> Braintree.XML.Decoder.load("<a><b type='string'>&quot;air quotes&quot;</b></a>")
       %{"a" => %{"b" => ~s("air quotes")}}
   """
-  @spec load(xml) :: Map.t
+  @spec load(xml) :: map
   def load(""), do: %{}
 
   def load(xml) do

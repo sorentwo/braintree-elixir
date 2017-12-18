@@ -14,10 +14,10 @@ defmodule Braintree.PaymentMethodNonce do
                nonce:               String.t,
                three_d_secure_info: String.t,
                type:                String.t,
-               details:             Map.t,
+               details:             map,
                is_locked:           boolean,
                consumed:            boolean,
-               security_questions:  []
+               security_questions:  [any]
              }
 
   defstruct default:              nil,
@@ -67,7 +67,6 @@ defmodule Braintree.PaymentMethodNonce do
   end
 
   @doc false
-  @spec new(Map.t) :: t
   def new(%{"payment_method_nonce" => map}) do
     super(map)
   end

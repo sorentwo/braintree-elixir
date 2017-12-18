@@ -25,7 +25,7 @@ defmodule Braintree.PaymentMethod do
 
       credit_card.type # "Visa"
   """
-  @spec create(Map.t, Keyword.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
+  @spec create(map, Keyword.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("payment_methods", %{payment_method: params}, opts) do
       {:ok, new(payload)}
@@ -56,7 +56,7 @@ defmodule Braintree.PaymentMethod do
 
       payment_method.cardholder_name # "NEW"
   """
-  @spec update(String.t, Map.t, Keyword.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
+  @spec update(String.t, map, Keyword.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
   def update(token, params \\ %{}, opts \\ []) do
     path = "payment_methods/any/" <> token
 
@@ -99,7 +99,7 @@ defmodule Braintree.PaymentMethod do
     end
   end
 
-  @spec new(Map.t) :: CreditCard.t | PaypalAccount.t
+  @spec new(map) :: CreditCard.t | PaypalAccount.t
   defp new(%{"credit_card" => credit_card}) do
     CreditCard.new(credit_card)
   end

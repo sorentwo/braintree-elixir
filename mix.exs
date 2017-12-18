@@ -1,7 +1,7 @@
 defmodule Braintree.Mixfile do
   use Mix.Project
 
-  @version "0.8.0"
+  @version "0.9.0"
 
   def project do
     [
@@ -16,7 +16,11 @@ defmodule Braintree.Mixfile do
       package: package(),
       name: "Braintree",
       deps: deps(),
-      docs: docs()
+      docs: docs(),
+      dialyzer: [
+        plt_add_deps: :transitive,
+        flags: [:unmatched_returns, :error_handling]
+      ]
     ]
   end
 
@@ -55,7 +59,8 @@ defmodule Braintree.Mixfile do
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:earmark, ">= 0.0.0", only: :dev},
       {:inch_ex, ">= 0.0.0", only: :dev},
-      {:excoveralls, "~> 0.7", only: [:dev, :test]}
+      {:excoveralls, "~> 0.7", only: [:dev, :test]},
+      {:dialyxir, "~> 0.5", only: [:dev], runtime: false}
     ]
   end
 

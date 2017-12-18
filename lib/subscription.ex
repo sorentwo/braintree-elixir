@@ -38,10 +38,10 @@ defmodule Braintree.Subscription do
                trial_duration_unit:        String.t,
                trial_period:               String.t,
                updated_at:                 String.t,
-               add_ons:                    [],
-               discounts:                  [],
-               transactions:               [],
-               status_history:             []
+               add_ons:                    [AddOn.t],
+               discounts:                  [any],
+               transactions:               [Transaction.t],
+               status_history:             [any]
              }
 
   defstruct id:                         nil,
@@ -86,7 +86,7 @@ defmodule Braintree.Subscription do
         plan_id: "starter"
       })
   """
-  @spec create(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec create(map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("subscriptions", %{subscription: params}, opts) do
       {:ok, new(payload)}
@@ -156,7 +156,7 @@ defmodule Braintree.Subscription do
       })
       subscription.plan_id # "new_plan_id"
   """
-  @spec update(binary, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec update(binary, map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def update(id, params, opts \\ []) when is_binary(id) and is_map(params) do
     with {:ok, payload} <- HTTP.put("subscriptions/" <> id, %{subscription: params}, opts) do
       {:ok, new(payload)}
@@ -170,7 +170,7 @@ defmodule Braintree.Subscription do
 
     {:ok, subscriptions} = Braintree.Subscription.search(%{plan_id: %{is: "starter"}})
   """
-  @spec search(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec search(map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def search(params, opts \\ []) when is_map(params) do
     Search.perform(params, "subscriptions", &new/1, opts)
   end
@@ -184,7 +184,6 @@ defmodule Braintree.Subscription do
       subscripton = Braintree.Subscription.new(%{"plan_id" => "business",
                                                  "status" => "Active"})
   """
-  @spec new(Map.t | [Map.t]) :: t | [t]
   def new(%{"subscription" => map}) do
     new(map)
   end

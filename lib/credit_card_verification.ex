@@ -12,7 +12,7 @@ defmodule Braintree.CreditCardVerification do
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
-                amount:                             Decimal.t,
+                amount:                             String.t,
                 avs_error_response_code:            String.t,
                 avs_postal_code_response_code:      String.t,
                 avs_street_address_response_code:   String.t,
@@ -26,7 +26,7 @@ defmodule Braintree.CreditCardVerification do
                 merchant_account_id:                String.t,
                 processor_response_code:            String.t,
                 processor_response_text:            String.t,
-                risk_data:                          %{},
+                risk_data:                          map,
                 status:                             String.t
             }
 
@@ -57,7 +57,7 @@ defmodule Braintree.CreditCardVerification do
 
     {:ok, verifications} = Braintree.CreditCardVerification.search(search_params)
   """
-  @spec search(Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec search(map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def search(params, opts \\ []) when is_map(params) do
     Search.perform(params, "verifications", &new/1, opts)
   end
@@ -69,7 +69,6 @@ defmodule Braintree.CreditCardVerification do
 
       verification = Braintree.CreditCardVerification.new(%{"credit_card_card_type" => "Visa"})
   """
-  @spec new(Map.t | [Map.t]) :: t | [t]
   def new(%{"credit_card_verification" => map}) do
     new(map)
   end

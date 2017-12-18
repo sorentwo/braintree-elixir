@@ -35,7 +35,7 @@ defmodule Braintree.SettlementBatchSummary do
     Convert a list of records into structs, including any custom fields that
     were used as the grouping value.
     """
-    @spec new(Map.t | [Map.t]) :: t | [t]
+    @spec new(map | [map]) :: t | [t]
     def new(params) when is_map(params) do
       atomized = atomize(params)
       summary = struct(__MODULE__, atomized)
@@ -75,7 +75,7 @@ defmodule Braintree.SettlementBatchSummary do
     end
   end
 
-  @spec build_criteria(binary, binary | nil) :: Map.t
+  @spec build_criteria(binary, binary | nil) :: map
   defp build_criteria(settlement_date, nil) do
     %{settlement_date: settlement_date}
   end
@@ -87,7 +87,6 @@ defmodule Braintree.SettlementBatchSummary do
   Convert a map including records into a summary struct with a list
   of record structs.
   """
-  @spec new(Map.t) :: t
   def new(%{"records" => records}) do
     struct(__MODULE__, records: Record.new(records))
   end

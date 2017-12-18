@@ -19,7 +19,7 @@ defmodule Braintree.PaypalAccount do
                updated_at:           String.t,
                default:              boolean,
                is_channel_initated:  boolean,
-               subscriptions:        []
+               subscriptions:        [any]
              }
 
   defstruct billing_agreement_id: nil,
@@ -61,7 +61,7 @@ defmodule Braintree.PaypalAccount do
         %{options: %{make_default: true}
       )
   """
-  @spec update(String.t, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec update(String.t, map, Keyword.t) :: {:ok, t} | {:error, Error.t}
   def update(token, params, opts \\ []) do
     path = "payment_methods/paypal_account/" <> token
 
