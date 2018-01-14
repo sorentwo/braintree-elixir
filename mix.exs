@@ -29,10 +29,11 @@ defmodule Braintree.Mixfile do
       applications: [:logger, :hackney, :xmerl],
       env: [
         environment: :sandbox,
+        http_options: [timeout: 30_000],
+        master_merchant_id: {:system, "BRAINTREE_MASTER_MERCHANT_ID"},
         merchant_id: {:system, "BRAINTREE_MERCHANT_ID"},
-        public_key: {:system, "BRAINTREE_PUBLIC_KEY"},
         private_key: {:system, "BRAINTREE_PRIVATE_KEY"},
-        master_merchant_id: {:system, "BRAINTREE_MASTER_MERCHANT_ID"}
+        public_key: {:system, "BRAINTREE_PUBLIC_KEY"}
       ]
     ]
   end

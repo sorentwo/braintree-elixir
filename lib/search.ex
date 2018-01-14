@@ -37,8 +37,8 @@ defmodule Braintree.Search do
     {:ok, records}
   end
 
-  # Credit card verification is an odd case because path to endpoints is different
-  # from the object name in the XML
+  # Credit card verification is an odd case because path to endpoints is
+  # different from the object name in the XML.
   defp fetch_records_chunk(ids, "verifications", initializer, opts) when is_list(ids) do
     search_params = %{search: %{ids: ids}}
     with {:ok, %{"credit_card_verifications" => data}} <- HTTP.post("verifications/advanced_search", search_params, opts) do
