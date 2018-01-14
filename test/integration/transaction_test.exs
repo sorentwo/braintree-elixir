@@ -2,17 +2,17 @@ defmodule Braintree.Integration.TransactionTest do
   use ExUnit.Case, async: true
 
   alias Braintree.Transaction
-  alias Braintree.Testing.Nonces
-  alias Braintree.Testing.TestTransaction
+  alias Braintree.Testing.{CreditCardNumbers, Nonces, TestTransaction}
 
   @moduletag :integration
 
   test "sale/1 successful with a payment nonce" do
-    {:ok, transaction} = Transaction.sale(%{
-      amount: "100.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment,
-      options: %{submit_for_settlement: true}
-    })
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.paypal_one_time_payment(),
+        options: %{submit_for_settlement: true}
+      })
 
     assert transaction.amount == "100.00"
     assert transaction.status == "settling"
@@ -20,27 +20,47 @@ defmodule Braintree.Integration.TransactionTest do
   end
 
   test "sale/1 submits billing information" do
-    {:ok, transaction} = Transaction.sale(%{
-      amount: "100.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment,
-      billing: %{
-        postal_code: "95014"
-      },
-      options: %{submit_for_settlement: true}
-    })
+    [card_number | _] = CreditCardNumbers.master_cards()
 
-    assert transaction.billing.postal_code == "95014"
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "112.44",
+        customer: %{
+          last_name: "Adama"
+        },
+        credit_card: %{
+          number: card_number,
+          expiration_date: "05/2020"
+        },
+        billing: %{
+          country_name: "Botswana",
+          country_code_alpha2: "BW",
+          country_code_alpha3: "BWA",
+          country_code_numeric: "072"
+        },
+        shipping: %{
+          country_name: "Bhutan",
+          country_code_alpha2: "BT",
+          country_code_alpha3: "BTN",
+          country_code_numeric: "064"
+        }
+      })
 
-    # Reload transaction to be sure
-    {:ok, transaction} = Transaction.find(transaction.id)
-    assert transaction.billing.postal_code == "95014"
+    assert transaction.billing.country_name == "Botswana"
+    assert transaction.billing.country_code_alpha2 == "BW"
+    assert transaction.billing.country_code_numeric == "072"
+
+    assert transaction.shipping.country_name == "Bhutan"
+    assert transaction.shipping.country_code_alpha2 == "BT"
+    assert transaction.shipping.country_code_numeric == "064"
   end
 
   test "sale/1 status is authorized when not submit for settlement" do
-    {:ok, transaction} = Transaction.sale(%{
-      amount: "100.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment
-    })
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.paypal_one_time_payment()
+      })
 
     assert transaction.amount == "100.00"
     assert transaction.status == "authorized"
@@ -48,21 +68,25 @@ defmodule Braintree.Integration.TransactionTest do
   end
 
   test "submit_for_settlement/2 can be used if transaction is authorized but not settling" do
-    {:ok, transaction} = Transaction.sale(%{
-      amount: "100.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment
-    })
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.paypal_one_time_payment()
+      })
+
     {:ok, settled_transaction} = Transaction.submit_for_settlement(transaction.id, %{})
 
     assert settled_transaction.status == "settling"
   end
 
   test "submit_for_settlement/2 fails if transaction is already settling" do
-    {:ok, transaction} = Transaction.sale(%{
-      amount: "100.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment,
-      options: %{submit_for_settlement: true}
-    })
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.paypal_one_time_payment(),
+        options: %{submit_for_settlement: true}
+      })
+
     {:error, error} = Transaction.submit_for_settlement(transaction.id, %{})
 
     assert error.message =~ "Cannot submit for settlement unless status is authorized."
@@ -70,21 +94,27 @@ defmodule Braintree.Integration.TransactionTest do
 
   test "submit_for_settlement/2 by default will settle the amount charged" do
     amount_charged = "100.00"
-    {:ok, transaction} = Transaction.sale(%{
-      amount: amount_charged,
-      payment_method_nonce: Nonces.paypal_one_time_payment
-    })
+
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: amount_charged,
+        payment_method_nonce: Nonces.paypal_one_time_payment()
+      })
+
     {:ok, settled_transaction} = Transaction.submit_for_settlement(transaction.id, %{})
 
     assert settled_transaction.amount == amount_charged
   end
 
   test "submit_for_settlement/2 can be used for partial settlement" do
-    {:ok, transaction} = Transaction.sale(%{
-      amount: "100.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment
-    })
-    {:ok, settled_transaction} = Transaction.submit_for_settlement(transaction.id, %{amount: "55.00"})
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.paypal_one_time_payment()
+      })
+
+    {:ok, settled_transaction} =
+      Transaction.submit_for_settlement(transaction.id, %{amount: "55.00"})
 
     refute transaction.amount == settled_transaction.amount
     assert transaction.amount == "100.00"
@@ -92,11 +122,12 @@ defmodule Braintree.Integration.TransactionTest do
   end
 
   test "sale/1 fails with an invalid amount" do
-    {:error, error} = Transaction.sale(%{
-      amount: "2000.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment,
-      options: %{submit_for_settlement: true}
-    })
+    {:error, error} =
+      Transaction.sale(%{
+        amount: "2000.00",
+        payment_method_nonce: Nonces.paypal_one_time_payment(),
+        options: %{submit_for_settlement: true}
+      })
 
     assert error.message == "Do Not Honor"
     refute error.params == %{}
@@ -104,24 +135,26 @@ defmodule Braintree.Integration.TransactionTest do
   end
 
   test "refund/2 fails if sale is not yet settled" do
-    {:ok, transaction} = Transaction.sale(%{
-      amount: "100.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment
-    })
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.paypal_one_time_payment()
+      })
 
-    {:error, error}  = Transaction.refund(transaction.id, %{amount: "100.00"})
-    
+    {:error, error} = Transaction.refund(transaction.id, %{amount: "100.00"})
+
     assert error.message == "Cannot refund a transaction unless it is settled."
     refute error.params == %{}
     refute error.errors == %{}
   end
 
   test "refund/2 succeeds if sale is has been settled" do
-    {:ok, transaction} = Transaction.sale(%{
-      amount: "100.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment,
-      options: %{submit_for_settlement: true}
-    })
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.paypal_one_time_payment(),
+        options: %{submit_for_settlement: true}
+      })
 
     {:ok, _} = TestTransaction.settle(transaction.id)
     {:ok, refund} = Transaction.refund(transaction.id, %{amount: "100.00"})
@@ -131,27 +164,29 @@ defmodule Braintree.Integration.TransactionTest do
   end
 
   test "void/1 succeeds for previous sale transaction" do
-    {:ok, transaction} = Transaction.sale(%{
-      amount: "100.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment
-    })
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.paypal_one_time_payment()
+      })
 
-    {:ok, void}  = Transaction.void(transaction.id)
+    {:ok, void} = Transaction.void(transaction.id)
 
     assert void.status == "voided"
   end
 
   test "find/1 fails for invalid transaction id" do
-    assert {:error, :not_found}  = Transaction.find("bogus")
+    assert {:error, :not_found} = Transaction.find("bogus")
   end
 
   test "find/1 suceeds for existing transaction" do
-    {:ok, transaction} = Transaction.sale(%{
-      amount: "100.00",
-      payment_method_nonce: Nonces.paypal_one_time_payment
-    })
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.paypal_one_time_payment()
+      })
 
-    {:ok, found_transaction}  = Transaction.find(transaction.id)
+    {:ok, found_transaction} = Transaction.find(transaction.id)
 
     assert found_transaction.status == transaction.status
     assert found_transaction.amount == transaction.amount
