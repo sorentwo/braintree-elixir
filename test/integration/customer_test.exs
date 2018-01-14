@@ -13,14 +13,15 @@ defmodule Braintree.Integration.CustomerTest do
     end
 
     test "create/1 with valid params" do
-      {:ok, customer} = Customer.create(%{
-        first_name: "Bill",
-        last_name: "Gates",
-        company: "Microsoft",
-        email: "bill@microsoft.com",
-        phone: "312.555.1234",
-        website: "www.microsoft.com"
-      })
+      {:ok, customer} =
+        Customer.create(%{
+          first_name: "Bill",
+          last_name: "Gates",
+          company: "Microsoft",
+          email: "bill@microsoft.com",
+          phone: "312.555.1234",
+          website: "www.microsoft.com"
+        })
 
       assert customer.id =~ ~r/^\d+$/
       assert customer.first_name == "Bill"
@@ -34,15 +35,16 @@ defmodule Braintree.Integration.CustomerTest do
     end
 
     test "with a credit card" do
-      {:ok, customer} = Customer.create(%{
-        first_name: "Parker",
-        last_name: "Selbert",
-        credit_card: %{
-          number: master_card(),
-          expiration_date: "01/2016",
-          cvv: "100"
-        }
-      })
+      {:ok, customer} =
+        Customer.create(%{
+          first_name: "Parker",
+          last_name: "Selbert",
+          credit_card: %{
+            number: master_card(),
+            expiration_date: "01/2016",
+            cvv: "100"
+          }
+        })
 
       assert customer.first_name == "Parker"
       assert customer.last_name == "Selbert"
@@ -57,17 +59,18 @@ defmodule Braintree.Integration.CustomerTest do
     end
 
     test "with card verification" do
-      {:error, error} = Customer.create(%{
-        first_name: "Parker",
-        last_name: "Selbert",
-        credit_card: %{
-          number: FailsSandboxVerification.master_card(),
-          expiration_date: "01/2016",
-          options: %{verify_card: true}
-        }
-      })
+      {:error, error} =
+        Customer.create(%{
+          first_name: "Parker",
+          last_name: "Selbert",
+          credit_card: %{
+            number: FailsSandboxVerification.master_card(),
+            expiration_date: "01/2020",
+            options: %{verify_card: true}
+          }
+        })
 
-      assert error.message =~ ~r/cvv is required/i
+      assert error.message =~ ~r/do not honor/i
     end
   end
 
@@ -112,18 +115,21 @@ defmodule Braintree.Integration.CustomerTest do
 
   describe "search/1" do
     test "with valid params" do
-      {:ok, _customer} = Customer.create(%{
-        first_name: "Jenna",
-        last_name: "Smith",
-      })
+      {:ok, _customer} =
+        Customer.create(%{
+          first_name: "Jenna",
+          last_name: "Smith"
+        })
 
-      search_params = %{first_name: %{is: "Jenna"},
+      search_params = %{
+        first_name: %{is: "Jenna"},
         last_name: %{
           starts_with: "Smith",
           contains: "ith",
           is_not: "Smithsonian"
-        },
-    }
+        }
+      }
+
       {:ok, [%Customer{} = customer | _]} = Customer.search(search_params)
 
       assert customer.first_name == "Jenna"
@@ -140,7 +146,7 @@ defmodule Braintree.Integration.CustomerTest do
   end
 
   defp master_card do
-    CreditCardNumbers.master_cards() |> List.first
+    CreditCardNumbers.master_cards() |> List.first()
   end
 
   defp repeatedly(string, len) do
@@ -149,6 +155,6 @@ defmodule Braintree.Integration.CustomerTest do
     fun
     |> Stream.repeatedly()
     |> Enum.take(len)
-    |> Enum.join
+    |> Enum.join()
   end
 end
