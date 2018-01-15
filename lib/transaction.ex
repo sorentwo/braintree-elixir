@@ -54,7 +54,7 @@ defmodule Braintree.Transaction do
           risk_data: String.t(),
           service_fee_amount: number,
           settlement_batch_id: String.t(),
-          shipping_details: map,
+          shipping: map,
           status: String.t(),
           status_history: String.t(),
           subscription_details: map,
