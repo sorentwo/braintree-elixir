@@ -12,68 +12,68 @@ defmodule Braintree.Subscription do
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
-               id:                         String.t,
-               plan_id:                    String.t,
-               balance:                    String.t,
-               billing_day_of_month:       String.t,
-               billing_period_end_date:    String.t,
-               billing_period_start_date:  String.t,
-               created_at:                 String.t,
-               current_billing_cycle:      String.t,
-               days_past_due:              String.t,
-               descriptor:                 String.t,
-               failure_count:              String.t,
-               first_billing_date:         String.t,
-               merchant_account_id:        String.t,
-               never_expires:              String.t,
-               next_bill_amount:           String.t,
-               next_billing_date:          String.t,
-               next_billing_period_amount: String.t,
-               number_of_billing_cycles:   String.t,
-               paid_through_date:          String.t,
-               payment_method_token:       String.t,
-               price:                      String.t,
-               status:                     String.t,
-               trial_duration:             String.t,
-               trial_duration_unit:        String.t,
-               trial_period:               String.t,
-               updated_at:                 String.t,
-               add_ons:                    [AddOn.t],
-               discounts:                  [any],
-               transactions:               [Transaction.t],
-               status_history:             [any]
-             }
+          id: String.t(),
+          plan_id: String.t(),
+          balance: String.t(),
+          billing_day_of_month: String.t(),
+          billing_period_end_date: String.t(),
+          billing_period_start_date: String.t(),
+          created_at: String.t(),
+          current_billing_cycle: String.t(),
+          days_past_due: String.t(),
+          descriptor: String.t(),
+          failure_count: String.t(),
+          first_billing_date: String.t(),
+          merchant_account_id: String.t(),
+          never_expires: String.t(),
+          next_bill_amount: String.t(),
+          next_billing_date: String.t(),
+          next_billing_period_amount: String.t(),
+          number_of_billing_cycles: String.t(),
+          paid_through_date: String.t(),
+          payment_method_token: String.t(),
+          price: String.t(),
+          status: String.t(),
+          trial_duration: String.t(),
+          trial_duration_unit: String.t(),
+          trial_period: String.t(),
+          updated_at: String.t(),
+          add_ons: [AddOn.t()],
+          discounts: [any],
+          transactions: [Transaction.t()],
+          status_history: [any]
+        }
 
-  defstruct id:                         nil,
-            plan_id:                    nil,
-            balance:                    nil,
-            billing_day_of_month:       nil,
-            billing_period_end_date:    nil,
-            billing_period_start_date:  nil,
-            created_at:                 nil,
-            current_billing_cycle:      nil,
-            days_past_due:              nil,
-            descriptor:                 nil,
-            failure_count:              nil,
-            first_billing_date:         nil,
-            merchant_account_id:        nil,
-            never_expires:              nil,
-            next_bill_amount:           nil,
-            next_billing_date:          nil,
+  defstruct id: nil,
+            plan_id: nil,
+            balance: nil,
+            billing_day_of_month: nil,
+            billing_period_end_date: nil,
+            billing_period_start_date: nil,
+            created_at: nil,
+            current_billing_cycle: nil,
+            days_past_due: nil,
+            descriptor: nil,
+            failure_count: nil,
+            first_billing_date: nil,
+            merchant_account_id: nil,
+            never_expires: nil,
+            next_bill_amount: nil,
+            next_billing_date: nil,
             next_billing_period_amount: nil,
-            number_of_billing_cycles:   nil,
-            paid_through_date:          nil,
-            payment_method_token:       nil,
-            price:                      nil,
-            status:                     nil,
-            trial_duration:             nil,
-            trial_duration_unit:        nil,
-            trial_period:               nil,
-            updated_at:                 nil,
-            add_ons:                    [],
-            discounts:                  [],
-            transactions:               [],
-            status_history:             []
+            number_of_billing_cycles: nil,
+            paid_through_date: nil,
+            payment_method_token: nil,
+            price: nil,
+            status: nil,
+            trial_duration: nil,
+            trial_duration_unit: nil,
+            trial_period: nil,
+            updated_at: nil,
+            add_ons: [],
+            discounts: [],
+            transactions: [],
+            status_history: []
 
   @doc """
   Create a subscription, or return an error response with after failed
@@ -86,7 +86,7 @@ defmodule Braintree.Subscription do
         plan_id: "starter"
       })
   """
-  @spec create(map, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec create(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("subscriptions", %{subscription: params}, opts) do
       {:ok, new(payload)}
@@ -100,7 +100,7 @@ defmodule Braintree.Subscription do
 
       {:ok, subscription} = Subscription.find("123")
   """
-  @spec find(String.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def find(subscription_id, opts \\ []) do
     with {:ok, payload} <- HTTP.get("subscriptions/#{subscription_id}", opts) do
       {:ok, new(payload)}
@@ -115,7 +115,7 @@ defmodule Braintree.Subscription do
 
       {:ok, subscription} = Subscription.cancel("123")
   """
-  @spec cancel(String.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec cancel(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def cancel(subscription_id, opts \\ []) do
     with {:ok, payload} <- HTTP.put("subscriptions/#{subscription_id}/cancel", opts) do
       {:ok, new(payload)}
@@ -138,8 +138,9 @@ defmodule Braintree.Subscription do
       {:ok, transaction} = Braintree.Subscription.retry_charge(sub_id)
       {:ok, transaction} = Braintree.Subscription.retry_charge(sub_id, "24.00")
   """
-  @spec retry_charge(String.t) :: {:ok, Transaction.t}
-  @spec retry_charge(String.t, String.t | nil, Keyword.t) :: {:ok, Transaction.t} | {:error, Error.t}
+  @spec retry_charge(String.t()) :: {:ok, Transaction.t()}
+  @spec retry_charge(String.t(), String.t() | nil, Keyword.t()) ::
+          {:ok, Transaction.t()} | {:error, Error.t()}
   def retry_charge(subscription_id, amount \\ nil, opts \\ []) do
     Transaction.sale(%{amount: amount, subscription_id: subscription_id}, opts)
   end
@@ -156,7 +157,7 @@ defmodule Braintree.Subscription do
       })
       subscription.plan_id # "new_plan_id"
   """
-  @spec update(binary, map, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec update(binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def update(id, params, opts \\ []) when is_binary(id) and is_map(params) do
     with {:ok, payload} <- HTTP.put("subscriptions/" <> id, %{subscription: params}, opts) do
       {:ok, new(payload)}
@@ -170,7 +171,7 @@ defmodule Braintree.Subscription do
 
     {:ok, subscriptions} = Braintree.Subscription.search(%{plan_id: %{is: "starter"}})
   """
-  @spec search(map, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec search(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def search(params, opts \\ []) when is_map(params) do
     Search.perform(params, "subscriptions", &new/1, opts)
   end
@@ -184,15 +185,20 @@ defmodule Braintree.Subscription do
       subscripton = Braintree.Subscription.new(%{"plan_id" => "business",
                                                  "status" => "Active"})
   """
+  @spec new(map | [map]) :: t | [t]
   def new(%{"subscription" => map}) do
     new(map)
   end
+
   def new(map) when is_map(map) do
     subscription = super(map)
 
-    %{subscription | add_ons: AddOn.new(subscription.add_ons),
-                     transactions: Transaction.new(subscription.transactions)}
+    add_ons = AddOn.new(subscription.add_ons)
+    transactions = Transaction.new(subscription.transactions)
+
+    %{subscription | add_ons: add_ons, transactions: transactions}
   end
+
   def new(list) when is_list(list) do
     Enum.map(list, &new/1)
   end

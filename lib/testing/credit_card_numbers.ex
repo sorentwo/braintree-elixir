@@ -1,22 +1,15 @@
 defmodule Braintree.Testing.CreditCardNumbers do
   @moduledoc """
-  The functions contained in the Braintree.Testing.CreditCardNumbers module
-  provide credit card numbers that should be used when working in the sandbox
-  environment. The sandbox will not accept any credit card numbers other than
-  the ones listed below.
+  The functions contained in this module provide credit card numbers that
+  should be used when working in the sandbox environment. The sandbox will not
+  accept any credit card numbers other than the ones listed below.
 
   See http://www.braintreepayments.com/docs/ruby/reference/sandbox
   """
 
   def all do
-    am_exes() ++
-    carte_blanches() ++
-    diners_clubs() ++
-    discovers() ++
-    jcbs() ++
-    master_cards() ++
-    unknowns() ++
-    visas()
+    am_exes() ++ carte_blanches() ++ diners_clubs() ++ discovers() ++ jcbs() ++
+      master_cards() ++ unknowns() ++ visas()
   end
 
   def am_exes do

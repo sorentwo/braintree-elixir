@@ -1,10 +1,13 @@
 defmodule Braintree.Testing.Nonces do
   @moduledoc """
-  The functions contained in this module provide pre-defined nonces that can
-  be used when working with the sandbox. Nonces are preferred over credit
-  card numbers when testing payment methods.
+  A collection of static payment nonces provided to simplify testing server
+  side code.
 
-  See http://www.braintreepayments.com/docs/ruby/reference/sandbox
+  Nonces are preferred over credit card numbers when testing payment methods.
+  Only a subset of nonces are defined here, for the full list see the sandbox
+  documentation about [payment method nonces][pmn].
+
+  [pmn]: https://developers.braintreepayments.com/reference/general/testing/ruby#payment-method-nonces
   """
   def transactable do
     "fake-valid-nonce"
@@ -14,12 +17,8 @@ defmodule Braintree.Testing.Nonces do
     "fake-consumed-nonce"
   end
 
-  def paypal_one_time_payment do
-    "fake-paypal-one-time-nonce"
-  end
-
   def paypal_future_payment do
-    "fake-paypal-future-nonce"
+    "fake-paypal-billing-agreement-nonce"
   end
 
   def apple_pay_visa do

@@ -137,7 +137,14 @@ Your environment needs to have the following:
 * Plans with ids: "starter", "business"
 * "business" plan needs to include the following add-ons: "bronze" and "silver"
 
+### PayPal Account Testing
+
+PayPal testing uses the mocked API flow, which requires linking a sandbox PayPal
+account. You can accomplish that by following the directions for [linked paypal
+testing][plp].
+
 [dtc]: https://articles.braintreepayments.com/control-panel/transactions/duplicate-checking
+[plp]: https://developers.braintreepayments.com/guides/paypal/testing-go-live/php#linked-paypal-testing
 
 ## License
 

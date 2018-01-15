@@ -10,12 +10,12 @@ defmodule Braintree.Integration.TransactionTest do
     {:ok, transaction} =
       Transaction.sale(%{
         amount: "100.00",
-        payment_method_nonce: Nonces.paypal_one_time_payment(),
+        payment_method_nonce: Nonces.transactable(),
         options: %{submit_for_settlement: true}
       })
 
     assert transaction.amount == "100.00"
-    assert transaction.status == "settling"
+    assert transaction.status == "submitted_for_settlement"
     assert transaction.id =~ ~r/^\w+$/
   end
 
@@ -59,7 +59,7 @@ defmodule Braintree.Integration.TransactionTest do
     {:ok, transaction} =
       Transaction.sale(%{
         amount: "100.00",
-        payment_method_nonce: Nonces.paypal_one_time_payment()
+        payment_method_nonce: Nonces.transactable()
       })
 
     assert transaction.amount == "100.00"
@@ -71,19 +71,19 @@ defmodule Braintree.Integration.TransactionTest do
     {:ok, transaction} =
       Transaction.sale(%{
         amount: "100.00",
-        payment_method_nonce: Nonces.paypal_one_time_payment()
+        payment_method_nonce: Nonces.transactable()
       })
 
     {:ok, settled_transaction} = Transaction.submit_for_settlement(transaction.id, %{})
 
-    assert settled_transaction.status == "settling"
+    assert settled_transaction.status == "submitted_for_settlement"
   end
 
   test "submit_for_settlement/2 fails if transaction is already settling" do
     {:ok, transaction} =
       Transaction.sale(%{
         amount: "100.00",
-        payment_method_nonce: Nonces.paypal_one_time_payment(),
+        payment_method_nonce: Nonces.transactable(),
         options: %{submit_for_settlement: true}
       })
 
@@ -98,7 +98,7 @@ defmodule Braintree.Integration.TransactionTest do
     {:ok, transaction} =
       Transaction.sale(%{
         amount: amount_charged,
-        payment_method_nonce: Nonces.paypal_one_time_payment()
+        payment_method_nonce: Nonces.transactable()
       })
 
     {:ok, settled_transaction} = Transaction.submit_for_settlement(transaction.id, %{})
@@ -110,7 +110,7 @@ defmodule Braintree.Integration.TransactionTest do
     {:ok, transaction} =
       Transaction.sale(%{
         amount: "100.00",
-        payment_method_nonce: Nonces.paypal_one_time_payment()
+        payment_method_nonce: Nonces.transactable()
       })
 
     {:ok, settled_transaction} =
@@ -125,7 +125,7 @@ defmodule Braintree.Integration.TransactionTest do
     {:error, error} =
       Transaction.sale(%{
         amount: "2000.00",
-        payment_method_nonce: Nonces.paypal_one_time_payment(),
+        payment_method_nonce: Nonces.transactable(),
         options: %{submit_for_settlement: true}
       })
 
@@ -138,7 +138,7 @@ defmodule Braintree.Integration.TransactionTest do
     {:ok, transaction} =
       Transaction.sale(%{
         amount: "100.00",
-        payment_method_nonce: Nonces.paypal_one_time_payment()
+        payment_method_nonce: Nonces.transactable()
       })
 
     {:error, error} = Transaction.refund(transaction.id, %{amount: "100.00"})
@@ -152,7 +152,7 @@ defmodule Braintree.Integration.TransactionTest do
     {:ok, transaction} =
       Transaction.sale(%{
         amount: "100.00",
-        payment_method_nonce: Nonces.paypal_one_time_payment(),
+        payment_method_nonce: Nonces.transactable(),
         options: %{submit_for_settlement: true}
       })
 
@@ -167,7 +167,7 @@ defmodule Braintree.Integration.TransactionTest do
     {:ok, transaction} =
       Transaction.sale(%{
         amount: "100.00",
-        payment_method_nonce: Nonces.paypal_one_time_payment()
+        payment_method_nonce: Nonces.transactable()
       })
 
     {:ok, void} = Transaction.void(transaction.id)
@@ -183,7 +183,7 @@ defmodule Braintree.Integration.TransactionTest do
     {:ok, transaction} =
       Transaction.sale(%{
         amount: "100.00",
-        payment_method_nonce: Nonces.paypal_one_time_payment()
+        payment_method_nonce: Nonces.transactable()
       })
 
     {:ok, found_transaction} = Transaction.find(transaction.id)
