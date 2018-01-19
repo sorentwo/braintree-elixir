@@ -1,15 +1,14 @@
 language: elixir
 elixir:
-- 1.3.4
-- 1.4.5
-- 1.5.2
+  - 1.5.3
+  - 1.6.0
 otp_release:
-- 19.2
+  - 20.2
 sudo: false
 script:
-- MIX_ENV=test mix coveralls.travis
+  - MIX_ENV=test mix coveralls.travis
 after_script:
-- MIX_ENV=dev mix inch.report
+  - MIX_ENV=dev mix inch.report
 env:
   global:
   - secure: df5eon1XrEXHhL7zSrYMVf4v1nFAHTeM4oxsPwkb0jSdlr6lfj5Tl4itXWFqpdnXi9dcWDJmwT2bkqCfu7gSBM1VjKVoPT0RWHRI/Z/kNXeCOGiKotuiW7CXLhfWdvMeI5N9ziFL877b5BQ8fa8I5fIhDVYkpdroEXQCo6Wv9q1O/qb+Z2pwoVS1ckviWcJ05jkXiCkIDylrAB2hJpTOXxKhJsyhUTBLE6g4Qwt7qXG0feb7+pmPT+vWMH8Ou5hi0DVKv75LTo1b9VMQ9TIht42qnKo1fTrohvVJtU/J2n8vUzp+ilNjFzXOHSgKtpKDnwlikUfBQs6u1YaU1T0pDJpmqPxwlDw+0pkMNqB798J3RcqTkXTCs1cZNFtgoAbNCaoLWjwnDI/6uZm30/Eyh+N2xLBIP4y/vYIujiUyiFRFK8tjpkgJ81JzsL0XImrklvkJLQZmO7hyB3YsLa/5GaAq4lGoVri5GGoUdmOq7Qxo3hKjp+SAqxbVh290eGya2ncB/FC3kxk1ORcYNgUW72YECZxPgw6LNcCU5GAHSx3QeBMyFIpdB93o/88bCAkkKHwwTov0fFoH1WPJB6e3UuqjPOS+2iqZLUdxYzfdK9EzxQJG6RvJRf8WYKCKYCWnqZNe62XS42+/CHbx5rYLrEZ2EGI7f94JeAs1YYNC7MY=
