@@ -5,7 +5,7 @@ defmodule Braintree.PaypalAccount do
 
   use Braintree.Construction
 
-  alias Braintree.{HTTP, Subscription}
+  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
