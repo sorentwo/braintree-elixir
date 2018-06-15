@@ -185,7 +185,6 @@ defmodule Braintree.Subscription do
       subscripton = Braintree.Subscription.new(%{"plan_id" => "business",
                                                  "status" => "Active"})
   """
-  @spec new(map | [map]) :: t | [t]
   def new(%{"subscription" => map}) do
     new(map)
   end

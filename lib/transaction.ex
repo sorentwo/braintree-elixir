@@ -224,7 +224,6 @@ defmodule Braintree.Transaction do
       "status" => "submitted_for_settlement"
     })
   """
-  @spec new(map() | [map()]) :: t | [t]
   def new(%{"transaction" => map}) do
     new(map)
   end

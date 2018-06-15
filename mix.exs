@@ -19,14 +19,14 @@ defmodule Braintree.Mixfile do
       docs: docs(),
       dialyzer: [
         plt_add_deps: :transitive,
-        flags: [:unmatched_returns, :error_handling]
+        flags: [:unmatched_returns, :error_handling, :race_conditions]
       ]
     ]
   end
 
   def application do
     [
-      applications: [:logger, :hackney, :xmerl],
+      extra_applications: [:logger, :xmerl],
       env: [
         environment: :sandbox,
         http_options: [timeout: 30_000],
