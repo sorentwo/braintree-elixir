@@ -14,6 +14,7 @@ defmodule Braintree.Mixfile do
       test_coverage: [tool: ExCoveralls],
       description: description(),
       package: package(),
+      aliases: aliases(),
       name: "Braintree",
       deps: deps(),
       docs: docs(),
@@ -73,6 +74,12 @@ defmodule Braintree.Mixfile do
         "CHANGELOG.md",
         "README.md"
       ]
+    ]
+  end
+
+  defp aliases do
+    [
+      ci: ["credo", "dialyzer", "coveralls.travis"]
     ]
   end
 end
