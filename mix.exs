@@ -14,7 +14,6 @@ defmodule Braintree.Mixfile do
       test_coverage: [tool: ExCoveralls],
       description: description(),
       package: package(),
-      aliases: aliases(),
       name: "Braintree",
       deps: deps(),
       docs: docs(),
@@ -60,8 +59,7 @@ defmodule Braintree.Mixfile do
       {:ex_doc, "~> 0.18", only: [:dev], runtime: false},
       {:inch_ex, "~> 0.5", only: [:dev], runtime: false},
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.9", only: [:dev, :test]}
+      {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -74,12 +72,6 @@ defmodule Braintree.Mixfile do
         "CHANGELOG.md",
         "README.md"
       ]
-    ]
-  end
-
-  defp aliases do
-    [
-      ci: ["credo", "dialyzer", "coveralls.travis"]
     ]
   end
 end
