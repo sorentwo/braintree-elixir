@@ -55,12 +55,12 @@ defmodule Braintree.Mixfile do
 
   defp deps do
     [
-      {:hackney, "~> 1.6"},
-      {:credo, "~> 0.8", only: [:dev], runtime: false},
+      {:hackney, "~> 1.12"},
       {:ex_doc, "~> 0.18", only: [:dev], runtime: false},
       {:inch_ex, "~> 0.5", only: [:dev], runtime: false},
-      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
-      {:excoveralls, "~> 0.8", only: [:dev, :test]}
+      {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.9", only: [:dev, :test]}
     ]
   end
 
