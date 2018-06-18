@@ -8,18 +8,18 @@ defmodule Braintree.XML.EncoderTest do
   describe "dump/1" do
     test "with content" do
       assert dump(%{company: "Soren", first_name: "Parker"}) ==
-        ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<first-name>Parker</first-name>|
+               ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<first-name>Parker</first-name>|
     end
 
     test "with children" do
       assert dump(%{company: "Soren", nested: %{name: "Parker"}}) ==
-        ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<nested>\n<name>Parker</name>\n</nested>|
+               ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<nested>\n<name>Parker</name>\n</nested>|
 
       assert dump(%{company: "Soren", nested: [%{name: "Parker"}, %{name: "Shannon"}]}) ==
-        ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<nested type="array">\n<item>\n<name>Parker</name>\n</item>\n<item>\n<name>Shannon</name>\n</item>\n</nested>|
+               ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<nested type="array">\n<item>\n<name>Parker</name>\n</item>\n<item>\n<name>Shannon</name>\n</item>\n</nested>|
 
       assert dump(%{company: "Soren", pets: ["cat", "dog"]}) ==
-      ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<pets type="array">\n<item>\ncat\n</item>\n<item>\ndog\n</item>\n</pets>|
+               ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<pets type="array">\n<item>\ncat\n</item>\n<item>\ndog\n</item>\n</pets>|
     end
   end
 end

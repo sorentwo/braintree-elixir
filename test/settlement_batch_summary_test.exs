@@ -5,10 +5,14 @@ defmodule Braintree.SettlementBatchSummaryTest do
 
   describe "new/1" do
     test "creates a struct with record structs" do
-      records = [%{"card_type" => "MasterCard",
-                   "kind" => "sale",
-                   "count" => "12",
-                   "custom_field_1" => "value"}]
+      records = [
+        %{
+          "card_type" => "MasterCard",
+          "kind" => "sale",
+          "count" => "12",
+          "custom_field_1" => "value"
+        }
+      ]
 
       summary = Summary.new(%{"records" => records})
 

@@ -8,8 +8,9 @@ defmodule Braintree.Testing.CreditCardNumbers do
   """
 
   def all do
-    am_exes() ++ carte_blanches() ++ diners_clubs() ++ discovers() ++ jcbs() ++
-      master_cards() ++ unknowns() ++ visas()
+    am_exes() ++
+      carte_blanches() ++
+      diners_clubs() ++ discovers() ++ jcbs() ++ master_cards() ++ unknowns() ++ visas()
   end
 
   def am_exes do

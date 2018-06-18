@@ -56,8 +56,10 @@ defmodule Braintree do
     case Application.fetch_env(:braintree, key) do
       {:ok, {:system, var}} when is_binary(var) ->
         fallback_or_raise(var, System.get_env(var), default)
+
       {:ok, value} ->
         value
+
       :error ->
         fallback_or_raise(key, nil, default)
     end
@@ -78,7 +80,7 @@ defmodule Braintree do
     Application.put_env(:braintree, key, value)
   end
 
-  defp fallback_or_raise(key, nil, nil),   do: raise ConfigError, key
+  defp fallback_or_raise(key, nil, nil), do: raise(ConfigError, key)
   defp fallback_or_raise(_, nil, default), do: default
-  defp fallback_or_raise(_, value, _),     do: value
+  defp fallback_or_raise(_, value, _), do: value
 end

@@ -8,7 +8,7 @@ config :braintree,
   master_merchant_id: System.get_env("BRAINTREE_MASTER_MERCHANT_ID")
 
 try do
-  import_config "#{Mix.env}.secret.exs"
+  import_config "#{Mix.env()}.secret.exs"
 rescue
-  Mix.Config.LoadError -> IO.puts "No secret file for #{Mix.env}"
+  Mix.Config.LoadError -> IO.puts("No secret file for #{Mix.env()}")
 end

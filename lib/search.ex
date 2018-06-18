@@ -18,7 +18,7 @@ defmodule Braintree.Search do
     {:ok, customers} = Braintree.Search.perform(search_params, "customers", &Braintree.Customer.new/1)
 
   """
-  @spec perform(map, String.t, fun(), Keyword.t) :: {:ok, [any]} | {:error, Error.t}
+  @spec perform(map, String.t(), fun(), Keyword.t()) :: {:ok, [any]} | {:error, Error.t()}
   def perform(params, resource, initializer, opts \\ []) when is_map(params) do
     with {:ok, payload} <- HTTP.post(resource <> "/advanced_search_ids", %{search: params}, opts) do
       fetch_all_records(payload, resource, initializer, opts)
@@ -29,10 +29,18 @@ defmodule Braintree.Search do
     {:error, :not_found}
   end
 
-  defp fetch_all_records(%{"search_results" => %{"page_size" => page_size, "ids" => ids}}, resource, initializer, opts) do
-    records = ids
-              |> Enum.chunk_every(page_size)
-              |> Enum.flat_map(fn ids_chunk -> fetch_records_chunk(ids_chunk, resource, initializer, opts) end)
+  defp fetch_all_records(
+         %{"search_results" => %{"page_size" => page_size, "ids" => ids}},
+         resource,
+         initializer,
+         opts
+       ) do
+    records =
+      ids
+      |> Enum.chunk_every(page_size)
+      |> Enum.flat_map(fn ids_chunk ->
+        fetch_records_chunk(ids_chunk, resource, initializer, opts)
+      end)
 
     {:ok, records}
   end
@@ -41,14 +49,18 @@ defmodule Braintree.Search do
   # different from the object name in the XML.
   defp fetch_records_chunk(ids, "verifications", initializer, opts) when is_list(ids) do
     search_params = %{search: %{ids: ids}}
-    with {:ok, %{"credit_card_verifications" => data}} <- HTTP.post("verifications/advanced_search", search_params, opts) do
+
+    with {:ok, %{"credit_card_verifications" => data}} <-
+           HTTP.post("verifications/advanced_search", search_params, opts) do
       initializer.(data)
     end
   end
 
   defp fetch_records_chunk(ids, resource, initializer, opts) when is_list(ids) do
     search_params = %{search: %{ids: ids}}
-    with {:ok, %{^resource => data}} <- HTTP.post(resource <> "/advanced_search", search_params, opts) do
+
+    with {:ok, %{^resource => data}} <-
+           HTTP.post(resource <> "/advanced_search", search_params, opts) do
       initializer.(data)
     end
   end

@@ -5,10 +5,11 @@ defmodule Braintree.DiscountTest do
 
   describe "new/1" do
     test "builds a sane struct" do
-      discount = Discount.new(%{
-        "id" => "asdf1234",
-        "amount" => "25.00"
-      })
+      discount =
+        Discount.new(%{
+          "id" => "asdf1234",
+          "amount" => "25.00"
+        })
 
       assert discount.id == "asdf1234"
       refute discount.never_expires?
