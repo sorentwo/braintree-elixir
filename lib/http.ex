@@ -25,7 +25,7 @@ defmodule Braintree.HTTP do
 
   @type response ::
           {:ok, map | {:error, atom}}
-          | {:error, Error.t}
+          | {:error, Error.t()}
           | {:error, binary}
 
   @endpoints [
@@ -70,7 +70,7 @@ defmodule Braintree.HTTP do
         end
       end
   """
-  @spec request(atom, binary, binary | map, Keyword.t) :: response
+  @spec request(atom, binary, binary | map, Keyword.t()) :: response
   def request(method, path, body \\ %{}, opts \\ []) do
     response =
       :hackney.request(
@@ -82,7 +82,7 @@ defmodule Braintree.HTTP do
       )
 
     case response do
-      {:ok, code, _headers, body} when code >= 200 and code <= 399 ->
+      {:ok, code, _headers, body} when code in 200..399 ->
         {:ok, decode_body(body)}
 
       {:ok, 422, _headers, body} ->
@@ -93,7 +93,7 @@ defmodule Braintree.HTTP do
           |> resolve_error_response()
         }
 
-      {:ok, code, _headers, _body} when code >= 400 and code <= 504 ->
+      {:ok, code, _headers, _body} when code in 400..504 ->
         {:error, code_to_reason(code)}
 
       {:error, reason} ->
@@ -125,7 +125,7 @@ defmodule Braintree.HTTP do
   ## Helper Functions
 
   @doc false
-  @spec build_url(binary, Keyword.t) :: binary
+  @spec build_url(binary, Keyword.t()) :: binary
   def build_url(path, opts) do
     environment = opts |> get_lazy_env(:environment) |> maybe_to_atom()
     merchant_id = get_lazy_env(opts, :merchant_id)
@@ -163,7 +163,7 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec build_headers(Keyword.t) :: [tuple]
+  @spec build_headers(Keyword.t()) :: [tuple]
   def build_headers(opts) do
     public = Keyword.get_lazy(opts, :public_key, fn -> Braintree.get_env(:public_key) end)
     private = Keyword.get_lazy(opts, :private_key, fn -> Braintree.get_env(:private_key) end)
