@@ -50,7 +50,7 @@ defmodule Braintree.Integration.MerchantAccountTest do
 
   describe "create/1" do
     test "without any params" do
-      assert {:error, :server_error} = Account.create()
+      assert {:error, :forbidden} = Account.create()
     end
 
     test "with valid params" do

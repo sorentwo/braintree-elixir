@@ -147,9 +147,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
         payment_method_nonce: Nonces.paypal_future_payment()
       })
 
-    {:ok, updated_paypal_account} = PaymentMethod.update(paypal_account.token, %{})
-
-    assert updated_paypal_account.email == "jane.doe@paypal.com"
+    assert {:ok, _} = PaymentMethod.update(paypal_account.token, %{options: %{make_default: true}})
   end
 
   test "delete/1 succeeds when valid token provided" do
