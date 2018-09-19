@@ -4,7 +4,7 @@ defmodule Braintree.PaymentMethod do
   may be a `CreditCard` or a `PaypalAccount`.
   """
 
-  alias Braintree.{CreditCard, HTTP, PaypalAccount}
+  alias Braintree.{ACHDebit, CreditCard, HTTP, PaypalAccount}
   alias Braintree.ErrorResponse, as: Error
 
   @doc """
@@ -109,5 +109,9 @@ defmodule Braintree.PaymentMethod do
 
   defp new(%{"paypal_account" => paypal_account}) do
     PaypalAccount.new(paypal_account)
+  end
+
+  defp new(%{"us_bank_account" => ach_debit}) do
+    ACHDebit.new(ach_debit)
   end
 end
