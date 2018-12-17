@@ -12,6 +12,7 @@ defmodule Braintree.Customer do
   alias Braintree.HTTP
   alias Braintree.CreditCard
   alias Braintree.PaypalAccount
+  alias Braintree.VenmoAccount
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
@@ -29,7 +30,8 @@ defmodule Braintree.Customer do
                addresses:         [],
                credit_cards:      [],
                paypal_accounts:   [],
-               coinbase_accounts: []
+               coinbase_accounts: [],
+               venmo_accounts:    []
              }
 
   defstruct id:                nil,
@@ -46,7 +48,8 @@ defmodule Braintree.Customer do
             addresses:         [],
             credit_cards:      [],
             coinbase_accounts: [],
-            paypal_accounts:   []
+            paypal_accounts:   [],
+            venmo_accounts:    []
 
   @doc """
   Create a customer record, or return an error response with after failed
@@ -139,7 +142,7 @@ defmodule Braintree.Customer do
 
   @doc """
   Convert a map into a Company struct along with nested payment options. Credit
-  cards and paypal accounts are converted to a list of structs as well.
+  cards, paypal, and venmo accounts are converted to a list of structs as well.
 
   ## Example
 
@@ -150,6 +153,7 @@ defmodule Braintree.Customer do
     company = super(map)
 
     %{company | credit_cards: CreditCard.construct(company.credit_cards),
-                paypal_accounts: PaypalAccount.construct(company.paypal_accounts)}
+                paypal_accounts: PaypalAccount.construct(company.paypal_accounts),
+                venmo_accounts: VenmoAccount.construct(company.venmo_accounts)}
   end
 end
