@@ -4,7 +4,7 @@ defmodule Braintree.PaymentMethod do
   may be a `CreditCard` or a `PaypalAccount`.
   """
 
-  alias Braintree.{CreditCard, HTTP, PaypalAccount}
+  alias Braintree.{CreditCard, HTTP, PaypalAccount, VenmoAccount}
   alias Braintree.ErrorResponse, as: Error
 
   @doc """
@@ -25,13 +25,15 @@ defmodule Braintree.PaymentMethod do
 
       credit_card.type # "Visa"
   """
-  @spec create(Map.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
+  @spec create(Map.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:ok, VenmoAccount.t} | {:error, Error.t}
   def create(params \\ %{}) do
     case HTTP.post("payment_methods", %{payment_method: params}) do
       {:ok, %{"credit_card" => credit_card}} ->
         {:ok, CreditCard.construct(credit_card)}
       {:ok, %{"paypal_account" => paypal_account}} ->
         {:ok, PaypalAccount.construct(paypal_account)}
+      {:ok, %{"venmo_account" => venmo_account}} ->
+        {:ok, VenmoAccount.construct(venmo_account)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
     end
@@ -61,13 +63,15 @@ defmodule Braintree.PaymentMethod do
 
       payment_method.cardholder_name # "NEW"
   """
-  @spec update(String.t, Map.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
+  @spec update(String.t, Map.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:ok, VenmoAccount.t} | {:error, Error.t}
   def update(token, params \\ %{}) do
     case HTTP.put("payment_methods/any/#{token}", %{payment_method: params}) do
       {:ok, %{"credit_card" => credit_card}} ->
         {:ok, CreditCard.construct(credit_card)}
       {:ok, %{"paypal_account" => paypal_account}} ->
         {:ok, PaypalAccount.construct(paypal_account)}
+      {:ok, %{"venmo_account" => venmo_account}} ->
+        {:ok, VenmoAccount.construct(venmo_account)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
       {:error, :not_found} ->
@@ -104,13 +108,15 @@ defmodule Braintree.PaymentMethod do
 
       payment_method.type # CreditCard
   """
-  @spec find(String.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
+  @spec find(String.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:ok, VenmoAccount.t} | {:error, Error.t}
   def find(token) do
     case HTTP.get("payment_methods/any/#{token}") do
       {:ok, %{"credit_card" => credit_card}} ->
         {:ok, CreditCard.construct(credit_card)}
       {:ok, %{"paypal_account" => paypal_account}} ->
         {:ok, PaypalAccount.construct(paypal_account)}
+      {:ok, %{"venmo_account" => venmo_account}} ->
+        {:ok, VenmoAccount.construct(venmo_account)}
       {:error, %{"api_error_response" => error}} ->
         {:error, Error.construct(error)}
       {:error, :not_found} ->
