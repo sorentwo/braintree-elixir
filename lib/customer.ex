@@ -127,7 +127,7 @@ defmodule Braintree.Customer do
 
   ## Example:
 
-    {:ok, customers} = Braintree.Customer.search(%{first_name: %{is: "Jenna"}})
+      {:ok, customers} = Braintree.Customer.search(%{first_name: %{is: "Jenna"}})
   """
   @spec search(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def search(params, opts \\ []) when is_map(params) do
