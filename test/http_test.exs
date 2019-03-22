@@ -53,9 +53,10 @@ defmodule Braintree.HTTPTest do
            end) =~ "unprocessable response"
   end
 
-  test "basic_auth/2 encodes credentials" do
+  test "basic_auth/3 encodes keys" do
     auth =
       HTTP.basic_auth(
+        nil,
         "432a04a551424c2b4177d76e252e991efd12ce4e",
         "e1d7d9be3817565444c8b9b90ad3ef2f3eb28c0c"
       )
@@ -63,6 +64,17 @@ defmodule Braintree.HTTPTest do
     assert auth ==
              "Basic NDMyYTA0YTU1MTQyNGMyYjQxNzdkNzZlMjUyZTk5MWVmZDEyY2U0ZTplMWQ3ZDliZTM4" <>
                "MTc1NjU0NDRjOGI5YjkwYWQzZWYyZjNlYjI4YzBj"
+  end
+
+  test "basic_auth/3 builds bearer header for access_token" do
+    auth =
+      HTTP.basic_auth(
+        "some_access_token",
+        "432a04a551424c2b4177d76e252e991efd12ce4e",
+        "e1d7d9be3817565444c8b9b90ad3ef2f3eb28c0c"
+      )
+
+    assert auth == "Bearer some_access_token"
   end
 
   test "build_options/0 considers the application environment" do
@@ -85,14 +97,16 @@ defmodule Braintree.HTTPTest do
   test "build_headers/1 builds an auth header from application config without options" do
     with_applicaton_config(:private_key, "the_private_key", fn ->
       with_applicaton_config(:public_key, "the_public_key", fn ->
-        {_, auth_header} = List.keyfind(HTTP.build_headers([]), "Authorization", 0)
-        assert auth_header == "Basic dGhlX3B1YmxpY19rZXk6dGhlX3ByaXZhdGVfa2V5"
+        with_applicaton_config(:access_token, nil, fn ->
+          {_, auth_header} = List.keyfind(HTTP.build_headers([]), "Authorization", 0)
+          assert auth_header == "Basic dGhlX3B1YmxpY19rZXk6dGhlX3ByaXZhdGVfa2V5"
+        end)
       end)
     end)
   end
 
   test "build_headers/1 builds a url from provided options" do
-    headers = HTTP.build_headers(private_key: "dynamic_key", public_key: "dyn_pub_key")
+    headers = HTTP.build_headers(access_token: nil, private_key: "dynamic_key", public_key: "dyn_pub_key")
     {_, auth_header} = List.keyfind(headers, "Authorization", 0)
     assert auth_header == "Basic ZHluX3B1Yl9rZXk6ZHluYW1pY19rZXk="
   end
