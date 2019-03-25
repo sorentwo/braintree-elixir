@@ -158,9 +158,13 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec basic_auth(binary, binary) :: binary
-  def basic_auth(user, pass) do
+  @spec basic_auth(binary, binary, binary) :: binary
+  def basic_auth(nil, user, pass) do
     "Basic " <> :base64.encode("#{user}:#{pass}")
+  end
+
+  def basic_auth(access_token, _user, _pass) do
+    "Bearer " <> access_token
   end
 
   @doc false
@@ -168,8 +172,9 @@ defmodule Braintree.HTTP do
   def build_headers(opts) do
     public = Keyword.get_lazy(opts, :public_key, fn -> Braintree.get_env(:public_key) end)
     private = Keyword.get_lazy(opts, :private_key, fn -> Braintree.get_env(:private_key) end)
+    access_token = Keyword.get_lazy(opts, :access_token, fn -> Braintree.get_env(:access_token) end)
 
-    [{"Authorization", basic_auth(public, private)} | @headers]
+    [{"Authorization", basic_auth(access_token, public, private)} | @headers]
   end
 
   @doc false
