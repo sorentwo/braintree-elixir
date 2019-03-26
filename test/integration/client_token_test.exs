@@ -33,7 +33,7 @@ defmodule Braintree.Integration.ClientToken do
       Braintree.put_env(:access_token, nil)
 
       assert {:error, _} = ClientToken.generate(%{customer_id: "asdfghjkl"})
-      
+
       Braintree.put_env(:access_token, original)
     end
   end

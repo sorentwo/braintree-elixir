@@ -134,10 +134,6 @@ defmodule Braintree.HTTP do
     Keyword.fetch!(@endpoints, environment) <> merchant_id <> "/" <> path
   end
 
-  defp get_lazy_env(opts, key) do
-    Keyword.get_lazy(opts, key, fn -> Braintree.get_env(key) end)
-  end
-
   defp maybe_to_atom(value) when is_binary(value), do: String.to_existing_atom(value)
   defp maybe_to_atom(value) when is_atom(value), do: value
 
@@ -158,23 +154,26 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec basic_auth(binary, binary, binary) :: binary
-  def basic_auth(nil, user, pass) do
-    "Basic " <> :base64.encode("#{user}:#{pass}")
-  end
-
-  def basic_auth(access_token, _user, _pass) do
-    "Bearer " <> access_token
-  end
-
-  @doc false
   @spec build_headers(Keyword.t()) :: [tuple]
   def build_headers(opts) do
-    public = Keyword.get_lazy(opts, :public_key, fn -> Braintree.get_env(:public_key) end)
-    private = Keyword.get_lazy(opts, :private_key, fn -> Braintree.get_env(:private_key) end)
-    access_token = Keyword.get_lazy(opts, :access_token, fn -> Braintree.get_env(:access_token) end)
+    auth_header =
+      case get_lazy_env(opts, :access_token, :none) do
+        token when is_binary(token) ->
+          "Bearer " <> token
 
-    [{"Authorization", basic_auth(access_token, public, private)} | @headers]
+        _ ->
+          username = get_lazy_env(opts, :public_key)
+          password = get_lazy_env(opts, :private_key)
+
+          "Basic " <> :base64.encode("#{username}:#{password}")
+
+      end
+
+    [{"Authorization", auth_header} | @headers]
+  end
+
+  defp get_lazy_env(opts, key, default \\ nil) do
+    Keyword.get_lazy(opts, key, fn -> Braintree.get_env(key, default) end)
   end
 
   @doc false
