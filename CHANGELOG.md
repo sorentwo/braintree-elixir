@@ -1,4 +1,4 @@
-## Unreleased
+## v0.10.0 2019-03-26
 
 ### Enhancements
 

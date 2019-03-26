@@ -55,7 +55,7 @@ You can optionally [configure Hackney options][opts] with:
 ```elixir
 config :braintree,
   http_options: [
-    timeout: 8000, # default, in milliseconds
+    timeout: 30_000, # default, in milliseconds
     recv_timeout: 5000 # default, in milliseconds
   ]
 ```
