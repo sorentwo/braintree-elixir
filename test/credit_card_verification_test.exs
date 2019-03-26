@@ -1,7 +1,7 @@
 defmodule Braintree.CreditCardVerificationTest do
   use ExUnit.Case, async: true
 
-  alias Braintree.{CreditCardVerification, Address, CreditCard}
+  alias Braintree.{Address, CreditCard, CreditCardVerification}
 
   test "all credit card verification attributes are included" do
     verification = %CreditCardVerification{

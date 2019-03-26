@@ -1,7 +1,7 @@
 defmodule Braintree.Integration.PaypalAccountTest do
   use ExUnit.Case, async: true
 
-  alias Braintree.{Customer, PaypalAccount, PaymentMethod}
+  alias Braintree.{Customer, PaymentMethod, PaypalAccount}
   alias Braintree.Testing.Nonces
 
   @moduletag :integration

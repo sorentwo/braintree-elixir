@@ -5,9 +5,9 @@ defmodule Braintree.Testing.TestTransaction do
   Transition to settled, settlement_confirmed, or settlement_declined states.
   """
 
-  alias Braintree.Transaction
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
+  alias Braintree.Transaction
 
   @doc """
   Use a `transaction_id` to transition to settled status. This

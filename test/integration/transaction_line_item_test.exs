@@ -1,8 +1,8 @@
 defmodule Braintree.Integration.TransactionLineItemTest do
   use ExUnit.Case, async: true
 
-  alias Braintree.{Transaction, TransactionLineItem}
   alias Braintree.Testing.Nonces
+  alias Braintree.{Transaction, TransactionLineItem}
 
   @moduletag :integration
   test "find/1 returns a list of transaction line items" do

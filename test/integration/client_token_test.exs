@@ -27,14 +27,5 @@ defmodule Braintree.Integration.ClientToken do
       assert client_token
       assert client_token =~ ~r/.+/
     end
-
-    test "with a bogus customer" do
-      original = Braintree.get_env(:access_token)
-      Braintree.put_env(:access_token, nil)
-
-      assert {:error, _} = ClientToken.generate(%{customer_id: "asdfghjkl"})
-
-      Braintree.put_env(:access_token, original)
-    end
   end
 end

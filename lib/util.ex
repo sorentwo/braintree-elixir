@@ -27,7 +27,7 @@ defmodule Braintree.Util do
       iex> Braintree.Util.hyphenate("brain_tree")
       "brain-tree"
 
-      iex> Braintree.Util.hyphenate(:"brain_tree")
+      iex> Braintree.Util.hyphenate(:brain_tree)
       "brain-tree"
   """
   @spec hyphenate(String.t() | atom) :: String.t()

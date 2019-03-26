@@ -4,6 +4,7 @@ defmodule Braintree.Integration.CreditCardVerificationTest do
   @moduletag :integration
 
   alias Braintree.{CreditCardVerification, Customer, PaymentMethod}
+  alias Braintree.Testing.Nonces
 
   describe "search/1" do
     test "with valid params" do
@@ -12,7 +13,7 @@ defmodule Braintree.Integration.CreditCardVerificationTest do
       {:ok, _payment_method} =
         PaymentMethod.create(%{
           customer_id: customer.id,
-          payment_method_nonce: Braintree.Testing.Nonces.transactable(),
+          payment_method_nonce: Nonces.transactable(),
           options: %{
             verify_card: true,
             verification_amount: "45.3"

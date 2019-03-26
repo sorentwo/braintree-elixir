@@ -11,8 +11,8 @@ defmodule Braintree.SettlementBatchSummary do
 
   import Braintree.Util, only: [atomize: 1]
 
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
 
   defmodule Record do
     @moduledoc """

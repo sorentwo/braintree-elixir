@@ -1,6 +1,8 @@
+## Unreleased
+
 ### Enhancements
 
-* [Braintree.HTTP] Support both access_token and public/private keys usage in configuration
+* [Braintree.HTTP] Support both `access_token` and public/private keys usage in configuration
 
 ## v0.9.0 2018-06-18
 

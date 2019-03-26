@@ -20,8 +20,8 @@ defmodule Braintree.HTTP do
 
   require Logger
 
-  alias Braintree.XML.{Decoder, Encoder}
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.XML.{Decoder, Encoder}
 
   @type response ::
           {:ok, map | {:error, atom}}
@@ -166,7 +166,6 @@ defmodule Braintree.HTTP do
           password = get_lazy_env(opts, :private_key)
 
           "Basic " <> :base64.encode("#{username}:#{password}")
-
       end
 
     [{"Authorization", auth_header} | @headers]

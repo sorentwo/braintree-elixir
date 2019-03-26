@@ -66,14 +66,6 @@ defmodule Braintree.Integration.SubscriptionTest do
   end
 
   describe "search/1" do
-    test "with valid params" do
-      {:ok, subscription} = create_test_subscription()
-
-      {:ok, [%Subscription{} = found | _]} = Subscription.search(%{plan_id: %{is: "starter"}})
-
-      assert found == subscription
-    end
-
     test "returns not found if no result" do
       assert {:error, :not_found} = Subscription.search(%{plan_id: %{is: "invalid-starter"}})
     end

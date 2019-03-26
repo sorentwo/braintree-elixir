@@ -8,8 +8,8 @@ defmodule Braintree.Subscription do
 
   use Braintree.Construction
 
-  alias Braintree.{HTTP, Transaction, AddOn, Search}
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.{AddOn, HTTP, Search, Transaction}
 
   @type t :: %__MODULE__{
           id: String.t(),

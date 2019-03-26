@@ -6,8 +6,8 @@ defmodule Braintree.Search do
   https://developers.braintreepayments.com/reference/general/searching/search-fields/ruby
   """
 
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
 
   @doc """
   Perform an advanced search on a given resource and create new structs

@@ -143,7 +143,7 @@ defmodule Braintree.Integration.TransactionTest do
 
     {:error, error} = Transaction.refund(transaction.id, %{amount: "100.00"})
 
-    assert error.message == "Cannot refund a transaction unless it is settled."
+    assert error.message =~ "Cannot refund transaction unless it is settled"
     refute error.params == %{}
     refute error.errors == %{}
   end

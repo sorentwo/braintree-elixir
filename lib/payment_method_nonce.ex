@@ -5,8 +5,8 @@ defmodule Braintree.PaymentMethodNonce do
 
   use Braintree.Construction
 
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
 
   @type t :: %__MODULE__{
           default: String.t(),

@@ -8,9 +8,9 @@ defmodule Braintree.Merchant.Account do
 
   use Braintree.Construction
 
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
-  alias Braintree.Merchant.{Individual, Business, Funding}
+  alias Braintree.HTTP
+  alias Braintree.Merchant.{Business, Funding, Individual}
 
   @type t :: %__MODULE__{
           individual: Individual.t(),
