@@ -1,23 +1,18 @@
 language: elixir
 sudo: false
 elixir:
-  - 1.5.3
-  - 1.6.5
+  - 1.7
+  - 1.8
 otp_release:
-  - 20.2
-before_script:
-  - mix compile
-  - travis_wait mix dialyzer --plt
+  - 21.2
 script:
-  - mix credo
-  - mix dialyzer
   - mix test
-after_script:
-  - MIX_ENV=dev mix inch.report
 cache:
   directories:
     - ~/.mix
     - ~/.hex
+    - deps
+    - _build
 env:
   global:
     - MIX_ENV=test
@@ -25,3 +20,18 @@ env:
     - secure: Io8UMY2MLdLmE2Gtovc1q3Am+ZzLdP/8zgAsjtNB3Geu/hQUtn4noLHzGaSy1MH5BbKgWoQXbdtWkybIC2t1RbJWnE8ZYa0D9/DW0ruOnMx32KSe8d0Pz8T/puAVqSokEsbQMEaKfZNGDdtrBIDD2apW3LvjWZSYmj9gyJ9Oh2S80ARneNVKaz94cPXWnCYl0JSALvx7en9ASEBUkXYNAaGVwSrzmCgKEa/rqo1ypRb+wGOYF+QbSpIpAmfPcvDpblH70Ry4dyS60a7DtwG7i2FhfSLAqd7fDeiLIhd8aEnvY2yLNeADrGgfnhQXxJ2Z4p4vIJ1PC11vRgIGRAiNhdqr12aj78NVoN6G6ni3uUtF2ppMOyaGt7PDg1G/T0uH9UkNCFMLzPVqYDuL6qK/OAQy2gjvCwExBchGeODibuckyCJzhB1FpYI2tMDnzXxBYgObzUCd7tfqnxXZjGsD+mfcWW881JAVLfZyfCcwj5I+BaUBA1v2zK03cesS2uioOkxH4dZ7PWEthadcdx5xDTDcpm4IpFbWj7BvjXEbLTwXRuo5m2AU3FWAa9j3z+ql2GNj0LKP1hq1wsW0oaKxch/irD8WHuhE/w5gN5WOhIDMZ/r04qB1y9R7pQfovXQt8fJLu1H9YDgksci3A7G8Pj8z0daFhEFh459eGjW3PoQ=
     - secure: MZd7kDBHGkAuFuTGo0vSgT/SZDBU6vVXWp+3PFTg2U0xHdL0uZuJMCA+dBldrtE6zbYDly665/iR2jkCEtSPPSNvMsX1TLWZjEbwmHz7hXUbflBE76ihOj67EJaVRSVQ0kioSqILs8bNkeUVFjm7xIGEOZxQq9M7VtP7flA2AEkZSQeHCHUhL9IDkWpX+bk1lYgOAxqShvRQDAWAvC1hSeQ+i6ui1AWYv8eh2lUoXmlBGdCMfwfwTU2U3zn+jumrG5jcvNcWN7wUcvq4tQU6C5lVcMHm39VQbhIJPmuvu8rft5DILZl4Ba4LvOLqn1iFqiFfpqh6pgtOFG3xZnYmGhAak0qZXK/MHuSk9frNeZ+MQ7yEM4hwrtRcuPi+TYwEsO3/We3dfmi+XNtaCKqyF4jM/ZG52akdqYffQ3tDnNBuPkA4DBA7GqnUe9K8jgwi0WGHGJUZNPM1LQOwxUixYjRZvZSN94FtN7H4+9CldzJnZWk4JZtEzLuHE5RPI1c+IqIvfk/ul1KdPXXPQXC3HPx7mtSYjpGZgzIBYEBjcz68/twUIU1XFl1+CDPTtTXdH6GgBMLeaWLwf++RimUVy7Hf0eNQdqpLv7T9hiZQ0U7ETVvPXs3EtUge6yHsIXg61Wli18JQse3+NpONWcDDj2TdZC19g/YCdJeSoExUND4=
     - secure: uBm/dIhg3poMnIgQnEb66s++phK4NvJ1SeuG/XdAk4ta0a1vvpSMJi6T7btrKbAcsyd7rWl2ugcGp154SPiOdMEAMGvh8HoIxPag/jfXAqh9bPx4pdNGfjesMTaBCt7DzD55CAIniBF05EIAjnEVnYihORyRnYThXrGGAYIsyn6ANhcP/Mr78NoyspDrziwXWSxmb6Kbh8Ez/pDjkBgu6lR6J5O/per0MrgG133rBxeIlfSo0srgpkhH9jBAWI6PV9j72QuzK83A7oGaY3vvyRwVC3l2JcA0ZyFTiY1yUMe91I8+Bl2p5ym0A1a0Cg3StJ73EpNF2Opcev7EgK78JbjLuCym3THa1PcONmPnNCV9/YhtYDiJM9SXJOA7tBGlTO4YsYo5UEJMfbVVl4yE1OGeoZLCI/nRR9hFRNbK9EmcC3Fdxx6UPOs7rnFGijKtKJAHv+Ozlk/mjACK4HhWi2hG5aDxqdodLyLtYrb3L7zeGMAlAZf1m8boeXCocCJGHvSee+b8FF3yrKnaiIW/NqilZef+DWuBDyENBOMNMC49QrWHImGG2lATC4m23j84KecAGYaA70Vmu7CP0hVxw5aLHRkhWV0BOkn5n0fMxUiGtYMLBT09Rmxr3s8mPh22YzvGaVDheNwAx50UqWph+XckZFJthk1tf9bzp34u/nA=
+jobs:
+  include:
+    - stage: inch
+      script: mix inch.report
+      elixir: 1.8
+    - stage: credo
+      script: mix credo --strict
+      elixir: 1.8
+    - stage: format
+      script: mix format --check-formatted
+      elixir: 1.8
+    - stage: dialyzer
+      before_script: travis_wait mix dialyzer --plt
+      script: mix dialyzer --halt-exit-status
+      elixir: 1.8

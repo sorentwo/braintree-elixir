@@ -9,7 +9,6 @@ defmodule Braintree.Mixfile do
       version: @version,
       elixir: "~> 1.5",
       elixirc_paths: ["lib"],
-      build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
       description: description(),
@@ -18,7 +17,6 @@ defmodule Braintree.Mixfile do
       deps: deps(),
       docs: docs(),
       dialyzer: [
-        plt_add_deps: :transitive,
         flags: [:unmatched_returns, :error_handling, :race_conditions]
       ]
     ]
@@ -55,10 +53,10 @@ defmodule Braintree.Mixfile do
 
   defp deps do
     [
-      {:hackney, "~> 1.12"},
-      {:ex_doc, "~> 0.18", only: [:dev], runtime: false},
-      {:inch_ex, "~> 0.5", only: [:dev], runtime: false},
-      {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
+      {:hackney, "~> 1.15"},
+      {:ex_doc, "~> 0.19", only: [:dev], runtime: false},
+      {:inch_ex, "~> 2.0", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false}
     ]
   end
