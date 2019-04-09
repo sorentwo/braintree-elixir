@@ -17,6 +17,7 @@ defmodule Braintree.Integration.TransactionTest do
     assert transaction.amount == "100.00"
     assert transaction.status == "submitted_for_settlement"
     assert transaction.id =~ ~r/^\w+$/
+    assert transaction.customer.id == nil
   end
 
   test "sale/1 submits billing information" do
@@ -53,6 +54,23 @@ defmodule Braintree.Integration.TransactionTest do
     assert transaction.shipping.country_name == "Bhutan"
     assert transaction.shipping.country_code_alpha2 == "BT"
     assert transaction.shipping.country_code_numeric == "064"
+  end
+
+  test "sale/1 with :store_in_vault_on_success" do
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.transactable(),
+        options: %{
+          store_in_vault_on_success: true,
+          submit_for_settlement: true
+        }
+      })
+
+    assert transaction.amount == "100.00"
+    assert transaction.status == "submitted_for_settlement"
+    assert transaction.id =~ ~r/^\w+$/
+    assert transaction.customer.id =~ ~r/^\w+$/
   end
 
   test "sale/1 status is authorized when not submit for settlement" do
