@@ -86,7 +86,7 @@ defmodule Braintree.Subscription do
         plan_id: "starter"
       })
   """
-  @spec create(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec create(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("subscriptions", %{subscription: params}, opts) do
       {:ok, new(payload)}
@@ -100,7 +100,7 @@ defmodule Braintree.Subscription do
 
       {:ok, subscription} = Subscription.find("123")
   """
-  @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def find(subscription_id, opts \\ []) do
     with {:ok, payload} <- HTTP.get("subscriptions/#{subscription_id}", opts) do
       {:ok, new(payload)}
@@ -115,7 +115,7 @@ defmodule Braintree.Subscription do
 
       {:ok, subscription} = Subscription.cancel("123")
   """
-  @spec cancel(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec cancel(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def cancel(subscription_id, opts \\ []) do
     with {:ok, payload} <- HTTP.put("subscriptions/#{subscription_id}/cancel", opts) do
       {:ok, new(payload)}
@@ -157,7 +157,7 @@ defmodule Braintree.Subscription do
       })
       subscription.plan_id # "new_plan_id"
   """
-  @spec update(binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec update(binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def update(id, params, opts \\ []) when is_binary(id) and is_map(params) do
     with {:ok, payload} <- HTTP.put("subscriptions/" <> id, %{subscription: params}, opts) do
       {:ok, new(payload)}
