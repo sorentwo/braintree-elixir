@@ -41,7 +41,8 @@ defmodule Braintree.Merchant.Account do
       tos_accepted: true,
     })
   """
-  @spec create(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
+  @spec create(map, Keyword.t()) ::
+          {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <-
            HTTP.post("merchant_accounts/create_via_api", %{merchant_account: params}, opts) do
@@ -62,7 +63,8 @@ defmodule Braintree.Merchant.Account do
 
       merchant.funding_details.account_number # "1234567890"
   """
-  @spec update(binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
+  @spec update(binary, map, Keyword.t()) ::
+          {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def update(id, params, opts \\ []) when is_binary(id) do
     with {:ok, payload} <-
            HTTP.put("merchant_accounts/#{id}/update_via_api", %{merchant_account: params}, opts) do
@@ -77,7 +79,8 @@ defmodule Braintree.Merchant.Account do
 
     merchant = Braintree.Merchant.find("merchant_id")
   """
-  @spec find(binary, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
+  @spec find(binary, Keyword.t()) ::
+          {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def find(id, opts \\ []) when is_binary(id) do
     with {:ok, payload} <- HTTP.get("merchant_accounts/" <> id, opts) do
       {:ok, new(payload)}

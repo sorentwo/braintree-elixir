@@ -65,7 +65,8 @@ defmodule Braintree.SettlementBatchSummary do
 
       Braintree.SettlementBatchSummary("2016-9-5", "custom_field_1")
   """
-  @spec generate(binary, binary | nil, Keyword.t()) :: {:ok, [t]} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
+  @spec generate(binary, binary | nil, Keyword.t()) ::
+          {:ok, [t]} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def generate(settlement_date, custom_field \\ nil, opts \\ []) do
     criteria = build_criteria(settlement_date, custom_field)
     params = %{settlement_batch_summary: criteria}

@@ -42,7 +42,8 @@ defmodule Braintree.PaypalAccount do
 
       {:ok, paypal_account} = Braintree.PaypalAccount.find(token)
   """
-  @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
+  @spec find(String.t(), Keyword.t()) ::
+          {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def find(token, opts \\ []) do
     path = "payment_methods/paypal_account/" <> token
 
@@ -62,7 +63,8 @@ defmodule Braintree.PaypalAccount do
         %{options: %{make_default: true}
       )
   """
-  @spec update(String.t(), map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
+  @spec update(String.t(), map, Keyword.t()) ::
+          {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def update(token, params, opts \\ []) do
     path = "payment_methods/paypal_account/" <> token
 
@@ -79,7 +81,8 @@ defmodule Braintree.PaypalAccount do
 
       {:ok, paypal_account} = Braintree.PaypalAccount.delete(token)
   """
-  @spec delete(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
+  @spec delete(String.t(), Keyword.t()) ::
+          {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def delete(token, opts \\ []) do
     path = "payment_methods/paypal_account/" <> token
 
