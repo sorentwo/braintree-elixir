@@ -59,7 +59,7 @@ defmodule Braintree.Address do
 
     address.company # Braintree
   """
-  @spec create(binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec create(binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def create(customer_id, params \\ %{}, opts \\ []) when is_binary(customer_id) do
     with {:ok, payload} <-
            HTTP.post("customers/#{customer_id}/addresses/", %{address: params}, opts) do
@@ -74,7 +74,7 @@ defmodule Braintree.Address do
 
       :ok = Braintree.Address.delete("customer_id", "address_id")
   """
-  @spec delete(binary, binary, Keyword.t()) :: :ok | {:error, Error.t()}
+  @spec delete(binary, binary, Keyword.t()) :: :ok | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def delete(customer_id, id, opts \\ []) when is_binary(customer_id) and is_binary(id) do
     with {:ok, _reponse} <- HTTP.delete("customers/#{customer_id}/addresses/" <> id, opts) do
       :ok
@@ -94,7 +94,7 @@ defmodule Braintree.Address do
 
       address.company # "New Company Name"
   """
-  @spec update(binary, binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec update(binary, binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def update(customer_id, id, params, opts \\ []) when is_binary(customer_id) and is_binary(id) do
     with {:ok, payload} <-
            HTTP.put("customers/#{customer_id}/addresses/" <> id, %{address: params}, opts) do
@@ -110,7 +110,7 @@ defmodule Braintree.Address do
 
     address = Braintree.Address.find("customer_id", "address_id")
   """
-  @spec find(binary, binary, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec find(binary, binary, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def find(customer_id, id, opts \\ []) when is_binary(customer_id) and is_binary(id) do
     with {:ok, payload} <- HTTP.get("customers/#{customer_id}/addresses/" <> id, opts) do
       {:ok, new(payload)}

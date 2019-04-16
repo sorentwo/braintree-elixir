@@ -44,7 +44,7 @@ defmodule Braintree.AddOn do
 
       {:ok, addons} = Braintree.AddOns.all()
   """
-  @spec all(Keyword.t()) :: {:ok, [t]} | {:error, Error.t()}
+  @spec all(Keyword.t()) :: {:ok, [t]} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def all(opts \\ []) do
     with {:ok, %{"add_ons" => add_ons}} <- HTTP.get("add_ons", opts) do
       {:ok, new(add_ons)}

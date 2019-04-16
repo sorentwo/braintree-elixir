@@ -19,7 +19,7 @@ defmodule Braintree.Testing.TestTransaction do
 
   transaction.status # "settled"
   """
-  @spec settle(String.t()) :: {:ok, any} | {:error, Error.t()}
+  @spec settle(String.t()) :: {:ok, any} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def settle(transaction_id) do
     path = "transactions/#{transaction_id}/settle"
 
@@ -36,7 +36,7 @@ defmodule Braintree.Testing.TestTransaction do
 
   transaction.status # "settlement_confirmed"
   """
-  @spec settlement_confirm(String.t()) :: {:ok, any} | {:error, Error.t()}
+  @spec settlement_confirm(String.t()) :: {:ok, any} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def settlement_confirm(transaction_id) do
     path = "transactions/#{transaction_id}/settlement_confirm"
 
@@ -53,7 +53,7 @@ defmodule Braintree.Testing.TestTransaction do
 
   transaction.status # "settlement_declined"
   """
-  @spec settlement_decline(String.t()) :: {:ok, any} | {:error, Error.t()}
+  @spec settlement_decline(String.t()) :: {:ok, any} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def settlement_decline(transaction_id) do
     path = "transactions/#{transaction_id}/settlement_decline"
 

@@ -26,7 +26,7 @@ defmodule Braintree.PaymentMethod do
       credit_card.type # "Visa"
   """
   @spec create(map, Keyword.t()) ::
-          {:ok, CreditCard.t()} | {:ok, PaypalAccount.t()} | {:error, Error.t()}
+          {:ok, CreditCard.t()} | {:ok, PaypalAccount.t()} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("payment_methods", %{payment_method: params}, opts) do
       {:ok, new(payload)}
@@ -58,7 +58,7 @@ defmodule Braintree.PaymentMethod do
       payment_method.cardholder_name # "NEW"
   """
   @spec update(String.t(), map, Keyword.t()) ::
-          {:ok, CreditCard.t()} | {:ok, PaypalAccount.t()} | {:error, Error.t()}
+          {:ok, CreditCard.t()} | {:ok, PaypalAccount.t()} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def update(token, params \\ %{}, opts \\ []) do
     path = "payment_methods/any/" <> token
 
@@ -74,7 +74,7 @@ defmodule Braintree.PaymentMethod do
 
       {:ok, "Success"} = Braintree.PaymentMethod.delete(token)
   """
-  @spec delete(String.t(), Keyword.t()) :: :ok | {:error, Error.t()}
+  @spec delete(String.t(), Keyword.t()) :: :ok | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def delete(token, opts \\ []) do
     path = "payment_methods/any/" <> token
 
@@ -93,7 +93,7 @@ defmodule Braintree.PaymentMethod do
       payment_method.type # CreditCard
   """
   @spec find(String.t(), Keyword.t()) ::
-          {:ok, CreditCard.t()} | {:ok, PaypalAccount.t()} | {:error, Error.t()}
+          {:ok, CreditCard.t()} | {:ok, PaypalAccount.t()} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def find(token, opts \\ []) do
     path = "payment_methods/any/" <> token
 

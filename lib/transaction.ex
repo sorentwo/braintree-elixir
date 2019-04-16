@@ -131,7 +131,7 @@ defmodule Braintree.Transaction do
 
       transaction.status # "settling"
   """
-  @spec sale(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec sale(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def sale(params, opts \\ []) do
     sale_params = Map.merge(params, %{type: "sale"})
 
@@ -149,7 +149,7 @@ defmodule Braintree.Transaction do
       {:ok, transaction} = Transaction.submit_for_settlement("123", %{amount: "100"})
       transaction.status # "settling"
   """
-  @spec submit_for_settlement(String.t(), map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec submit_for_settlement(String.t(), map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def submit_for_settlement(transaction_id, params, opts \\ []) do
     path = "transactions/#{transaction_id}/submit_for_settlement"
 
@@ -168,7 +168,7 @@ defmodule Braintree.Transaction do
 
       transaction.status # "refunded"
   """
-  @spec refund(String.t(), map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec refund(String.t(), map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def refund(transaction_id, params, opts \\ []) do
     path = "transactions/#{transaction_id}/refund"
 
@@ -186,7 +186,7 @@ defmodule Braintree.Transaction do
 
       transaction.status # "voided"
   """
-  @spec void(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec void(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def void(transaction_id, opts \\ []) do
     path = "transactions/#{transaction_id}/void"
 
@@ -202,7 +202,7 @@ defmodule Braintree.Transaction do
 
       {:ok, transaction} = Transaction.find("123")
   """
-  @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def find(transaction_id, opts \\ []) do
     path = "transactions/#{transaction_id}"
 

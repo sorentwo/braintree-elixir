@@ -64,7 +64,7 @@ defmodule Braintree.Customer do
 
       customer.company # Braintree
   """
-  @spec create(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec create(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("customers", %{customer: params}, opts) do
       {:ok, new(payload)}
@@ -80,7 +80,7 @@ defmodule Braintree.Customer do
 
       :ok = Braintree.Customer.delete("customer_id")
   """
-  @spec delete(binary, Keyword.t()) :: :ok | {:error, Error.t()}
+  @spec delete(binary, Keyword.t()) :: :ok | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def delete(id, opts \\ []) when is_binary(id) do
     with {:ok, _response} <- HTTP.delete("customers/" <> id, opts) do
       :ok
@@ -94,7 +94,7 @@ defmodule Braintree.Customer do
 
       customer = Braintree.Customer.find("customer_id")
   """
-  @spec find(binary, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec find(binary, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def find(id, opts \\ []) when is_binary(id) do
     with {:ok, payload} <- HTTP.get("customers/" <> id, opts) do
       {:ok, new(payload)}
@@ -114,7 +114,7 @@ defmodule Braintree.Customer do
 
       customer.company # "New Company Name"
   """
-  @spec update(binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec update(binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()} | {:error, atom()} | {:error, binary()}
   def update(id, params, opts \\ []) when is_binary(id) and is_map(params) do
     with {:ok, payload} <- HTTP.put("customers/" <> id, %{customer: params}, opts) do
       {:ok, new(payload)}
