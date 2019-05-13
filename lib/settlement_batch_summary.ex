@@ -9,8 +9,10 @@ defmodule Braintree.SettlementBatchSummary do
 
   use Braintree.Construction
 
-  alias Braintree.HTTP
+  import Braintree.Util, only: [atomize: 1]
+
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
 
   defmodule Record do
     @moduledoc """
@@ -18,39 +20,39 @@ defmodule Braintree.SettlementBatchSummary do
     """
 
     @type t :: %__MODULE__{
-                 card_type:           String.t,
-                 count:               String.t,
-                 merchant_account_id: String.t,
-                 kind:                String.t,
-                 amount_settled:      String.t
-               }
+            card_type: String.t(),
+            count: String.t(),
+            merchant_account_id: String.t(),
+            kind: String.t(),
+            amount_settled: String.t()
+          }
 
-    defstruct card_type:           nil,
-              count:               "0",
+    defstruct card_type: nil,
+              count: "0",
               merchant_account_id: nil,
-              kind:                nil,
-              amount_settled:      nil
+              kind: nil,
+              amount_settled: nil
 
     @doc """
     Convert a list of records into structs, including any custom fields that
     were used as the grouping value.
     """
-    @spec new(Map.t | [Map.t]) :: t | [t]
     def new(params) when is_map(params) do
       atomized = atomize(params)
-      summary = struct(__MODULE__, atomized)
+      summary = Construction.new(__MODULE__, params)
 
       case Map.keys(atomized) -- Map.keys(summary) do
         [custom_key] -> Map.put(summary, custom_key, atomized[custom_key])
-                   _ -> summary
+        _ -> summary
       end
     end
+
     def new(params) when is_list(params) do
       Enum.map(params, &new/1)
     end
   end
 
-  @type t :: %__MODULE__{records: [Record.t]}
+  @type t :: %__MODULE__{records: [Record.t()]}
 
   defstruct records: []
 
@@ -63,7 +65,7 @@ defmodule Braintree.SettlementBatchSummary do
 
       Braintree.SettlementBatchSummary("2016-9-5", "custom_field_1")
   """
-  @spec generate(binary, binary | nil, Keyword.t) :: {:ok, [t]} | {:error, Error.t}
+  @spec generate(binary, binary | nil, Keyword.t()) :: {:ok, [t]} | {:error, Error.t()}
   def generate(settlement_date, custom_field \\ nil, opts \\ []) do
     criteria = build_criteria(settlement_date, custom_field)
     params = %{settlement_batch_summary: criteria}
@@ -75,10 +77,11 @@ defmodule Braintree.SettlementBatchSummary do
     end
   end
 
-  @spec build_criteria(binary, binary | nil) :: Map.t
+  @spec build_criteria(binary, binary | nil) :: map
   defp build_criteria(settlement_date, nil) do
     %{settlement_date: settlement_date}
   end
+
   defp build_criteria(settlement_date, custom_field) do
     %{settlement_date: settlement_date, group_by_custom_field: custom_field}
   end
@@ -87,7 +90,6 @@ defmodule Braintree.SettlementBatchSummary do
   Convert a map including records into a summary struct with a list
   of record structs.
   """
-  @spec new(Map.t) :: t
   def new(%{"records" => records}) do
     struct(__MODULE__, records: Record.new(records))
   end

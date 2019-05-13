@@ -5,9 +5,9 @@ defmodule Braintree.Testing.TestTransaction do
   Transition to settled, settlement_confirmed, or settlement_declined states.
   """
 
-  alias Braintree.Transaction
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
+  alias Braintree.Transaction
 
   @doc """
   Use a `transaction_id` to transition to settled status. This
@@ -19,7 +19,7 @@ defmodule Braintree.Testing.TestTransaction do
 
   transaction.status # "settled"
   """
-  @spec settle(String.t) :: {:ok, any} | {:error, Error.t}
+  @spec settle(String.t()) :: {:ok, any} | {:error, Error.t()}
   def settle(transaction_id) do
     path = "transactions/#{transaction_id}/settle"
 
@@ -36,7 +36,7 @@ defmodule Braintree.Testing.TestTransaction do
 
   transaction.status # "settlement_confirmed"
   """
-  @spec settlement_confirm(String.t) :: {:ok, any} | {:error, Error.t}
+  @spec settlement_confirm(String.t()) :: {:ok, any} | {:error, Error.t()}
   def settlement_confirm(transaction_id) do
     path = "transactions/#{transaction_id}/settlement_confirm"
 
@@ -53,7 +53,7 @@ defmodule Braintree.Testing.TestTransaction do
 
   transaction.status # "settlement_declined"
   """
-  @spec settlement_decline(String.t) :: {:ok, any} | {:error, Error.t}
+  @spec settlement_decline(String.t()) :: {:ok, any} | {:error, Error.t()}
   def settlement_decline(transaction_id) do
     path = "transactions/#{transaction_id}/settlement_decline"
 

@@ -11,8 +11,14 @@ defmodule Braintree.Merchant.AccountTest do
       currency_iso_code: "USD",
       default: true,
       master_merchant_account: "ladders_store",
-      individual: %Individual{first_name: "Jane", address: %Address{street_address: "101 N Main St"}},
-      business: %Business{legal_name: "Ladders.io", address: %Address{street_address: "102 N Main St"}},
+      individual: %Individual{
+        first_name: "Jane",
+        address: %Address{street_address: "101 N Main St"}
+      },
+      business: %Business{
+        legal_name: "Ladders.io",
+        address: %Address{street_address: "102 N Main St"}
+      },
       funding: %Funding{account_number_last_4: "7890"}
     }
 
@@ -30,8 +36,7 @@ defmodule Braintree.Merchant.AccountTest do
 
   test "new/1 works with all sub-modules" do
     data = %{
-      "merchant_account" =>
-      %{
+      "merchant_account" => %{
         "id" => "ladders-merchant",
         "status" => "pending",
         "currency_iso_code" => "USD",
@@ -46,7 +51,7 @@ defmodule Braintree.Merchant.AccountTest do
         "business" => %{
           "legal_name" => "Ladders.io",
           "address" => %{
-            "street_address" => "102 N Main St",
+            "street_address" => "102 N Main St"
           }
         },
         "funding" => %{

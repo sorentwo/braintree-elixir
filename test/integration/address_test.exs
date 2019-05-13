@@ -6,10 +6,11 @@ defmodule Braintree.Integration.AddressTest do
   alias Braintree.Address
 
   setup do
-    {:ok, customer} = Braintree.Customer.create(%{
-      first_name: "Test",
-      last_name: "User"
-    })
+    {:ok, customer} =
+      Braintree.Customer.create(%{
+        first_name: "Test",
+        last_name: "User"
+      })
 
     {:ok, customer: customer}
   end
@@ -20,17 +21,18 @@ defmodule Braintree.Integration.AddressTest do
     end
 
     test "succeeds with valid params", %{customer: customer} do
-      {:ok, address} = Address.create(customer.id, %{
-                                        first_name: "Jenna",
-                                        last_name: "Smith",
-                                        company: "Braintree",
-                                        street_address: "1 E Main St",
-                                        extended_address: "Suite 403",
-                                        locality: "Chicago",
-                                        region: "Illinois",
-                                        postal_code: "60622",
-                                        country_code_alpha2: "US",
-                                      })
+      {:ok, address} =
+        Address.create(customer.id, %{
+          first_name: "Jenna",
+          last_name: "Smith",
+          company: "Braintree",
+          street_address: "1 E Main St",
+          extended_address: "Suite 403",
+          locality: "Chicago",
+          region: "Illinois",
+          postal_code: "60622",
+          country_code_alpha2: "US"
+        })
 
       assert address.customer_id == customer.id
       assert address.country_name == "United States of America"
@@ -45,10 +47,8 @@ defmodule Braintree.Integration.AddressTest do
     end
 
     test "with invalid customer id" do
-      assert {:error, :not_found} = Address.create(
-        "invalid-customer",
-        %{first_name: "Jenna", last_name: "Smith" }
-      )
+      assert {:error, :not_found} =
+               Address.create("invalid-customer", %{first_name: "Jenna", last_name: "Smith"})
     end
   end
 
@@ -82,18 +82,21 @@ defmodule Braintree.Integration.AddressTest do
     end
 
     test "updates/3 an address that does not exist", %{customer: customer} do
-      assert {:error, :not_found} = Address.update(customer.id, "invalid-address", %{last_name: "Smith"})
+      assert {:error, :not_found} =
+               Address.update(customer.id, "invalid-address", %{last_name: "Smith"})
     end
 
     test "updates/3 an existing address with invalid params", %{customer: customer} do
       {:ok, address} = Address.create(customer.id, %{first_name: "Jenna"})
 
-      assert {:error, error} = Address.update(customer.id, address.id, %{country_code_numeric: "invalid country code"})
+      assert {:error, error} =
+               Address.update(customer.id, address.id, %{
+                 country_code_numeric: "invalid country code"
+               })
 
       assert error.message == "Country code (numeric) is not an accepted country."
     end
   end
-
 
   describe "find/2" do
     test "retrieves an existing address", %{customer: customer} do

@@ -50,7 +50,7 @@ defmodule Braintree.Integration.MerchantAccountTest do
 
   describe "create/1" do
     test "without any params" do
-      assert {:error, :server_error} = Account.create()
+      assert {:error, :forbidden} = Account.create()
     end
 
     test "with valid params" do
@@ -70,29 +70,25 @@ defmodule Braintree.Integration.MerchantAccountTest do
   describe "update/2" do
     test "with valid params" do
       {:ok, merchant} = Account.create(@params)
-      {:ok, merchant} = Account.update(
-        merchant.id,
-        %{funding: %{account_number: "00001112"}}
-      )
+      {:ok, merchant} = Account.update(merchant.id, %{funding: %{account_number: "00001112"}})
 
       assert merchant.funding.account_number_last_4 == "1112"
     end
 
     test "with invalid params" do
       {:ok, merchant} = Account.create(@params)
-      assert {:error, error} = Account.update(
-        merchant.id,
-        %{funding: %{destination: "Somewhere under the rainbow"}}
-      )
+
+      assert {:error, error} =
+               Account.update(merchant.id, %{
+                 funding: %{destination: "Somewhere under the rainbow"}
+               })
 
       assert error.message == "Funding destination is invalid."
     end
 
     test "with non existent merchant" do
-      assert {:error, :not_found} = Account.update(
-        "invalid-merchant-id",
-        %{funding: %{account_number: "1212121"}}
-      )
+      assert {:error, :not_found} =
+               Account.update("invalid-merchant-id", %{funding: %{account_number: "1212121"}})
     end
   end
 

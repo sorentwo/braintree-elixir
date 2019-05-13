@@ -13,11 +13,11 @@ defmodule Braintree.ErrorResponse do
   use Braintree.Construction
 
   @type t :: %__MODULE__{
-               errors: Map.t,
-               message: String.t,
-               params: Map.t,
-               transaction: Map.t
-             }
+          errors: map,
+          message: String.t(),
+          params: map,
+          transaction: map
+        }
 
   defstruct errors: %{},
             message: "",

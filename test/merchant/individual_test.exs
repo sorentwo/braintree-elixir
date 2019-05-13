@@ -27,10 +27,11 @@ defmodule Braintree.Merchant.IndividualTest do
   end
 
   test "new/1 with address" do
-    individual = Individual.new(%{
-      "address" => %{"street_address" => "101 N Main St"},
-      "first_name" => "Jenna"
-    })
+    individual =
+      Individual.new(%{
+        "address" => %{"street_address" => "101 N Main St"},
+        "first_name" => "Jenna"
+      })
 
     assert individual.first_name == "Jenna"
     assert individual.address.street_address == "101 N Main St"

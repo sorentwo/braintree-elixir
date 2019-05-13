@@ -1,3 +1,39 @@
+## v0.10.0 2019-03-26
+
+### Enhancements
+
+* [Braintree.HTTP] Support both `access_token` and public/private keys usage in configuration
+
+## v0.9.0 2018-06-18
+
+### Enhancements
+
+* [Braintree] Use system tuples as the default for application env
+* [Braintree] Add dialyxer and fix all typespecs. Typespecs are now validated
+  during CI builds
+* [Braintree.HTTP] Expose `429 Too Many Requests` error with an integer to
+  status mapping
+* [Braintree.TestTransaction] The module is now available in all environments,
+  not just `test`
+* [Braintree.Address] Support added for address features
+* [Braintree.MerchantAccounts] Support added for merchant account features
+* [Braintree.Search] Support for searching customers, credit cards and
+  subscriptions
+* [Braintree.XML] Support collections when decoding XML responses
+
+### Changes
+
+* [Braintree] Elixir 1.5 is now the minimum supported version
+* [Braintree.Transaction] Replace `:billing_details` with the correctly named
+  `:billing`
+
+### Bug Fixes
+
+* [Braintree.HTTP] Use `Keyword.get_lazy` to avoid exceptions when config keys
+  used for requests aren't set.
+* [Braintree.HTTP] Add explicit handling for `unprocessable_entity` errors
+* [Braintree.HTTP] Always coerce the environment to an atom
+
 ## v0.8.0 2017-08-24
 
 ### Enhancements

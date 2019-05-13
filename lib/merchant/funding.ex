@@ -9,13 +9,13 @@ defmodule Braintree.Merchant.Funding do
   use Braintree.Construction
 
   @type t :: %__MODULE__{
-    descriptor: String.t,
-    destination: String.t,
-    email: String.t,
-    mobile_phone: String.t,
-    routing_number: String.t,
-    account_number_last_4: String.t
-  }
+          descriptor: String.t(),
+          destination: String.t(),
+          email: String.t(),
+          mobile_phone: String.t(),
+          routing_number: String.t(),
+          account_number_last_4: String.t()
+        }
 
   defstruct descriptor: nil,
             destination: nil,

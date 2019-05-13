@@ -25,7 +25,7 @@ defmodule Braintree.XML.Entity do
       iex> Braintree.XML.Entity.decode("&quot;air quotes&quot;")
       ~s("air quotes")
   """
-  @spec decode(String.t) :: String.t
+  @spec decode(String.t()) :: String.t()
   def decode(string) do
     Regex.replace(~r/\&([^\s]+);/U, string, &replace/2)
   end
@@ -42,7 +42,7 @@ defmodule Braintree.XML.Entity do
       iex> Braintree.XML.Entity.encode("Here & There")
       "Here &amp; There"
   """
-  @spec encode(String.t) :: String.t
+  @spec encode(String.t()) :: String.t()
   def encode(string) do
     string
     |> String.graphemes()

@@ -20,10 +20,11 @@ defmodule Braintree.Merchant.BusinessTest do
   end
 
   test "new/1 with address" do
-    business = Business.new(%{
-      "address" => %{"street_address" => "101 N Main St"},
-      "legal_name" => "Ladders.io"
-    })
+    business =
+      Business.new(%{
+        "address" => %{"street_address" => "101 N Main St"},
+        "legal_name" => "Ladders.io"
+      })
 
     assert business.legal_name == "Ladders.io"
     assert business.address.street_address == "101 N Main St"

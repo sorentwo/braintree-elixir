@@ -4,22 +4,29 @@ defmodule Braintree.Construction do
   structs.
   """
 
+  import Braintree.Util, only: [atomize: 1]
+
   defmacro __using__(_) do
     quote do
-      import Braintree.Util, only: [atomize: 1]
+      alias Braintree.Construction
 
-      @doc """
-      Convert a response into one or more typed structs.
-      """
-      @spec new(Map.t | [Map.t]) :: t | [t]
-      def new(params) when is_map(params) do
-        struct(__MODULE__, atomize(params))
-      end
-      def new(params) when is_list(params) do
-        Enum.map(params, &new/1)
+      def new(params) when is_map(params) or is_list(params) do
+        Construction.new(__MODULE__, params)
       end
 
-      defoverridable [new: 1]
+      defoverridable new: 1
     end
+  end
+
+  @doc """
+  Convert a response into one or more typed structs.
+  """
+  @spec new(module(), map() | [map()]) :: struct() | [struct()]
+  def new(module, params) when is_list(params) do
+    Enum.map(params, &new(module, &1))
+  end
+
+  def new(module, params) when is_map(params) do
+    struct(module, atomize(params))
   end
 end

@@ -9,27 +9,27 @@ defmodule Braintree.Address do
 
   use Braintree.Construction
 
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
 
   @type t :: %__MODULE__{
-    id: String.t,
-    company: String.t,
-    created_at: String.t,
-    updated_at: String.t,
-    first_name: String.t,
-    last_name: String.t,
-    locality: String.t,
-    postal_code: String.t,
-    region: String.t,
-    street_address: String.t,
-    country_code_alpha2: String.t,
-    country_code_alpha3: String.t,
-    country_code_numeric: String.t,
-    country_name: String.t,
-    customer_id: String.t,
-    extended_address: String.t
-  }
+          id: String.t(),
+          company: String.t(),
+          created_at: String.t(),
+          updated_at: String.t(),
+          first_name: String.t(),
+          last_name: String.t(),
+          locality: String.t(),
+          postal_code: String.t(),
+          region: String.t(),
+          street_address: String.t(),
+          country_code_alpha2: String.t(),
+          country_code_alpha3: String.t(),
+          country_code_numeric: String.t(),
+          country_name: String.t(),
+          customer_id: String.t(),
+          extended_address: String.t()
+        }
 
   defstruct id: nil,
             company: nil,
@@ -59,9 +59,10 @@ defmodule Braintree.Address do
 
     address.company # Braintree
   """
-  @spec create(binary, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec create(binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def create(customer_id, params \\ %{}, opts \\ []) when is_binary(customer_id) do
-    with {:ok, payload} <- HTTP.post("customers/#{customer_id}/addresses/", %{address: params}, opts) do
+    with {:ok, payload} <-
+           HTTP.post("customers/#{customer_id}/addresses/", %{address: params}, opts) do
       {:ok, new(payload)}
     end
   end
@@ -73,16 +74,16 @@ defmodule Braintree.Address do
 
       :ok = Braintree.Address.delete("customer_id", "address_id")
   """
-  @spec delete(binary, binary, Keyword.t) :: :ok | {:error, Error.t}
+  @spec delete(binary, binary, Keyword.t()) :: :ok | {:error, Error.t()}
   def delete(customer_id, id, opts \\ []) when is_binary(customer_id) and is_binary(id) do
     with {:ok, _reponse} <- HTTP.delete("customers/#{customer_id}/addresses/" <> id, opts) do
-        :ok
+      :ok
     end
   end
 
   @doc """
-  To update an address, use a customer's ID with an address's ID along with 
-  new attributes. The same validations apply as when creating an address. 
+  To update an address, use a customer's ID with an address's ID along with
+  new attributes. The same validations apply as when creating an address.
   Any attribute not passed will remain unchanged.
 
   ## Example
@@ -93,9 +94,10 @@ defmodule Braintree.Address do
 
       address.company # "New Company Name"
   """
-  @spec update(binary, binary, Map.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec update(binary, binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def update(customer_id, id, params, opts \\ []) when is_binary(customer_id) and is_binary(id) do
-    with {:ok, payload} <- HTTP.put("customers/#{customer_id}/addresses/" <> id, %{address: params}, opts) do
+    with {:ok, payload} <-
+           HTTP.put("customers/#{customer_id}/addresses/" <> id, %{address: params}, opts) do
       {:ok, new(payload)}
     end
   end
@@ -108,7 +110,7 @@ defmodule Braintree.Address do
 
     address = Braintree.Address.find("customer_id", "address_id")
   """
-  @spec find(binary, binary, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec find(binary, binary, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def find(customer_id, id, opts \\ []) when is_binary(customer_id) and is_binary(id) do
     with {:ok, payload} <- HTTP.get("customers/#{customer_id}/addresses/" <> id, opts) do
       {:ok, new(payload)}
@@ -122,6 +124,5 @@ defmodule Braintree.Address do
 
       address = Braintree.Address.new(%{"company" => "Braintree"})
   """
-  @spec new(Map.t) :: t
   def new(%{"address" => map}), do: super(map)
 end

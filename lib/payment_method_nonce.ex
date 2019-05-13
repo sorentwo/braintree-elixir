@@ -5,30 +5,30 @@ defmodule Braintree.PaymentMethodNonce do
 
   use Braintree.Construction
 
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
 
   @type t :: %__MODULE__{
-               default:             String.t,
-               description:         String.t,
-               nonce:               String.t,
-               three_d_secure_info: String.t,
-               type:                String.t,
-               details:             Map.t,
-               is_locked:           boolean,
-               consumed:            boolean,
-               security_questions:  []
-             }
+          default: String.t(),
+          description: String.t(),
+          nonce: String.t(),
+          three_d_secure_info: String.t(),
+          type: String.t(),
+          details: map,
+          is_locked: boolean,
+          consumed: boolean,
+          security_questions: [any]
+        }
 
-  defstruct default:              nil,
-            description:          nil,
-            nonce:                nil,
-            three_d_secure_info:  nil,
-            type:                 nil,
-            is_locked:            false,
-            details:              nil,
-            consumed:             false,
-            security_questions:   nil
+  defstruct default: nil,
+            description: nil,
+            nonce: nil,
+            three_d_secure_info: nil,
+            type: nil,
+            is_locked: false,
+            details: nil,
+            consumed: false,
+            security_questions: nil
 
   @doc """
   Create a payment method nonce from `token`
@@ -39,7 +39,7 @@ defmodule Braintree.PaymentMethodNonce do
 
       payment_method_nonce.nonce
   """
-  @spec create(String.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec create(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def create(payment_method_token, opts \\ []) do
     path = "payment_methods/#{payment_method_token}/nonces"
 
@@ -57,7 +57,7 @@ defmodule Braintree.PaymentMethodNonce do
 
       payment_method.type #CreditCard
   """
-  @spec find(String.t, Keyword.t) :: {:ok, t} | {:error, Error.t}
+  @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def find(nonce, opts \\ []) do
     path = "payment_method_nonces/" <> nonce
 
@@ -67,7 +67,6 @@ defmodule Braintree.PaymentMethodNonce do
   end
 
   @doc false
-  @spec new(Map.t) :: t
   def new(%{"payment_method_nonce" => map}) do
     super(map)
   end

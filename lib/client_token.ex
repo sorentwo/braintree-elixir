@@ -6,6 +6,7 @@ defmodule Braintree.ClientToken do
   https://developers.braintreepayments.com/reference/request/client-token/generate/ruby
   """
 
+  alias Braintree.ErrorResponse, as: Error
   alias Braintree.HTTP
 
   @version 2
@@ -27,7 +28,7 @@ defmodule Braintree.ClientToken do
 
       {:ok, token} = Braintree.ClientToken.generate(%{version: 3})
   """
-  @spec generate(Map.t, Keyword.t) :: {:ok, binary} | {:error, Error.t}
+  @spec generate(map, Keyword.t()) :: {:ok, binary} | {:error, Error.t()}
   def generate(params \\ %{}, opts \\ []) when is_map(params) do
     params = %{client_token: with_version(params)}
 
