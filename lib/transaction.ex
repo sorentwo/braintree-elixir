@@ -17,7 +17,7 @@ defmodule Braintree.Transaction do
           add_ons: [AddOn.t()],
           additional_processor_response: String.t(),
           amount: number,
-          android_pay_card: String.t(),
+          android_pay_card: map,
           apple_pay: map,
           avs_error_response_code: String.t(),
           avs_postal_code_response_code: String.t(),
