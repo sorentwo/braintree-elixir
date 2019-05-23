@@ -85,6 +85,28 @@ defmodule Braintree.Integration.TransactionTest do
     assert transaction.id =~ ~r/^\w+$/
   end
 
+  test "sale/1 with ApplePay" do
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.apple_pay_visa(),
+        options: %{submit_for_settlement: true}
+      })
+
+    assert transaction.amount == "100.00"
+    assert transaction.payment_instrument_type == "apple_pay_card"
+    assert transaction.status == "submitted_for_settlement"
+    assert transaction.id =~ ~r/^\w+$/
+
+    assert transaction.apple_pay.card_type == "Apple Pay - Visa"
+    assert transaction.apple_pay.cardholder_name == "Visa Apple Pay Cardholder"
+
+    assert transaction.apple_pay.image_url ==
+             "https://assets.braintreegateway.com/payment_method_logo/apple_pay.png?environment=sandbox"
+
+    assert transaction.apple_pay.last_4 == "1881"
+  end
+
   test "submit_for_settlement/2 can be used if transaction is authorized but not settling" do
     {:ok, transaction} =
       Transaction.sale(%{
