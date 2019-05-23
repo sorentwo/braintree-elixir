@@ -107,6 +107,28 @@ defmodule Braintree.Integration.TransactionTest do
     assert transaction.apple_pay.last_4 == "1881"
   end
 
+  test "sale/1 with Google Pay/Android Pay" do
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.android_pay_visa_nonce(),
+        options: %{submit_for_settlement: true}
+      })
+
+    assert transaction.amount == "100.00"
+    assert transaction.payment_instrument_type == "android_pay_card"
+    assert transaction.status == "submitted_for_settlement"
+    assert transaction.id =~ ~r/^\w+$/
+
+    assert transaction.android_pay_card.image_url ==
+             "https://assets.braintreegateway.com/payment_method_logo/android_pay_card.png?environment=sandbox"
+
+    assert transaction.android_pay_card.source_card_last_4 == "1111"
+    assert transaction.android_pay_card.source_card_type == "Visa"
+    assert transaction.android_pay_card.virtual_card_last_4 == "1881"
+    assert transaction.android_pay_card.virtual_card_type == "Visa"
+  end
+
   test "submit_for_settlement/2 can be used if transaction is authorized but not settling" do
     {:ok, transaction} =
       Transaction.sale(%{
