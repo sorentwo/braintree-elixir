@@ -18,6 +18,13 @@ defmodule Braintree.Integration.TransactionTest do
     assert transaction.status == "submitted_for_settlement"
     assert transaction.id =~ ~r/^\w+$/
     assert transaction.customer.id == nil
+
+    assert transaction.credit_card.card_type == "Visa"
+
+    assert transaction.credit_card.image_url ==
+             "https://assets.braintreegateway.com/payment_method_logo/visa.png?environment=sandbox"
+
+    assert transaction.credit_card.last_4 == "1881"
   end
 
   test "sale/1 submits billing information" do
