@@ -129,6 +129,29 @@ defmodule Braintree.Integration.TransactionTest do
     assert transaction.android_pay_card.virtual_card_type == "Visa"
   end
 
+  test "sale/1 with PayPal" do
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.paypal_future_payment(),
+        options: %{submit_for_settlement: true}
+      })
+
+    assert transaction.amount == "100.00"
+    assert transaction.payment_instrument_type == "paypal_account"
+    assert transaction.status == "settling"
+    assert transaction.id =~ ~r/^\w+$/
+
+    assert transaction.paypal.image_url ==
+             "https://assets.braintreegateway.com/payment_method_logo/paypal.png?environment=sandbox"
+
+    assert transaction.paypal.payer_email == "payer@example.com"
+    assert transaction.paypal.payer_first_name == "John"
+    assert transaction.paypal.payer_last_name == "Doe"
+    assert transaction.paypal.payer_status == "VERIFIED"
+    assert transaction.paypal.transaction_fee_amount == "0.01"
+  end
+
   test "submit_for_settlement/2 can be used if transaction is authorized but not settling" do
     {:ok, transaction} =
       Transaction.sale(%{
