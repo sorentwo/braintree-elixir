@@ -21,6 +21,22 @@ defmodule Braintree.Testing.Nonces do
     "fake-paypal-billing-agreement-nonce"
   end
 
+  def android_pay_visa_nonce do
+    "fake-android-pay-visa-nonce"
+  end
+
+  def android_pay_mastercard_nonce do
+    "fake-android-pay-mastercard-nonce"
+  end
+
+  def android_pay_amex_nonce do
+    "fake-android-pay-amex-nonce"
+  end
+
+  def android_pay_discover_nonce do
+    "fake-android-pay-discover-nonce"
+  end
+
   def apple_pay_visa do
     "fake-apple-pay-visa-nonce"
   end

@@ -85,6 +85,73 @@ defmodule Braintree.Integration.TransactionTest do
     assert transaction.id =~ ~r/^\w+$/
   end
 
+  test "sale/1 with ApplePay" do
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.apple_pay_visa(),
+        options: %{submit_for_settlement: true}
+      })
+
+    assert transaction.amount == "100.00"
+    assert transaction.payment_instrument_type == "apple_pay_card"
+    assert transaction.status == "submitted_for_settlement"
+    assert transaction.id =~ ~r/^\w+$/
+
+    assert transaction.apple_pay.card_type == "Apple Pay - Visa"
+    assert transaction.apple_pay.cardholder_name == "Visa Apple Pay Cardholder"
+
+    assert transaction.apple_pay.image_url ==
+             "https://assets.braintreegateway.com/payment_method_logo/apple_pay.png?environment=sandbox"
+
+    assert transaction.apple_pay.last_4 == "1881"
+  end
+
+  test "sale/1 with Google Pay/Android Pay" do
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.android_pay_visa_nonce(),
+        options: %{submit_for_settlement: true}
+      })
+
+    assert transaction.amount == "100.00"
+    assert transaction.payment_instrument_type == "android_pay_card"
+    assert transaction.status == "submitted_for_settlement"
+    assert transaction.id =~ ~r/^\w+$/
+
+    assert transaction.android_pay_card.image_url ==
+             "https://assets.braintreegateway.com/payment_method_logo/android_pay_card.png?environment=sandbox"
+
+    assert transaction.android_pay_card.source_card_last_4 == "1111"
+    assert transaction.android_pay_card.source_card_type == "Visa"
+    assert transaction.android_pay_card.virtual_card_last_4 == "1881"
+    assert transaction.android_pay_card.virtual_card_type == "Visa"
+  end
+
+  test "sale/1 with PayPal" do
+    {:ok, transaction} =
+      Transaction.sale(%{
+        amount: "100.00",
+        payment_method_nonce: Nonces.paypal_future_payment(),
+        options: %{submit_for_settlement: true}
+      })
+
+    assert transaction.amount == "100.00"
+    assert transaction.payment_instrument_type == "paypal_account"
+    assert transaction.status == "settling"
+    assert transaction.id =~ ~r/^\w+$/
+
+    assert transaction.paypal.image_url ==
+             "https://assets.braintreegateway.com/payment_method_logo/paypal.png?environment=sandbox"
+
+    assert transaction.paypal.payer_email == "payer@example.com"
+    assert transaction.paypal.payer_first_name == "John"
+    assert transaction.paypal.payer_last_name == "Doe"
+    assert transaction.paypal.payer_status == "VERIFIED"
+    assert transaction.paypal.transaction_fee_amount == "0.01"
+  end
+
   test "submit_for_settlement/2 can be used if transaction is authorized but not settling" do
     {:ok, transaction} =
       Transaction.sale(%{
