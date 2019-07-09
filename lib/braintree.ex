@@ -1,7 +1,7 @@
 defmodule Braintree do
   @moduledoc """
   A native Braintree client library for Elixir. Only a subset of the API is
-  supported and this is a work in progress. That said, it is already uned in
+  supported and this is a work in progress. That said, it is already used in
   production, and any modules that have been implemented can be used.
 
   For general reference please see:
@@ -15,6 +15,10 @@ defmodule Braintree do
 
     defexception [:message]
 
+    @doc """
+    Build a new ConfigError exception.
+    """
+    @impl true
     def exception(value) do
       message = "missing config for :#{value}"
 
@@ -52,8 +56,10 @@ defmodule Braintree do
     case Application.fetch_env(:braintree, key) do
       {:ok, {:system, var}} when is_binary(var) ->
         fallback_or_raise(var, System.get_env(var), default)
+
       {:ok, value} ->
         value
+
       :error ->
         fallback_or_raise(key, nil, default)
     end
@@ -74,7 +80,7 @@ defmodule Braintree do
     Application.put_env(:braintree, key, value)
   end
 
-  defp fallback_or_raise(key, nil, nil),   do: raise ConfigError, key
+  defp fallback_or_raise(key, nil, nil), do: raise(ConfigError, key)
   defp fallback_or_raise(_, nil, default), do: default
-  defp fallback_or_raise(_, value, _),     do: value
+  defp fallback_or_raise(_, value, _), do: value
 end

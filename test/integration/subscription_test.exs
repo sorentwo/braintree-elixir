@@ -15,16 +15,22 @@ defmodule Braintree.Integration.SubscriptionTest do
     assert {:ok, customer} = Customer.create(%{payment_method_nonce: "fake-valid-nonce"})
     [card] = customer.credit_cards
 
-    add_ons = %{add: [%{inherited_from_id: "gold"}],
-                update: [%{existing_id: "silver", quantity: 2}],
-                remove: ["bronze"]}
+    add_ons = %{
+      add: [%{inherited_from_id: "gold"}],
+      update: [%{existing_id: "silver", quantity: 2}],
+      remove: ["bronze"]
+    }
 
-    assert {:ok, _subscription} = Subscription.create(%{payment_method_token: card.token,
-                                                        plan_id: "business", add_ons: add_ons})
+    assert {:ok, _subscription} =
+             Subscription.create(%{
+               payment_method_token: card.token,
+               plan_id: "business",
+               add_ons: add_ons
+             })
   end
 
   test "find/1 with a subscription_id" do
-    {:ok, subscription} = create_test_subscription
+    {:ok, subscription} = create_test_subscription()
     assert {:ok, subscription} = Subscription.find(subscription.id)
 
     assert subscription.plan_id == "starter"
@@ -32,7 +38,7 @@ defmodule Braintree.Integration.SubscriptionTest do
   end
 
   test "cancel/1 with a subscription_id" do
-    {:ok, subscription} = create_test_subscription
+    {:ok, subscription} = create_test_subscription()
     assert {:ok, subscription} = Subscription.cancel(subscription.id)
 
     assert subscription.status == "Canceled"
@@ -40,21 +46,32 @@ defmodule Braintree.Integration.SubscriptionTest do
   end
 
   test "retry_charge/1" do
-    {:ok, subscription} = create_test_subscription
+    {:ok, subscription} = create_test_subscription()
 
     assert {:error, error} = Subscription.retry_charge(subscription.id)
     assert error.message =~ "Subscription status must be Past Due in order to retry."
   end
 
   test "update/2 with a subscription_id" do
-    {:ok, subscription} = create_test_subscription
+    {:ok, subscription} = create_test_subscription()
 
-    assert {:ok, subscription} = Subscription.update(subscription.id, %{
-      plan_id: "business",
-      price: "16.99"
-    })
+    assert {:ok, subscription} =
+             Subscription.update(subscription.id, %{
+               plan_id: "business",
+               price: "16.99"
+             })
 
     assert subscription.plan_id == "business"
     assert subscription.price == "16.99"
+  end
+
+  describe "search/1" do
+    test "returns not found if no result" do
+      assert {:error, :not_found} = Subscription.search(%{plan_id: %{is: "invalid-starter"}})
+    end
+
+    test "returns server error for invalid search params" do
+      assert {:error, :server_error} = Subscription.search(%{})
+    end
   end
 end

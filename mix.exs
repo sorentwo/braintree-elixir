@@ -1,30 +1,39 @@
 defmodule Braintree.Mixfile do
   use Mix.Project
 
-  @version "0.7.0"
+  @version "0.10.0"
 
   def project do
-    [app: :braintree,
-     version: @version,
-     elixir: "~> 1.3",
-     elixirc_paths: ["lib"],
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-
-     description: description,
-     package: package,
-
-     deps: deps,
-
-     name: "Braintree",
-     source_url: "https://github.com/sorentwo/braintree",
-     docs: [source_ref: "v#{@version}",
-            extras: ["README.md"],
-            main: "Braintree"]]
+    [
+      app: :braintree,
+      version: @version,
+      elixir: "~> 1.5",
+      elixirc_paths: ["lib"],
+      start_permanent: Mix.env() == :prod,
+      test_coverage: [tool: ExCoveralls],
+      description: description(),
+      package: package(),
+      name: "Braintree",
+      deps: deps(),
+      docs: docs(),
+      dialyzer: [
+        flags: [:unmatched_returns, :error_handling, :race_conditions]
+      ]
+    ]
   end
 
   def application do
-    [applications: [:logger, :hackney, :xmerl]]
+    [
+      extra_applications: [:logger, :xmerl],
+      env: [
+        environment: :sandbox,
+        http_options: [timeout: 30_000],
+        master_merchant_id: {:system, "BRAINTREE_MASTER_MERCHANT_ID"},
+        merchant_id: {:system, "BRAINTREE_MERCHANT_ID"},
+        private_key: {:system, "BRAINTREE_PRIVATE_KEY"},
+        public_key: {:system, "BRAINTREE_PUBLIC_KEY"}
+      ]
+    ]
   end
 
   defp description do
@@ -34,16 +43,33 @@ defmodule Braintree.Mixfile do
   end
 
   defp package do
-    [maintainers: ["Parker Selbert"],
-     licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/sorentwo/braintree-elixir"},
-     files: ~w(lib priv mix.exs README.md CHANGELOG.md)]
+    [
+      maintainers: ["Parker Selbert"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/sorentwo/braintree-elixir"},
+      files: ~w(lib priv mix.exs README.md CHANGELOG.md)
+    ]
   end
 
   defp deps do
-    [{:hackney, "~> 1.6"},
-     {:ex_doc, "~> 0.11", only: :dev},
-     {:earmark, "~> 0.2", only: :dev},
-     {:credo, "~> 0.3", only: :dev}]
+    [
+      {:hackney, "~> 1.15"},
+      {:ex_doc, "~> 0.19", only: [:dev], runtime: false},
+      {:inch_ex, "~> 2.0", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false}
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      source_ref: @version,
+      formatter_opts: [gfm: true],
+      extras: [
+        "CHANGELOG.md",
+        "README.md"
+      ]
+    ]
   end
 end

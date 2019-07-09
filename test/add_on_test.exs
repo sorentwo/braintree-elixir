@@ -3,8 +3,8 @@ defmodule Braintree.AddOnTest do
 
   alias Braintree.AddOn
 
-  test "construct/1 creates structs with default values" do
-    [addon] = AddOn.construct([%{"id" => "123"}])
+  test "new/1 creates structs with default values" do
+    [addon] = AddOn.new([%{"id" => "123"}])
 
     assert addon.amount == 0
     refute addon.never_expires?

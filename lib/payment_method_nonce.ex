@@ -5,30 +5,30 @@ defmodule Braintree.PaymentMethodNonce do
 
   use Braintree.Construction
 
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
 
   @type t :: %__MODULE__{
-               default:             String.t,
-               description:         String.t,
-               nonce:               String.t,
-               three_d_secure_info: String.t,
-               type:                String.t,
-               details:             Map.t,
-               is_locked:           boolean,
-               consumed:            boolean,
-               security_questions:  []
-             }
+          default: String.t(),
+          description: String.t(),
+          nonce: String.t(),
+          three_d_secure_info: String.t(),
+          type: String.t(),
+          details: map,
+          is_locked: boolean,
+          consumed: boolean,
+          security_questions: [any]
+        }
 
-  defstruct default:              nil,
-            description:          nil,
-            nonce:                nil,
-            three_d_secure_info:  nil,
-            type:                 nil,
-            is_locked:            false,
-            details:              nil,
-            consumed:             false,
-            security_questions:   nil
+  defstruct default: nil,
+            description: nil,
+            nonce: nil,
+            three_d_secure_info: nil,
+            type: nil,
+            is_locked: false,
+            details: nil,
+            consumed: false,
+            security_questions: nil
 
   @doc """
   Create a payment method nonce from `token`
@@ -39,15 +39,12 @@ defmodule Braintree.PaymentMethodNonce do
 
       payment_method_nonce.nonce
   """
-  @spec create(String.t) :: {:ok, t} | {:error, Error.t}
-  def create(payment_method_token) do
-    case HTTP.post("payment_methods/#{payment_method_token}/nonces", %{}) do
-      {:ok, %{"payment_method_nonce" => payment_method_nonce}} ->
-        {:ok, construct(payment_method_nonce)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "payment nonce is invalid"})}
+  @spec create(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  def create(payment_method_token, opts \\ []) do
+    path = "payment_methods/#{payment_method_token}/nonces"
+
+    with {:ok, payload} <- HTTP.post(path, opts) do
+      {:ok, new(payload)}
     end
   end
 
@@ -60,15 +57,17 @@ defmodule Braintree.PaymentMethodNonce do
 
       payment_method.type #CreditCard
   """
-  @spec find(String.t) :: {:ok, t} | {:error, Error.t}
-  def find(nonce) do
-    case HTTP.get("payment_method_nonces/#{nonce}") do
-      {:ok, %{"payment_method_nonce" => payment_method_nonce}} ->
-        {:ok, construct(payment_method_nonce)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "payment nonce is invalid"})}
+  @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  def find(nonce, opts \\ []) do
+    path = "payment_method_nonces/" <> nonce
+
+    with {:ok, payload} <- HTTP.get(path, opts) do
+      {:ok, new(payload)}
     end
+  end
+
+  @doc false
+  def new(%{"payment_method_nonce" => map}) do
+    super(map)
   end
 end
