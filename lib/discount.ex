@@ -12,30 +12,30 @@ defmodule Braintree.Discount do
 
   use Braintree.Construction
 
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
 
   @type t :: %__MODULE__{
-               id:                       String.t,
-               amount:                   String.t,
-               current_billing_cycle:    pos_integer,
-               description:              String.t,
-               kind:                     String.t,
-               name:                     String.t,
-               never_expires?:           boolean,
-               number_of_billing_cycles: pos_integer,
-               quantity:                 pos_integer
-             }
+          id: String.t(),
+          amount: String.t(),
+          current_billing_cycle: pos_integer,
+          description: String.t(),
+          kind: String.t(),
+          name: String.t(),
+          never_expires?: boolean,
+          number_of_billing_cycles: pos_integer,
+          quantity: pos_integer
+        }
 
-  defstruct id:                       nil,
-            amount:                   nil,
-            current_billing_cycle:    nil,
-            description:              nil,
-            kind:                     nil,
-            name:                     nil,
-            never_expires?:           false,
+  defstruct id: nil,
+            amount: nil,
+            current_billing_cycle: nil,
+            description: nil,
+            kind: nil,
+            name: nil,
+            never_expires?: false,
             number_of_billing_cycles: 0,
-            quantity:                 nil
+            quantity: nil
 
   @doc """
   Returns a collection of Braintree::Discount objects.
@@ -44,13 +44,12 @@ defmodule Braintree.Discount do
 
       {:ok, discounts} = Braintree.Discount.all()
   """
-  @spec all() :: {:ok, t} | {:error, Error.t}
-  def all do
-    case HTTP.get("discounts") do
-      {:ok, %{"discounts" => discounts}} ->
-        {:ok, construct(discounts)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
+  @spec all(Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  def all(opts \\ []) do
+    with {:ok, payload} <- HTTP.get("discounts", opts) do
+      %{"discounts" => discounts} = payload
+
+      {:ok, new(discounts)}
     end
   end
 end

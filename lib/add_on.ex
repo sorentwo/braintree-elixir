@@ -12,30 +12,30 @@ defmodule Braintree.AddOn do
 
   use Braintree.Construction
 
-  alias Braintree.HTTP
   alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
 
   @type t :: %__MODULE__{
-               id:                       String.t,
-               amount:                   String.t,
-               current_billing_cycle:    integer,
-               description:              String.t,
-               kind:                     String.t,
-               name:                     String.t,
-               never_expires?:           boolean,
-               number_of_billing_cycles: integer,
-               quantity:                 integer
-             }
+          id: String.t(),
+          amount: String.t(),
+          current_billing_cycle: integer,
+          description: String.t(),
+          kind: String.t(),
+          name: String.t(),
+          never_expires?: boolean,
+          number_of_billing_cycles: integer,
+          quantity: integer
+        }
 
-  defstruct id:                       nil,
-            amount:                   0,
-            current_billing_cycle:    nil,
-            description:              nil,
-            kind:                     nil,
-            name:                     nil,
-            never_expires?:           false,
+  defstruct id: nil,
+            amount: 0,
+            current_billing_cycle: nil,
+            description: nil,
+            kind: nil,
+            name: nil,
+            never_expires?: false,
             number_of_billing_cycles: 0,
-            quantity:                 0
+            quantity: 0
 
   @doc """
   Returns a list of Braintree::AddOn structs.
@@ -44,13 +44,10 @@ defmodule Braintree.AddOn do
 
       {:ok, addons} = Braintree.AddOns.all()
   """
-  @spec all() :: {:ok, [t]} | {:error, Error.t}
-  def all do
-    case HTTP.get("add_ons") do
-      {:ok, %{"add_ons" => add_ons}} ->
-        {:ok, construct(add_ons)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
+  @spec all(Keyword.t()) :: {:ok, [t]} | {:error, Error.t()}
+  def all(opts \\ []) do
+    with {:ok, %{"add_ons" => add_ons}} <- HTTP.get("add_ons", opts) do
+      {:ok, new(add_ons)}
     end
   end
 end

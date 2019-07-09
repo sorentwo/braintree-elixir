@@ -1,3 +1,61 @@
+## v0.10.0 2019-03-26
+
+### Enhancements
+
+* [Braintree.HTTP] Support both `access_token` and public/private keys usage in configuration
+
+## v0.9.0 2018-06-18
+
+### Enhancements
+
+* [Braintree] Use system tuples as the default for application env
+* [Braintree] Add dialyxer and fix all typespecs. Typespecs are now validated
+  during CI builds
+* [Braintree.HTTP] Expose `429 Too Many Requests` error with an integer to
+  status mapping
+* [Braintree.TestTransaction] The module is now available in all environments,
+  not just `test`
+* [Braintree.Address] Support added for address features
+* [Braintree.MerchantAccounts] Support added for merchant account features
+* [Braintree.Search] Support for searching customers, credit cards and
+  subscriptions
+* [Braintree.XML] Support collections when decoding XML responses
+
+### Changes
+
+* [Braintree] Elixir 1.5 is now the minimum supported version
+* [Braintree.Transaction] Replace `:billing_details` with the correctly named
+  `:billing`
+
+### Bug Fixes
+
+* [Braintree.HTTP] Use `Keyword.get_lazy` to avoid exceptions when config keys
+  used for requests aren't set.
+* [Braintree.HTTP] Add explicit handling for `unprocessable_entity` errors
+* [Braintree.HTTP] Always coerce the environment to an atom
+
+## v0.8.0 2017-08-24
+
+### Enhancements
+
+* [Braintree.ErrorResponse] Include full transaction details in the
+  `ErrorResponse` struct. This displays the underlying reason a request failed,
+  helping developers diagnose failing requests.
+* [Braintree.HTTP] Ability to optionally pass environment and API keys as
+  options to all functions doing API calls. The default behaviour of reading
+  from the global config is kept if those keys are not passed as arguments.
+  Submitted by @manukall and @nicolasblanco
+
+### Changes
+
+* [Braintree.Construction] Use `new/1` to build structs, rather than the unusual
+  `construct/1` function.
+
+### Bug Fixes
+
+* [Braintree.HTTP] Catch and return `400 Bad Request` error tuples, rather than
+  generating a case clause error.
+
 ## v0.7.0 2016-09-20
 
 ### Enhancements

@@ -1,78 +1,66 @@
-if Mix.env == :test do
-  defmodule Braintree.Testing.TestTransaction do
-    @moduledoc """
-    Create transasctions for testing purposes only.
-    Transition to settled, settlement_confirmed, or settlement_declined states.
-    """
+defmodule Braintree.Testing.TestTransaction do
+  @moduledoc """
+  Create transactions for testing purposes only.
 
-    alias Braintree.Transaction
-    alias Braintree.HTTP
-    alias Braintree.ErrorResponse, as: Error
+  Transition to settled, settlement_confirmed, or settlement_declined states.
+  """
 
-    @doc """
-    Use a `transaction_id` to transition to settled status. This
-    allows for testing of refunds.
+  alias Braintree.ErrorResponse, as: Error
+  alias Braintree.HTTP
+  alias Braintree.Transaction
 
-    ## Example
+  @doc """
+  Use a `transaction_id` to transition to settled status. This
+  allows for testing of refunds.
 
-        {:ok, transaction} = TestTransaction.settle(transaction_id: "123")
+  ## Example
 
-        transaction.status # "settled"
-    """
-    @spec settle(String.t) :: {:ok, any} | {:error, Error.t}
-    def settle(transaction_id) do
-      case HTTP.put("transactions/#{transaction_id}/settle", %{}) do
-        {:ok, %{"transaction" => transaction}} ->
-          {:ok, Transaction.construct(transaction)}
-        {:error, %{"api_error_response" => error}} ->
-          {:error, Error.construct(error)}
-        {:error, :not_found} ->
-          {:error, Error.construct(%{"message" => "Transaction ID is invalid."})}
-      end
-    end
+  {:ok, transaction} = TestTransaction.settle(transaction_id: "123")
 
-    @doc """
-    Use a `transaction_id` to transition to settled_confirmed status
+  transaction.status # "settled"
+  """
+  @spec settle(String.t()) :: {:ok, any} | {:error, Error.t()}
+  def settle(transaction_id) do
+    path = "transactions/#{transaction_id}/settle"
 
-    ## Example
+    with {:ok, payload} <- HTTP.put(path), do: response(payload)
+  end
 
-        {:ok, transaction} = TestTransaction.settlement_confirm(
-          transaction_id: "123")
+  @doc """
+  Use a `transaction_id` to transition to settled_confirmed status
 
-        transaction.status # "settlement_confirmed"
-    """
-    @spec settlement_confirm(String.t) :: {:ok, any} | {:error, Error.t}
-    def settlement_confirm(transaction_id) do
-      case HTTP.put("transactions/#{transaction_id}/settlement_confirm", %{}) do
-        {:ok, %{"transaction" => transaction}} ->
-          {:ok, Transaction.construct(transaction)}
-        {:error, %{"api_error_response" => error}} ->
-          {:error, Error.construct(error)}
-        {:error, :not_found} ->
-          {:error, Error.construct(%{"message" => "Transaction ID is invalid."})}
-      end
-    end
+  ## Example
 
-    @doc """
-    Use a `transaction_id` to transition to settlement_declined status
+  {:ok, transaction} = TestTransaction.settlement_confirm(
+  transaction_id: "123")
 
-    ## Example
+  transaction.status # "settlement_confirmed"
+  """
+  @spec settlement_confirm(String.t()) :: {:ok, any} | {:error, Error.t()}
+  def settlement_confirm(transaction_id) do
+    path = "transactions/#{transaction_id}/settlement_confirm"
 
-        {:ok, transaction} = TestTransaction.settlement_decline(
-          transaction_id: "123")
+    with {:ok, payload} <- HTTP.put(path), do: response(payload)
+  end
 
-        transaction.status # "settlement_declined"
-    """
-    @spec settlement_decline(String.t) :: {:ok, any} | {:error, Error.t}
-    def settlement_decline(transaction_id) do
-      case HTTP.put("transactions/#{transaction_id}/settlement_decline", %{}) do
-        {:ok, %{"transaction" => transaction}} ->
-          {:ok, Transaction.construct(transaction)}
-        {:error, %{"api_error_response" => error}} ->
-          {:error, Error.construct(error)}
-        {:error, :not_found} ->
-          {:error, Error.construct(%{"message" => "Transaction ID is invalid."})}
-      end
-    end
+  @doc """
+  Use a `transaction_id` to transition to settlement_declined status
+
+  ## Example
+
+  {:ok, transaction} = TestTransaction.settlement_decline(
+  transaction_id: "123")
+
+  transaction.status # "settlement_declined"
+  """
+  @spec settlement_decline(String.t()) :: {:ok, any} | {:error, Error.t()}
+  def settlement_decline(transaction_id) do
+    path = "transactions/#{transaction_id}/settlement_decline"
+
+    with {:ok, payload} <- HTTP.put(path), do: response(payload)
+  end
+
+  defp response(%{"transaction" => map}) do
+    {:ok, Transaction.new(map)}
   end
 end

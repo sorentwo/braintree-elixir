@@ -1,20 +1,32 @@
 defmodule Braintree.Construction do
+  @moduledoc """
+  This module provides a `use` macro to help convert raw HTTP responses into
+  structs.
+  """
+
+  import Braintree.Util, only: [atomize: 1]
+
   defmacro __using__(_) do
     quote do
-      import Braintree.Util, only: [atomize: 1]
+      alias Braintree.Construction
 
-      @doc """
-      Convert a response into one or more typed structs.
-      """
-      @spec construct(Map.t | [Map.t]) :: t | [t]
-      def construct(params) when is_map(params) do
-        struct(__MODULE__, atomize(params))
-      end
-      def construct(params) when is_list(params) do
-        Enum.map(params, &construct/1)
+      def new(params) when is_map(params) or is_list(params) do
+        Construction.new(__MODULE__, params)
       end
 
-      defoverridable [construct: 1]
+      defoverridable new: 1
     end
+  end
+
+  @doc """
+  Convert a response into one or more typed structs.
+  """
+  @spec new(module(), map() | [map()]) :: struct() | [struct()]
+  def new(module, params) when is_list(params) do
+    Enum.map(params, &new(module, &1))
+  end
+
+  def new(module, params) when is_map(params) do
+    struct(module, atomize(params))
   end
 end

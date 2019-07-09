@@ -3,7 +3,7 @@ defmodule Braintree.Integration.ClientToken do
 
   @moduletag :integration
 
-  alias Braintree.{ClientToken,Customer}
+  alias Braintree.{ClientToken, Customer}
 
   describe "generate/1" do
     test "without any params" do
@@ -26,10 +26,6 @@ defmodule Braintree.Integration.ClientToken do
 
       assert client_token
       assert client_token =~ ~r/.+/
-    end
-
-    test "with a bogus customer" do
-      assert {:error, _} = ClientToken.generate(%{customer_id: "asdfghjkl"})
     end
   end
 end

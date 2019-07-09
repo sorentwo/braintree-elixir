@@ -21,7 +21,7 @@ defmodule Braintree.XML.Encoder do
       iex> Braintree.XML.Encoder.dump(%{a: %{b: "<tag>"}})
       ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<a>\n<b>&lt;tag&gt;</b>\n</a>|
   """
-  @spec dump(Map.t) :: xml
+  @spec dump(map) :: xml
   def dump(map) do
     generated =
       map
@@ -45,18 +45,15 @@ defmodule Braintree.XML.Encoder do
   defp generate({name, value}) when is_list(value),
     do: "<#{hyphenate(name)} type=\"array\">\n#{generate(value)}\n</#{hyphenate(name)}>"
 
-  defp generate({name, value}),
-    do: "<#{hyphenate(name)}>#{value}</#{hyphenate(name)}>"
+  defp generate({name, value}), do: "<#{hyphenate(name)}>#{value}</#{hyphenate(name)}>"
 
   defp escape_entity(entity) when is_map(entity),
-    do: for {key, value} <- entity, into: %{}, do: {key, escape_entity(value)}
+    do: for({key, value} <- entity, into: %{}, do: {key, escape_entity(value)})
 
   defp escape_entity(entity) when is_list(entity),
-    do: for value <- entity, do: escape_entity(value)
+    do: for(value <- entity, do: escape_entity(value))
 
-  defp escape_entity(entity) when is_binary(entity),
-    do: encode(entity)
+  defp escape_entity(entity) when is_binary(entity), do: encode(entity)
 
-  defp escape_entity(entity),
-    do: entity
+  defp escape_entity(entity), do: entity
 end

@@ -25,15 +25,11 @@ defmodule Braintree.PaymentMethod do
 
       credit_card.type # "Visa"
   """
-  @spec create(Map.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
-  def create(params \\ %{}) do
-    case HTTP.post("payment_methods", %{payment_method: params}) do
-      {:ok, %{"credit_card" => credit_card}} ->
-        {:ok, CreditCard.construct(credit_card)}
-      {:ok, %{"paypal_account" => paypal_account}} ->
-        {:ok, PaypalAccount.construct(paypal_account)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
+  @spec create(map, Keyword.t()) ::
+          {:ok, CreditCard.t()} | {:ok, PaypalAccount.t()} | {:error, Error.t()}
+  def create(params \\ %{}, opts \\ []) do
+    with {:ok, payload} <- HTTP.post("payment_methods", %{payment_method: params}, opts) do
+      {:ok, new(payload)}
     end
   end
 
@@ -61,20 +57,15 @@ defmodule Braintree.PaymentMethod do
 
       payment_method.cardholder_name # "NEW"
   """
-  @spec update(String.t, Map.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
-  def update(token, params \\ %{}) do
-    case HTTP.put("payment_methods/any/#{token}", %{payment_method: params}) do
-      {:ok, %{"credit_card" => credit_card}} ->
-        {:ok, CreditCard.construct(credit_card)}
-      {:ok, %{"paypal_account" => paypal_account}} ->
-        {:ok, PaypalAccount.construct(paypal_account)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "payment token is invalid"})}
+  @spec update(String.t(), map, Keyword.t()) ::
+          {:ok, CreditCard.t()} | {:ok, PaypalAccount.t()} | {:error, Error.t()}
+  def update(token, params \\ %{}, opts \\ []) do
+    path = "payment_methods/any/" <> token
+
+    with {:ok, payload} <- HTTP.put(path, %{payment_method: params}, opts) do
+      {:ok, new(payload)}
     end
   end
-
 
   @doc """
   Delete a payment method record, or return an error response if token invalid
@@ -83,15 +74,12 @@ defmodule Braintree.PaymentMethod do
 
       {:ok, "Success"} = Braintree.PaymentMethod.delete(token)
   """
-  @spec delete(String.t) :: {:ok, binary} | {:error, Error.t}
-  def delete(token) do
-    case HTTP.delete("payment_methods/any/#{token}") do
-      {:ok, %{}} ->
-        {:ok, "Success"}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "payment token is invalid"})}
+  @spec delete(String.t(), Keyword.t()) :: :ok | {:error, Error.t()}
+  def delete(token, opts \\ []) do
+    path = "payment_methods/any/" <> token
+
+    with {:ok, _response} <- HTTP.delete(path, opts) do
+      :ok
     end
   end
 
@@ -104,17 +92,22 @@ defmodule Braintree.PaymentMethod do
 
       payment_method.type # CreditCard
   """
-  @spec find(String.t) :: {:ok, CreditCard.t} | {:ok, PaypalAccount.t} | {:error, Error.t}
-  def find(token) do
-    case HTTP.get("payment_methods/any/#{token}") do
-      {:ok, %{"credit_card" => credit_card}} ->
-        {:ok, CreditCard.construct(credit_card)}
-      {:ok, %{"paypal_account" => paypal_account}} ->
-        {:ok, PaypalAccount.construct(paypal_account)}
-      {:error, %{"api_error_response" => error}} ->
-        {:error, Error.construct(error)}
-      {:error, :not_found} ->
-        {:error, Error.construct(%{"message" => "payment token is invalid"})}
+  @spec find(String.t(), Keyword.t()) ::
+          {:ok, CreditCard.t()} | {:ok, PaypalAccount.t()} | {:error, Error.t()}
+  def find(token, opts \\ []) do
+    path = "payment_methods/any/" <> token
+
+    with {:ok, payload} <- HTTP.get(path, opts) do
+      {:ok, new(payload)}
     end
+  end
+
+  @spec new(map) :: CreditCard.t() | PaypalAccount.t()
+  defp new(%{"credit_card" => credit_card}) do
+    CreditCard.new(credit_card)
+  end
+
+  defp new(%{"paypal_account" => paypal_account}) do
+    PaypalAccount.new(paypal_account)
   end
 end

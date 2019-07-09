@@ -25,13 +25,25 @@ defmodule Braintree.ErrorResponseTest do
             }
           }
         }
+      },
+      "transaction" => %{
+        "currency_iso_code" => "USD",
+        "payment_instrument_type" => "paypal_account",
+        "processor_response_code" => "2000",
+        "processor_response_text" => "Do Not Honor",
+        "status" => "processor_declined"
       }
     }
 
-    error_response = ErrorResponse.construct(response)
+    error_response = ErrorResponse.new(response)
 
     assert error_response.message == "CVV is required."
-    refute error_response.params == %{}
     refute error_response.errors == %{}
+
+    refute error_response.params == %{}
+    assert error_response.params[:customer]
+
+    refute error_response.transaction == %{}
+    assert error_response.transaction[:processor_response_code]
   end
 end
