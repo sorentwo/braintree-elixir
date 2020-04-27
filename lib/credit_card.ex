@@ -5,9 +5,11 @@ defmodule Braintree.CreditCard do
   """
 
   use Braintree.Construction
+  alias Braintree.Address
 
   @type t :: %__MODULE__{
           bin: String.t(),
+          billing_address: Address.t(),
           card_type: String.t(),
           cardholder_name: String.t(),
           commercial: String.t(),
@@ -36,6 +38,7 @@ defmodule Braintree.CreditCard do
         }
 
   defstruct bin: nil,
+            billing_address: nil,
             card_type: nil,
             cardholder_name: nil,
             commercial: "Unknown",
