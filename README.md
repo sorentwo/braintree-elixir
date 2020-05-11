@@ -143,6 +143,18 @@ testing][plp].
 [dtc]: https://articles.braintreepayments.com/control-panel/transactions/duplicate-checking
 [plp]: https://developers.braintreepayments.com/guides/paypal/testing-go-live/php#linked-paypal-testing
 
+### Testing Using Only `localhost`
+
+You can optionally configure the sandbox endpoint url to point towards a local url and
+port for testing which does not need to call out to the Braintree sandbox API.
+For example, in your `config.exs`
+```
+config :braintree, :sandbox_endpoint, "localhost:4001"
+```
+In conjuction with a libary such as [`Bypass`](https://github.com/PSPDFKit-labs/bypass)
+you can use this config to define test-specific returns from `Braintree` calls without
+hitting the Braintree sandbox API.
+
 ## License
 
 MIT License, see [LICENSE.txt](LICENSE.txt) for details.

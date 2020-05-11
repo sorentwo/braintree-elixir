@@ -28,10 +28,8 @@ defmodule Braintree.HTTP do
           | {:error, Error.t()}
           | {:error, binary}
 
-  @endpoints [
-    production: "https://api.braintreegateway.com/merchants/",
-    sandbox: "https://api.sandbox.braintreegateway.com/merchants/"
-  ]
+  @production_endpoint "https://api.braintreegateway.com/merchants/"
+  @sandbox_endpoint "https://api.sandbox.braintreegateway.com/merchants/"
 
   @cacertfile "/certs/api_braintreegateway_com.ca.crt"
 
@@ -131,7 +129,7 @@ defmodule Braintree.HTTP do
     environment = opts |> get_lazy_env(:environment) |> maybe_to_atom()
     merchant_id = get_lazy_env(opts, :merchant_id)
 
-    Keyword.fetch!(@endpoints, environment) <> merchant_id <> "/" <> path
+    Keyword.fetch!(endpoints(), environment) <> merchant_id <> "/" <> path
   end
 
   defp maybe_to_atom(value) when is_binary(value), do: String.to_existing_atom(value)
@@ -198,5 +196,17 @@ defmodule Braintree.HTTP do
 
   defp resolve_error_response(%{"unprocessable_entity" => _}) do
     Error.new(%{message: "Unprocessable Entity"})
+  end
+
+  defp endpoints do
+    [production: @production_endpoint, sandbox: sandbox_endpoint()]
+  end
+
+  defp sandbox_endpoint do
+    Application.get_env(
+      :braintree,
+      :sandbox_endpoint,
+      @sandbox_endpoint
+    )
   end
 end
