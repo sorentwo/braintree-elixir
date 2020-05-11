@@ -1,3 +1,16 @@
+## v0.11.0 2020-05-11
+
+* [Braintree] Allow configuration of sandbox endpoint for testing
+* [Braintree.CreditCard] Include `billing_address` with the `CreditCard` struct
+* [Braintree.Transaction] Add support for `android_pay_card` and correct field
+  names to match `android_pay_card` and `apple_pay`
+* [Braintree.Transaction] Rename `customer_details` to `customer` to correctly
+  reflect API results.
+* [Braintree.Search] Fix `perform` so that it correctly handles transaction
+  results
+* [Braintree.TestTransaction] Make TestTransaction available in all
+  environments.
+
 ## v0.10.0 2019-03-26
 
 ### Enhancements
