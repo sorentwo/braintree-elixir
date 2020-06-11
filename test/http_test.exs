@@ -70,6 +70,110 @@ defmodule Braintree.HTTPTest do
     end
   end
 
+  describe "telemetry events from request" do
+    setup do
+      Application.ensure_all_started(:telemetry)
+
+      bypass = Bypass.open()
+
+      on_exit(fn ->
+        :telemetry.list_handlers([])
+        |> Enum.each(&:telemetry.detach(&1.id))
+      end)
+
+      {:ok, bypass: bypass}
+    end
+
+    test "works even if telemetry is not running", %{bypass: bypass} do
+      Application.stop(:telemetry)
+
+      with_applicaton_config(:sandbox_endpoint, "localhost:#{bypass.port}/", fn ->
+        with_applicaton_config(:merchant_id, "junkmerchantid", fn ->
+          Bypass.stub(bypass, "POST", "/junkmerchantid/foo", fn conn ->
+            Plug.Conn.resp(
+              conn,
+              200,
+              compress(
+                ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company><name>Soren</name></company>|
+              )
+            )
+          end)
+
+          {:ok, _data} = HTTP.request(:post, "foo", %{})
+        end)
+      end)
+
+      Application.ensure_all_started(:telemetry)
+    end
+
+    test "emits a start and stop message on a successful request (2xx, 422, and other codes)", %{
+      bypass: bypass
+    } do
+      Enum.each([200, 422, 500], fn code ->
+        with_applicaton_config(:sandbox_endpoint, "localhost:#{bypass.port}/", fn ->
+          with_applicaton_config(:merchant_id, "junkmerchantid", fn ->
+            path = "foo#{code}"
+
+            body =
+              case code do
+                200 ->
+                  ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company><name>Soren</name></company>|
+
+                _ ->
+                  ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<api_error_response><message>Test Error</message></api_error_response>|
+              end
+
+            Bypass.stub(bypass, "POST", "/junkmerchantid/foo#{code}", fn conn ->
+              Plug.Conn.resp(conn, code, compress(body))
+            end)
+
+            :telemetry.attach("start event", [:braintree, :request, :start], &echo_event/4, %{
+              caller: self()
+            })
+
+            :telemetry.attach("stop event", [:braintree, :request, :stop], &echo_event/4, %{
+              caller: self()
+            })
+
+            HTTP.request(:post, path, %{})
+
+            assert_receive {:event, [:braintree, :request, :start], %{system_time: time},
+                            %{method: :post, path: path}}
+
+            assert_receive {:event, [:braintree, :request, :stop], %{duration: time},
+                            %{method: :post, path: path, http_status: code}}
+          end)
+        end)
+      end)
+    end
+
+    test "emits a start and error message if an exception if the hackney call raises", %{
+      bypass: bypass
+    } do
+      with_applicaton_config(:sandbox_endpoint, "localhost:#{bypass.port}/", fn ->
+        with_applicaton_config(:merchant_id, "junkmerchantid", fn ->
+          Bypass.down(bypass)
+
+          :telemetry.attach("start event", [:braintree, :request, :start], &echo_event/4, %{
+            caller: self()
+          })
+
+          :telemetry.attach("stop event", [:braintree, :request, :error], &echo_event/4, %{
+            caller: self()
+          })
+
+          HTTP.request(:post, "/junkmerchant/foo", %{})
+
+          assert_receive {:event, [:braintree, :request, :start], %{system_time: time},
+                          %{method: :post, path: "/junkmerchant/foo"}}
+
+          assert_receive {:event, [:braintree, :request, :error], %{duration: time},
+                          %{method: :post, path: "/junkmerchant/foo", error: :econnrefused}}
+        end)
+      end)
+    end
+  end
+
   describe "build_headers/1" do
     test "building an auth header from application config" do
       with_applicaton_config(:private_key, "the_private_key", fn ->
@@ -129,7 +233,14 @@ defmodule Braintree.HTTPTest do
       Braintree.put_env(key, value)
       fun.()
     after
-      Braintree.put_env(key, original)
+      case original do
+        :none -> Application.delete_env(:braintree, key)
+        _ -> Braintree.put_env(key, original)
+      end
     end
+  end
+
+  def echo_event(event, measurements, metadata, config) do
+    send(config.caller, {:event, event, measurements, metadata})
   end
 end

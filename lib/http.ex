@@ -71,7 +71,11 @@ defmodule Braintree.HTTP do
   """
   @spec request(atom, binary, binary | map, Keyword.t()) :: response
   def request(method, path, body \\ %{}, opts \\ []) do
-    response =
+    emit_start(method, path)
+
+    start_time = System.monotonic_time()
+
+    try do
       :hackney.request(
         method,
         build_url(path, opts),
@@ -79,12 +83,28 @@ defmodule Braintree.HTTP do
         encode_body(body),
         build_options()
       )
+    catch
+      kind, reason ->
+        stacktrace = System.stacktrace()
+        duration = System.monotonic_time() - start_time
 
-    case response do
+        emit_exception(duration, method, path, %{
+          kind: kind,
+          reason: reason,
+          stacktrace: stacktrace
+        })
+
+        :erlang.raise(kind, reason, stacktrace)
+    else
       {:ok, code, _headers, body} when code in 200..399 ->
+        duration = System.monotonic_time() - start_time
+        emit_stop(duration, method, path, code)
         {:ok, decode_body(body)}
 
       {:ok, 422, _headers, body} ->
+        duration = System.monotonic_time() - start_time
+        emit_stop(duration, method, path, 422)
+
         {
           :error,
           body
@@ -93,9 +113,13 @@ defmodule Braintree.HTTP do
         }
 
       {:ok, code, _headers, _body} when code in 400..504 ->
+        duration = System.monotonic_time() - start_time
+        emit_stop(duration, method, path, code)
         {:error, code_to_reason(code)}
 
       {:error, reason} ->
+        duration = System.monotonic_time() - start_time
+        emit_error(duration, method, path, reason)
         {:error, reason}
     end
   end
@@ -208,5 +232,49 @@ defmodule Braintree.HTTP do
       :sandbox_endpoint,
       @sandbox_endpoint
     )
+  end
+
+  defp emit_start(method, path) do
+    if telemetry_started() do
+      :telemetry.execute(
+        [:braintree, :request, :start],
+        %{system_time: System.system_time()},
+        %{method: method, path: path}
+      )
+    end
+  end
+
+  defp emit_exception(duration, method, path, error_data) do
+    if telemetry_started() do
+      :telemetry.execute(
+        [:braintree, :request, :exception],
+        %{duration: duration},
+        %{method: method, path: path, error: error_data}
+      )
+    end
+  end
+
+  defp emit_error(duration, method, path, error_reason) do
+    if telemetry_started() do
+      :telemetry.execute(
+        [:braintree, :request, :error],
+        %{duration: duration},
+        %{method: method, path: path, error: error_reason}
+      )
+    end
+  end
+
+  defp emit_stop(duration, method, path, code) do
+    if telemetry_started() do
+      :telemetry.execute(
+        [:braintree, :request, :stop],
+        %{duration: duration},
+        %{method: method, path: path, http_status: code}
+      )
+    end
+  end
+
+  defp telemetry_started do
+    Enum.any?(Application.started_applications(), fn {name, _, _} -> name == :telemetry end)
   end
 end
