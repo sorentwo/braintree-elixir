@@ -24,7 +24,7 @@ defmodule Braintree.Mixfile do
 
   def application do
     [
-      extra_applications: [:logger, :xmerl],
+      extra_applications: [:logger, :xmerl, :telemetry],
       env: [
         environment: :sandbox,
         http_options: [timeout: 30_000],
@@ -54,7 +54,7 @@ defmodule Braintree.Mixfile do
   defp deps do
     [
       {:hackney, "~> 1.15"},
-      {:telemetry, "~> 0.4", optional: true},
+      {:telemetry, "~> 0.4"},
       {:ex_doc, "~> 0.19", only: [:dev], runtime: false},
       {:inch_ex, "~> 2.0", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},

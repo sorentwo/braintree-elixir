@@ -234,46 +234,34 @@ defmodule Braintree.HTTP do
   end
 
   defp emit_start(method, path) do
-    if telemetry_started() do
-      :telemetry.execute(
-        [:braintree, :request, :start],
-        %{system_time: System.system_time()},
-        %{method: method, path: path}
-      )
-    end
+    :telemetry.execute(
+      [:braintree, :request, :start],
+      %{system_time: System.system_time()},
+      %{method: method, path: path}
+    )
   end
 
   defp emit_exception(duration, method, path, error_data) do
-    if telemetry_started() do
-      :telemetry.execute(
-        [:braintree, :request, :exception],
-        %{duration: duration},
-        %{method: method, path: path, error: error_data}
-      )
-    end
+    :telemetry.execute(
+      [:braintree, :request, :exception],
+      %{duration: duration},
+      %{method: method, path: path, error: error_data}
+    )
   end
 
   defp emit_error(duration, method, path, error_reason) do
-    if telemetry_started() do
-      :telemetry.execute(
-        [:braintree, :request, :error],
-        %{duration: duration},
-        %{method: method, path: path, error: error_reason}
-      )
-    end
+    :telemetry.execute(
+      [:braintree, :request, :error],
+      %{duration: duration},
+      %{method: method, path: path, error: error_reason}
+    )
   end
 
   defp emit_stop(duration, method, path, code) do
-    if telemetry_started() do
-      :telemetry.execute(
-        [:braintree, :request, :stop],
-        %{duration: duration},
-        %{method: method, path: path, http_status: code}
-      )
-    end
-  end
-
-  defp telemetry_started do
-    Enum.any?(Application.started_applications(), fn {name, _, _} -> name == :telemetry end)
+    :telemetry.execute(
+      [:braintree, :request, :stop],
+      %{duration: duration},
+      %{method: method, path: path, http_status: code}
+    )
   end
 end

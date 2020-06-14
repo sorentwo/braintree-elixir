@@ -72,8 +72,6 @@ defmodule Braintree.HTTPTest do
 
   describe "telemetry events from request" do
     setup do
-      Application.ensure_all_started(:telemetry)
-
       bypass = Bypass.open()
 
       on_exit(fn ->
@@ -82,28 +80,6 @@ defmodule Braintree.HTTPTest do
       end)
 
       {:ok, bypass: bypass}
-    end
-
-    test "works even if telemetry is not running", %{bypass: bypass} do
-      Application.stop(:telemetry)
-
-      with_applicaton_config(:sandbox_endpoint, "localhost:#{bypass.port}/", fn ->
-        with_applicaton_config(:merchant_id, "junkmerchantid", fn ->
-          Bypass.stub(bypass, "POST", "/junkmerchantid/foo", fn conn ->
-            Plug.Conn.resp(
-              conn,
-              200,
-              compress(
-                ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company><name>Soren</name></company>|
-              )
-            )
-          end)
-
-          {:ok, _data} = HTTP.request(:post, "foo", %{})
-        end)
-      end)
-
-      Application.ensure_all_started(:telemetry)
     end
 
     test "emits a start and stop message on a successful request (2xx, 422, and other codes)", %{
