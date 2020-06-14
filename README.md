@@ -117,6 +117,43 @@ search_params = %{
 
 [doc]: https://developers.braintreepayments.com/
 
+
+### Telemetry
+
+If the `telemetry` application is running, the library will emit telemetry events.
+
+Immediately before the HTTP request is fired, a start event will be fired with the following shape:
+
+```
+ event name:    [:braintree, :request, :start]
+ measurements:  %{system_time: System.system_time()}
+ meta data:     %{method: method, path: path}
+```
+
+Once the HTTP call completes, a stop event will be fired with the following shape: 
+
+```
+ event name:    [:braintree, :request, :stop]
+ measurements:  %{duration: duration}
+ meta data:     %{method: method, path: path, http_status: status}
+```
+
+If Hackney returns an error, an error event will be fired with the following shape:
+
+```
+ event name:    [:braintree, :request, :error]
+ measurements:  %{duration: duration}
+ meta data:     %{method: method, path: path, error: error_reason}
+```
+
+If an exception is raised during the Hackney call, an exception event will be fired with the following shape:
+
+```
+ event name:    [:braintree, :request, :exception]
+ measurements:  %{duration: duration}
+ meta data:     %{method: method, path: path, kind: error_type, reason: error_message, stacktrace: stacktrace}
+```
+
 ## Testing
 
 You'll need a Braintree sandbox account to run the integration tests. Also, be
