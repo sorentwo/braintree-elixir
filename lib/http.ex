@@ -85,16 +85,15 @@ defmodule Braintree.HTTP do
       )
     catch
       kind, reason ->
-        stacktrace = System.stacktrace()
         duration = System.monotonic_time() - start_time
 
         emit_exception(duration, method, path, %{
           kind: kind,
           reason: reason,
-          stacktrace: stacktrace
+          stacktrace: __STACKTRACE__
         })
 
-        :erlang.raise(kind, reason, stacktrace)
+        :erlang.raise(kind, reason, __STACKTRACE__)
     else
       {:ok, code, _headers, body} when code in 200..399 ->
         duration = System.monotonic_time() - start_time

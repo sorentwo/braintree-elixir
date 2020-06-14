@@ -7,7 +7,7 @@ defmodule Braintree.Mixfile do
     [
       app: :braintree,
       version: @version,
-      elixir: "~> 1.5",
+      elixir: "~> 1.7",
       elixirc_paths: ["lib"],
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
