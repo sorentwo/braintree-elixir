@@ -72,6 +72,42 @@ defmodule Braintree.Integration.PaymentMethodTest do
     assert payment_method.bin =~ card.bin
   end
 
+  test "create/1 can create an ApplePay payment method" do
+    {:ok, %{id: customer_id}} =
+      Customer.create(%{
+        first_name: "Rick",
+        last_name: "Grimes"
+      })
+
+    assert {:ok,
+            %Braintree.ApplePayCard{
+              billing_address: nil,
+              bin: "401288",
+              card_type: "Apple Pay - Visa",
+              cardholder_name: "Visa Apple Pay Cardholder",
+              created_at: "" <> _,
+              customer_global_id: "" <> _,
+              customer_id: ^customer_id,
+              default: true,
+              expiration_month: "12",
+              expiration_year: "2020",
+              expired: false,
+              global_id: "" <> _,
+              image_url:
+                "https://assets.braintreegateway.com/payment_method_logo/apple_pay.png?environment=sandbox",
+              last_4: "1881",
+              payment_instrument_name: "Visa 8886",
+              source_description: "Visa 8886",
+              subscriptions: [],
+              token: "" <> _,
+              updated_at: "" <> _
+            }} =
+             PaymentMethod.create(%{
+               customer_id: customer_id,
+               payment_method_nonce: Nonces.apple_pay_visa()
+             })
+  end
+
   test "create/1 can create a paypal payment method" do
     {:ok, customer} =
       Customer.create(%{
