@@ -86,13 +86,11 @@ defmodule Braintree.Integration.PaymentMethodTest do
               card_type: "Apple Pay - Visa",
               cardholder_name: "Visa Apple Pay Cardholder",
               created_at: "" <> _,
-              customer_global_id: "" <> _,
               customer_id: ^customer_id,
               default: true,
               expiration_month: "12",
               expiration_year: "2020",
               expired: false,
-              global_id: "" <> _,
               image_url:
                 "https://assets.braintreegateway.com/payment_method_logo/apple_pay.png?environment=sandbox",
               last_4: "1881",
