@@ -27,6 +27,30 @@ defmodule Braintree.CustomerTest do
       Customer.new(%{
         "company" => "Soren",
         "email" => "parker@example.com",
+        "apple_pay_cards" => [
+          %{
+            "billing_address" => %{"postal_code" => "222222"},
+            "bin" => "401288",
+            "card_type" => "Apple Pay - Visa",
+            "cardholder_name" => "Visa Apple Pay Cardholder",
+            "created_at" => "2020-08-13T22:13:55Z",
+            "customer_global_id" => "Y3VzdG9tZXJfMjI1OTU0MTI5",
+            "customer_id" => "225954129",
+            "default" => false,
+            "expiration_month" => "12",
+            "expiration_year" => "2020",
+            "expired" => false,
+            "global_id" => "cGF5bWVudG1ldGhvZF9hcHBsZV9tcnQycHRi",
+            "image_url" =>
+              "https://assets.braintreegateway.com/payment_method_logo/apple_pay.png?environment=sandbox",
+            "last_4" => "1881",
+            "payment_instrument_name" => "Visa 8886",
+            "source_description" => "Visa 8886",
+            "subscriptions" => [],
+            "token" => "mrt2ptb",
+            "updated_at" => "2020-08-13T22:13:55Z"
+          }
+        ],
         "credit_cards" => [
           %{
             "bin" => "12345",
@@ -41,8 +65,34 @@ defmodule Braintree.CustomerTest do
         ]
       })
 
+    assert Enum.any?(customer.apple_pay_cards)
     assert Enum.any?(customer.credit_cards)
     assert Enum.any?(customer.paypal_accounts)
+
+    [apple_pay_card] = customer.apple_pay_cards
+
+    assert apple_pay_card == %Braintree.ApplePayCard{
+             billing_address: %{postal_code: "222222"},
+             bin: "401288",
+             card_type: "Apple Pay - Visa",
+             cardholder_name: "Visa Apple Pay Cardholder",
+             created_at: "2020-08-13T22:13:55Z",
+             customer_global_id: "Y3VzdG9tZXJfMjI1OTU0MTI5",
+             customer_id: "225954129",
+             default: false,
+             expiration_month: "12",
+             expiration_year: "2020",
+             expired: false,
+             global_id: "cGF5bWVudG1ldGhvZF9hcHBsZV9tcnQycHRi",
+             image_url:
+               "https://assets.braintreegateway.com/payment_method_logo/apple_pay.png?environment=sandbox",
+             last_4: "1881",
+             payment_instrument_name: "Visa 8886",
+             source_description: "Visa 8886",
+             subscriptions: [],
+             token: "mrt2ptb",
+             updated_at: "2020-08-13T22:13:55Z"
+           }
 
     [card] = customer.credit_cards
 
