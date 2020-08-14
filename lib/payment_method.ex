@@ -4,7 +4,7 @@ defmodule Braintree.PaymentMethod do
   may be a `CreditCard` or a `PaypalAccount`.
   """
 
-  alias Braintree.{CreditCard, HTTP, PaypalAccount}
+  alias Braintree.{ApplePayCard, CreditCard, HTTP, PaypalAccount}
   alias Braintree.ErrorResponse, as: Error
 
   @doc """
@@ -102,7 +102,11 @@ defmodule Braintree.PaymentMethod do
     end
   end
 
-  @spec new(map) :: CreditCard.t() | PaypalAccount.t()
+  @spec new(map) :: ApplePayCard.t() | CreditCard.t() | PaypalAccount.t()
+  defp new(%{"apple_pay_card" => apple_pay_card}) do
+    ApplePayCard.new(apple_pay_card)
+  end
+
   defp new(%{"credit_card" => credit_card}) do
     CreditCard.new(credit_card)
   end
