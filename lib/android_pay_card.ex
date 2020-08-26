@@ -1,7 +1,10 @@
 defmodule Braintree.AndroidPayCard do
   @moduledoc """
   AndroidPayCard structs are not created directly, but are built within
-  responsees from other endpoints, such as `Braintree.Customer`.
+  responses from other endpoints, such as `Braintree.Customer`.
+  
+  For additional reference see:
+  https://developers.braintreepayments.com/reference/response/android-pay-card/ruby
   """
   use Braintree.Construction
 

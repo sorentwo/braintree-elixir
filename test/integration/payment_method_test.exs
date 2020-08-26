@@ -1,5 +1,4 @@
 defmodule Braintree.Integration.PaymentMethodTest do
-  @moduledoc false
   use ExUnit.Case, async: true
 
   alias Braintree.{Customer, PaymentMethod, PaymentMethodNonce}
