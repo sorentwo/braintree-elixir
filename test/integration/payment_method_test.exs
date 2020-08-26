@@ -106,6 +106,40 @@ defmodule Braintree.Integration.PaymentMethodTest do
              })
   end
 
+  test "create/1 can create an AndroidPay payment method" do
+    {:ok, %{id: customer_id}} =
+      Customer.create(%{
+        first_name: "Rick",
+        last_name: "Grimes"
+      })
+
+    assert {:ok,
+            %Braintree.AndroidPayCard{
+              bin: "401288",
+              created_at: "" <> _,
+              customer_id: ^customer_id,
+              default: true,
+              expiration_month: "12",
+              expiration_year: "2025",
+              google_transaction_id: "google_transaction_id",
+              image_url:
+                "https://assets.braintreegateway.com/payment_method_logo/android_pay_card.png?environment=sandbox",
+              is_network_tokenized: true,
+              source_card_last_4: "1111",
+              source_card_type: "Visa",
+              source_description: "Visa 1111",
+              subscriptions: [],
+              token: "" <> _,
+              updated_at: "" <> _,
+              virtual_card_last_4: "1881",
+              virtual_card_type: "Visa"
+            }} =
+             PaymentMethod.create(%{
+               customer_id: customer_id,
+               payment_method_nonce: Nonces.android_pay_visa_nonce()
+             })
+  end
+
   test "create/1 can create a paypal payment method" do
     {:ok, customer} =
       Customer.create(%{

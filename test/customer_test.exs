@@ -27,6 +27,28 @@ defmodule Braintree.CustomerTest do
       Customer.new(%{
         "company" => "Soren",
         "email" => "parker@example.com",
+        "android_pay_cards" => [
+          %{
+            "bin" => "401288",
+            "created_at" => "2020-08-13T22:13:55Z",
+            "customer_id" => "225954129",
+            "default" => false,
+            "expiration_month" => "12",
+            "expiration_year" => "2020",
+            "google_transaction_id" => "123",
+            "image_url" =>
+              "https://assets.braintreegateway.com/payment_method_logo/apple_pay.png?environment=sandbox",
+            "is_network_tokenized" => false,
+            "source_card_last_4" => "1881",
+            "source_card_type" => "Android Pay - Visa",
+            "source_description" => "Visa 8886",
+            "subscriptions" => [],
+            "token" => "mrt2ptb",
+            "updated_at" => "2020-08-13T22:13:55Z",
+            "virtual_card_last_4" => nil,
+            "virtual_card_type" => nil
+          }
+        ],
         "apple_pay_cards" => [
           %{
             "billing_address" => %{"postal_code" => "222222"},
@@ -65,9 +87,33 @@ defmodule Braintree.CustomerTest do
         ]
       })
 
+    assert Enum.any?(customer.android_pay_cards)
     assert Enum.any?(customer.apple_pay_cards)
     assert Enum.any?(customer.credit_cards)
     assert Enum.any?(customer.paypal_accounts)
+
+    [android_pay_card] = customer.android_pay_cards
+
+    assert android_pay_card == %Braintree.AndroidPayCard{
+             bin: "401288",
+             created_at: "2020-08-13T22:13:55Z",
+             customer_id: "225954129",
+             default: false,
+             expiration_month: "12",
+             expiration_year: "2020",
+             google_transaction_id: "123",
+             image_url:
+               "https://assets.braintreegateway.com/payment_method_logo/apple_pay.png?environment=sandbox",
+             is_network_tokenized: false,
+             source_card_last_4: "1881",
+             source_card_type: "Android Pay - Visa",
+             source_description: "Visa 8886",
+             subscriptions: [],
+             token: "mrt2ptb",
+             updated_at: "2020-08-13T22:13:55Z",
+             virtual_card_last_4: nil,
+             virtual_card_type: nil
+           }
 
     [apple_pay_card] = customer.apple_pay_cards
 
