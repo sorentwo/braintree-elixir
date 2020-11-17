@@ -59,7 +59,7 @@ defmodule Braintree.Mixfile do
       {:inch_ex, "~> 2.0", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:bypass, "~> 1.0", only: :test}
+      {:bypass, "~> 2.1", only: :test}
     ]
   end
 
