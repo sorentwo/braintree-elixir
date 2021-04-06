@@ -6,3 +6,4 @@ erl_crash.dump
 *.ez
 TODO
 config/*.secret.exs
+.tool-versions
