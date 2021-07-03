@@ -4,10 +4,10 @@ defmodule Braintree.Webhook do
   """
   alias Braintree.Webhook.Validation
 
-  @spec parse(String.t() | nil, String.t() | nil) :: {:ok, map} | {:error, String.t()}
   @doc """
   Return a map containing the payload and signature from the braintree webhook event.
   """
+  @spec parse(String.t() | nil, String.t() | nil) :: {:ok, map} | {:error, String.t()}
   def parse(nil, _payload), do: {:error, "Signature cannot be nil"}
   def parse(_sig, nil), do: {:error, "Payload cannot be nil"}
 
