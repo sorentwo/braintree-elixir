@@ -7,7 +7,7 @@ defmodule Braintree.Mixfile do
     [
       app: :braintree,
       version: @version,
-      elixir: "~> 1.7",
+      elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
@@ -54,11 +54,10 @@ defmodule Braintree.Mixfile do
   defp deps do
     [
       {:hackney, "~> 1.15"},
-      {:telemetry, "~> 0.4"},
-      {:ex_doc, "~> 0.19", only: [:dev], runtime: false},
-      {:inch_ex, "~> 2.0", only: [:dev, :test], runtime: false},
-      {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:telemetry, "~> 1.0"},
+      {:ex_doc, "~> 0.25", only: [:dev], runtime: false},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
       {:bypass, "~> 2.1", only: :test}
     ]
   end
