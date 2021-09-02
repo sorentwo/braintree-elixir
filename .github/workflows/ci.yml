@@ -17,10 +17,12 @@ jobs:
           - pair:
               elixir: '1.10'
               otp: '21.3'
+            exclude_tags: 'integration'
           - pair:
               elixir: '1.12'
               otp: '24.0'
             lint: lint
+            exclude_tags: 'nothing'
 
     runs-on: ubuntu-latest
 
@@ -64,7 +66,7 @@ jobs:
         if: ${{ matrix.lint }}
 
       - name: Run mix test
-        run: mix test
+        run: mix test --exclude ${{ matrix.exclude_tags }}
 
       - name: Run dialyzer
         run: mix dialyzer
