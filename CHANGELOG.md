@@ -1,3 +1,25 @@
+## v0.12.0 2021-09-02
+
+### Changed
+
+- Bumped the minium Elixir version from `1.7` to `1.9` (it had been a while!)
+
+### Added
+
+- [Braintree.Webhook] A new module that provides convenience methods for parsing
+  Braintree webhook payloads.
+
+- [Braintree] Wrap HTTP calls in telemetry events for instrumentation. All
+  requests are wrapped in a telemetry events, which emits standard span events:
+
+  `[:braintree, :request, :start | :stop | :exception | :error]`
+
+- [Braintree.Customer] Support ApplePay and AndroidPay
+
+### Fixed
+
+- Fix atomizing nested maps with mixed keys.
+
 ## v0.11.0 2020-05-11
 
 * [Braintree] Allow configuration of sandbox endpoint for testing
