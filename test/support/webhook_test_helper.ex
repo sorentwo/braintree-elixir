@@ -38,7 +38,6 @@ defmodule Braintree.Test.Support.WebhookTestHelper do
     """
   end
 
-  # TODO: need to update these to pull from test config found in test.secret.exs...
-  defp braintree_public_key(), do: Braintree.get_env(:public_key, "public_key")
-  defp braintree_private_key(), do: Braintree.get_env(:private_key, "private_key")
+  defp braintree_public_key, do: Braintree.get_env(:public_key, "public_key")
+  defp braintree_private_key, do: Braintree.get_env(:private_key, "private_key")
 end

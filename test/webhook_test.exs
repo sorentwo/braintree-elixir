@@ -1,8 +1,8 @@
 defmodule Braintree.WebhookTest do
   use ExUnit.Case, async: true
 
-  alias Braintree.Webhook
   alias Braintree.Test.Support.WebhookTestHelper
+  alias Braintree.Webhook
 
   describe "Webhook#parse/2" do
     setup do
