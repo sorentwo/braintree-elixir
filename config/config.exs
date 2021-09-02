@@ -10,5 +10,5 @@ config :braintree,
 try do
   import_config "#{Mix.env()}.secret.exs"
 rescue
-  Code.LoadError -> IO.puts("No secret file for #{Mix.env()}")
+  [Code.LoadError, File.Error] -> IO.puts("No secret file for #{Mix.env()}")
 end
