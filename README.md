@@ -185,9 +185,11 @@ testing][plp].
 You can optionally configure the sandbox endpoint url to point towards a local url and
 port for testing which does not need to call out to the Braintree sandbox API.
 For example, in your `config.exs`
-```
+
+```elixir
 config :braintree, :sandbox_endpoint, "localhost:4001"
 ```
+
 In conjuction with a libary such as [`Bypass`](https://github.com/PSPDFKit-labs/bypass)
 you can use this config to define test-specific returns from `Braintree` calls without
 hitting the Braintree sandbox API.
