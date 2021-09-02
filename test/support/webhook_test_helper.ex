@@ -3,7 +3,7 @@ defmodule Braintree.Test.Support.WebhookTestHelper do
 
   alias Braintree.Webhook.Digest
 
-  def sample_notification(kind, id, source_merchant_id \\ nil) do
+  def sample_notification(kind, id, source_merchant_id) do
     payload = Base.encode64(sample_xml(kind, id, source_merchant_id))
 
     signature_string =
@@ -12,7 +12,7 @@ defmodule Braintree.Test.Support.WebhookTestHelper do
     %{"bt_signature" => signature_string, "bt_payload" => payload}
   end
 
-  def sample_xml(kind, data, datetime, source_merchant_id \\ nil) do
+  def sample_xml(kind, data, source_merchant_id) do
     source_merchant_xml =
       if source_merchant_id == nil do
         "<source-merchant-id>#{source_merchant_id}</source-merchant-id>"
@@ -22,7 +22,7 @@ defmodule Braintree.Test.Support.WebhookTestHelper do
 
     ~s"""
     <notification>
-      <timestamp type="datetime">#{datetime}</timestamp>
+      <timestamp type="datetime">2020-01-01T00:00:00Z</timestamp>
       <kind>#{kind}</kind>
       #{source_merchant_xml}
       <subject>

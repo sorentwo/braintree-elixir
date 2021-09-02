@@ -14,31 +14,28 @@ defmodule Braintree.WebhookTest do
       "bt_payload" => payload,
       "bt_signature" => signature
     } do
-      assert Webhook.parse(signature, payload) ==
-               {:ok,
-                %{
-                  "payload" =>
-                    "<notification>\n  <timestamp type=\"datetime\">2021-06-24T23:41:58Z</timestamp>\n  <kind>check</kind>\n  \n  <subject>\n    <check type=\"boolean\">true</check>\n\n  </subject>\n</notification>\n",
-                  "signature" => "public_key|4261b2771e7852348af5103d7f98b6148bb9ad1b"
-                }}
+      assert {:ok, parsed} = Webhook.parse(signature, payload)
+
+      assert parsed["payload"] =~ "<notification>"
+      assert parsed["payload"] =~ "<kind>check</kind>"
+      assert parsed["signature"] =~ ~r/\w{18}|\w{40}/
     end
 
     test "returns error tuple with invalid signature", %{"bt_payload" => payload} do
-      assert Webhook.parse("fake_signature", payload) ==
-               {:error, "No matching public key"}
+      assert {:error, "No matching public key"} = Webhook.parse("fake_signature", payload)
     end
 
     test "returns error tuple with invalid payload", %{"bt_signature" => signature} do
-      assert Webhook.parse(signature, "fake_payload") ==
-               {:error, "Signature does not match payload, one has been modified"}
+      assert {:error, "Signature does not match payload, one has been modified"} =
+               Webhook.parse(signature, "fake_payload")
     end
 
     test "returns error tuple with nil payload", %{"bt_signature" => signature} do
-      assert Webhook.parse(signature, nil) == {:error, "Payload cannot be nil"}
+      assert {:error, "Payload cannot be nil"} = Webhook.parse(signature, nil)
     end
 
     test "returns error tuple with nil signature", %{"bt_payload" => payload} do
-      assert Webhook.parse(nil, payload) == {:error, "Signature cannot be nil"}
+      assert {:error, "Signature cannot be nil"} = Webhook.parse(nil, payload)
     end
   end
 end
