@@ -1,8 +1,8 @@
 defmodule Braintree.Webhook.ValidationTest do
   use ExUnit.Case, async: true
 
-  alias Braintree.Webhook.Validation
   alias Braintree.Test.Support.WebhookTestHelper
+  alias Braintree.Webhook.Validation
 
   describe "Validation#validate_signature/2" do
     setup do
