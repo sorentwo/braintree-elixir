@@ -5,6 +5,25 @@ defmodule Braintree.HTTPTest do
 
   alias Braintree.{ConfigError, HTTP}
 
+  defmodule Handler do
+    def attach do
+      :telemetry.attach_many(
+        "braintree-testing",
+        [
+          [:braintree, :request, :start],
+          [:braintree, :request, :stop],
+          [:braintree, :request, :error]
+        ],
+        &__MODULE__.echo_event/4,
+        %{caller: self()}
+      )
+    end
+
+    def echo_event(event, measurements, metadata, config) do
+      send(config.caller, {:event, event, measurements, metadata})
+    end
+  end
+
   test "build_url/2 builds a url from application config without options" do
     with_applicaton_config(:merchant_id, "qwertyid", fn ->
       assert HTTP.build_url("customer", []) =~
@@ -72,19 +91,12 @@ defmodule Braintree.HTTPTest do
 
   describe "telemetry events from request" do
     setup do
-      bypass = Bypass.open()
+      on_exit(fn -> :telemetry.detach("braintree-testing") end)
 
-      on_exit(fn ->
-        :telemetry.list_handlers([])
-        |> Enum.each(&:telemetry.detach(&1.id))
-      end)
-
-      {:ok, bypass: bypass}
+      {:ok, bypass: Bypass.open()}
     end
 
-    test "emits a start and stop message on a successful request (2xx, 422, and other codes)", %{
-      bypass: bypass
-    } do
+    test "emits a start and stop message on a successful request", %{bypass: bypass} do
       Enum.each([200, 422, 500], fn code ->
         with_applicaton_config(:sandbox_endpoint, "localhost:#{bypass.port}/", fn ->
           with_applicaton_config(:merchant_id, "junkmerchantid", fn ->
@@ -103,47 +115,33 @@ defmodule Braintree.HTTPTest do
               Plug.Conn.resp(conn, code, compress(body))
             end)
 
-            :telemetry.attach("start event", [:braintree, :request, :start], &echo_event/4, %{
-              caller: self()
-            })
-
-            :telemetry.attach("stop event", [:braintree, :request, :stop], &echo_event/4, %{
-              caller: self()
-            })
+            Handler.attach()
 
             HTTP.request(:post, path, %{})
 
-            assert_receive {:event, [:braintree, :request, :start], %{system_time: time},
-                            %{method: :post, path: path}}
+            assert_receive {:event, [:braintree, :request, :start], %{system_time: _},
+                            %{method: :post, path: _}}
 
-            assert_receive {:event, [:braintree, :request, :stop], %{duration: time},
-                            %{method: :post, path: path, http_status: code}}
+            assert_receive {:event, [:braintree, :request, :stop], %{duration: _},
+                            %{method: :post, path: _, http_status: _}}
           end)
         end)
       end)
     end
 
-    test "emits a start and error message if an exception if the hackney call raises", %{
-      bypass: bypass
-    } do
+    test "emits an error event on exception", %{bypass: bypass} do
       with_applicaton_config(:sandbox_endpoint, "localhost:#{bypass.port}/", fn ->
         with_applicaton_config(:merchant_id, "junkmerchantid", fn ->
           Bypass.down(bypass)
 
-          :telemetry.attach("start event", [:braintree, :request, :start], &echo_event/4, %{
-            caller: self()
-          })
-
-          :telemetry.attach("stop event", [:braintree, :request, :error], &echo_event/4, %{
-            caller: self()
-          })
+          Handler.attach()
 
           HTTP.request(:post, "/junkmerchant/foo", %{})
 
-          assert_receive {:event, [:braintree, :request, :start], %{system_time: time},
+          assert_receive {:event, [:braintree, :request, :start], %{system_time: _},
                           %{method: :post, path: "/junkmerchant/foo"}}
 
-          assert_receive {:event, [:braintree, :request, :error], %{duration: time},
+          assert_receive {:event, [:braintree, :request, :error], %{duration: _},
                           %{method: :post, path: "/junkmerchant/foo", error: :econnrefused}}
         end)
       end)
@@ -214,9 +212,5 @@ defmodule Braintree.HTTPTest do
         _ -> Braintree.put_env(key, original)
       end
     end
-  end
-
-  def echo_event(event, measurements, metadata, config) do
-    send(config.caller, {:event, event, measurements, metadata})
   end
 end
