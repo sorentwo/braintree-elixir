@@ -2,6 +2,7 @@ defmodule Braintree.Webhook do
   @moduledoc """
   This module provides convenience methods for parsing Braintree webhook payloads.
   """
+
   alias Braintree.Webhook.Validation
 
   @doc """

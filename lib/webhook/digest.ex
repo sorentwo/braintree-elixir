@@ -3,26 +3,28 @@ defmodule Braintree.Webhook.Digest do
   This module provides convenience methods to help validate Braintree signatures and associated payloads for webhooks.
   """
 
-  @spec secure_compare(String.t(), String.t()) :: boolean()
   @doc """
   A wrapper function that does a secure comparision accounting for timing attacks.
   """
-  def secure_compare(left, right) when is_binary(left) and is_binary(right),
-    do: Plug.Crypto.secure_compare(left, right)
+  @spec secure_compare(String.t(), String.t()) :: boolean()
+  def secure_compare(left, right) when is_binary(left) and is_binary(right) do
+    Plug.Crypto.secure_compare(left, right)
+  end
 
   def secure_compare(_, _), do: false
 
-  @spec hexdigest(String.t() | nil, String.t() | nil) :: String.t()
   @doc """
   Returns the message as a hex-encoded string to validate it matches the signature from the braintree webhook event.
   """
+  @spec hexdigest(String.t() | nil, String.t() | nil) :: String.t()
   def hexdigest(nil, _), do: ""
   def hexdigest(_, nil), do: ""
 
   def hexdigest(private_key, message) do
     key_digest = :crypto.hash(:sha, private_key)
 
-    hmac(:sha, key_digest, message)
+    :sha
+    |> hmac(key_digest, message)
     |> Base.encode16(case: :lower)
   end
 
