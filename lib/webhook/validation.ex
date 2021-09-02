@@ -2,12 +2,13 @@ defmodule Braintree.Webhook.Validation do
   @moduledoc """
   This module provides convenience methods to help validate Braintree signatures and associated payloads for webhooks.
   """
+
   alias Braintree.Webhook.Digest
 
-  @spec validate_signature(String.t() | nil, String.t() | nil) :: :ok | {:error, String.t()}
   @doc """
   Validate the webhook signature and payload from braintree.
   """
+  @spec validate_signature(String.t() | nil, String.t() | nil) :: :ok | {:error, String.t()}
   def validate_signature(nil, _payload), do: {:error, "Signature cannot be nil"}
   def validate_signature(_sig, nil), do: {:error, "Payload cannot be nil"}
 
@@ -28,16 +29,16 @@ defmodule Braintree.Webhook.Validation do
   defp compare_sig_pair([], _), do: {:error, "No matching public key"}
 
   defp compare_sig_pair([_public_key, sig], payload) do
-    [payload, payload <> "\n"]
-    |> Enum.any?(fn pload -> secure_compare(sig, pload) end)
-    |> case do
-      true -> :ok
-      false -> {:error, "Signature does not match payload, one has been modified"}
+    if Enum.any?([payload, payload <> "\n"], &secure_compare(sig, &1)) do
+      :ok
+    else
+      {:error, "Signature does not match payload, one has been modified"}
     end
   end
 
   defp secure_compare(signature, payload) do
     payload_signature = Digest.hexdigest(braintree_private_key(), payload)
+
     Digest.secure_compare(signature, payload_signature)
   end
 
