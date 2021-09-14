@@ -55,7 +55,7 @@ defmodule Braintree.Mixfile do
     [
       {:hackney, "~> 1.15"},
       {:plug, "~> 1.12"},
-      {:telemetry, "~> 1.0"},
+      {:telemetry, "~> 1.0 or ~> 0.4"},
       {:ex_doc, "~> 0.25", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
