@@ -1,3 +1,10 @@
+## v0.12.1 2021-11-18
+
+### Fixed
+
+- Update CA certificate bundle and enable peer verification for all HTTP
+  requests.
+
 ## v0.12.0 2021-09-02
 
 ### Changed
