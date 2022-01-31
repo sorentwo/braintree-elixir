@@ -9,7 +9,7 @@ defmodule Braintree.Customer do
 
   use Braintree.Construction
 
-  alias Braintree.{AndroidPayCard, ApplePayCard, CreditCard, HTTP, PaypalAccount, Search}
+  alias Braintree.{AndroidPayCard, ApplePayCard, CreditCard, HTTP, PaypalAccount, Search, UsBankAccount}
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
@@ -29,7 +29,8 @@ defmodule Braintree.Customer do
           apple_pay_cards: [ApplePayCard.t()],
           credit_cards: [CreditCard.t()],
           paypal_accounts: [PaypalAccount.t()],
-          coinbase_accounts: [map]
+          coinbase_accounts: [map],
+          us_bank_accounts: [UsBankAccount.t()]
         }
 
   defstruct id: nil,
@@ -48,7 +49,8 @@ defmodule Braintree.Customer do
             apple_pay_cards: [],
             credit_cards: [],
             coinbase_accounts: [],
-            paypal_accounts: []
+            paypal_accounts: [],
+            us_bank_accounts: []
 
   @doc """
   Create a customer record, or return an error response with after failed
@@ -159,7 +161,8 @@ defmodule Braintree.Customer do
       | android_pay_cards: AndroidPayCard.new(customer.android_pay_cards),
         apple_pay_cards: ApplePayCard.new(customer.apple_pay_cards),
         credit_cards: CreditCard.new(customer.credit_cards),
-        paypal_accounts: PaypalAccount.new(customer.paypal_accounts)
+        paypal_accounts: PaypalAccount.new(customer.paypal_accounts),
+        us_bank_accounts: UsBankAccount.new(customer.us_bank_accounts)
     }
   end
 
