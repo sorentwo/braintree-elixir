@@ -24,7 +24,8 @@ defmodule Braintree.HTTP do
   alias Braintree.XML.{Decoder, Encoder}
 
   @type response ::
-          {:ok, map | {:error, atom}}
+          {:ok, map}
+          | {:error, atom}
           | {:error, Error.t()}
           | {:error, binary}
 
