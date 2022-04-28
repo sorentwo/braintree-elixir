@@ -108,7 +108,12 @@ defmodule Braintree.PaymentMethod do
     end
   end
 
-  @spec new(map) :: AndroidPayCard.t() | ApplePayCard.t() | CreditCard.t() | PaypalAccount.t() | UsBankAccount.t()
+  @spec new(map) ::
+          AndroidPayCard.t()
+          | ApplePayCard.t()
+          | CreditCard.t()
+          | PaypalAccount.t()
+          | UsBankAccount.t()
   defp new(%{"android_pay_card" => android_pay_card}) do
     AndroidPayCard.new(android_pay_card)
   end

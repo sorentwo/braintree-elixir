@@ -9,7 +9,16 @@ defmodule Braintree.Customer do
 
   use Braintree.Construction
 
-  alias Braintree.{AndroidPayCard, ApplePayCard, CreditCard, HTTP, PaypalAccount, Search, UsBankAccount}
+  alias Braintree.{
+    AndroidPayCard,
+    ApplePayCard,
+    CreditCard,
+    HTTP,
+    PaypalAccount,
+    Search,
+    UsBankAccount
+  }
+
   alias Braintree.ErrorResponse, as: Error
 
   @type t :: %__MODULE__{
