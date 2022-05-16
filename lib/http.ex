@@ -47,6 +47,7 @@ defmodule Braintree.HTTP do
     401 => :unauthorized,
     403 => :forbidden,
     404 => :not_found,
+    406 => :not_acceptable,
     422 => :unprocessable_entity,
     426 => :upgrade_required,
     429 => :too_many_requests,
@@ -96,10 +97,15 @@ defmodule Braintree.HTTP do
 
         :erlang.raise(kind, reason, __STACKTRACE__)
     else
-      {:ok, code, _headers, body} when code in 200..399 ->
+      {:ok, code, _headers, body} when code in 200..299 ->
         duration = System.monotonic_time() - start_time
         emit_stop(duration, method, path, code)
         {:ok, decode_body(body)}
+
+      {:ok, code, _headers, _body} when code in 300..399 ->
+        duration = System.monotonic_time() - start_time
+        emit_stop(duration, method, path, code)
+        {:ok, ""}
 
       {:ok, 422, _headers, body} ->
         duration = System.monotonic_time() - start_time
