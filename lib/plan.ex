@@ -93,8 +93,8 @@ defmodule Braintree.Plan do
       {:error, :not_found} = Braintree.Plan.find("non-existing plan_id")
   """
   @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
-  def find(plan_id, opts \\ []) do
-    with {:ok, %{"plan" => plan}} <- HTTP.get("plans/#{plan_id}", opts) do
+  def find(id, opts \\ []) when is_binary(id) do
+    with {:ok, %{"plan" => plan}} <- HTTP.get("plans/#{id}", opts) do
       {:ok, new(plan)}
     end
   end
@@ -110,9 +110,21 @@ defmodule Braintree.Plan do
       {:error, :not_found} = Braintree.Plan.find("non-existing plan_id")
   """
   @spec update(String.t(), map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
-  def update(plan_id, params, opts \\ []) do
-    with {:ok, %{"plan" => plan}} <- HTTP.put("plans/#{plan_id}", %{plan: params}, opts) do
+  def update(id, params, opts \\ []) when is_binary(id) and is_map(params) do
+    with {:ok, %{"plan" => plan}} <- HTTP.put("plans/#{id}", %{plan: params}, opts) do
       {:ok, new(plan)}
+    end
+  end
+
+  @doc """
+  Delete a plan defined in the merchant account by the plan id.
+  A plan can't be deleted if it has any former or current subscriptions associated with it.
+  If there is no plan with the specified id, `{:error, :not_found}` is returned.
+  """
+  @spec delete(String.t(), Keyword.t()) :: :ok | {:error, Error.t()}
+  def delete(id, opts \\ []) when is_binary(id) do
+    with {:ok, _response} <- HTTP.delete("plans/#{id}", opts) do
+      :ok
     end
   end
 end
