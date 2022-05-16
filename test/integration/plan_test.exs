@@ -74,9 +74,7 @@ defmodule Braintree.Integration.PlanTest do
         price: "10.00"
       })
 
-    :ok = Plan.delete(id)
-    {:ok, plans} = Plan.all()
-
-    assert Enum.all?(plans, fn plan -> plan.id != id end)
+    assert :ok = Plan.delete(id)
+    assert {:error, _} = Plan.find(id)
   end
 end
