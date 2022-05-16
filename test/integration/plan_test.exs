@@ -43,7 +43,7 @@ defmodule Braintree.Integration.PlanTest do
     assert plan.name == "testing_create_plan"
     assert plan.price == "10.00"
 
-    :ok = Plan.delete(plan.id)
+    assert :ok = Plan.delete(plan.id)
   end
 
   test "find/1 finds a plan", %{existing_plan: existing_plan} do
