@@ -47,6 +47,7 @@ defmodule Braintree.HTTP do
     401 => :unauthorized,
     403 => :forbidden,
     404 => :not_found,
+    406 => :not_acceptable,
     422 => :unprocessable_entity,
     426 => :upgrade_required,
     429 => :too_many_requests,
