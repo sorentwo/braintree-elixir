@@ -46,8 +46,7 @@ defmodule Braintree.XML.Entity do
   def encode(string) do
     string
     |> String.graphemes()
-    |> Enum.map(&escape/1)
-    |> Enum.join()
+    |> Enum.map_join(&escape/1)
   end
 
   for line <- File.stream!(entities) do
