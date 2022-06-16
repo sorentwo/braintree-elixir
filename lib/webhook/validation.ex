@@ -44,6 +44,9 @@ defmodule Braintree.Webhook.Validation do
     Digest.secure_compare(signature, payload_signature)
   end
 
-  defp braintree_public_key(opts), do: Braintree.get_env(:public_key, opts[:public_key])
-  defp braintree_private_key(opts), do: Braintree.get_env(:private_key, opts[:private_key])
+  defp braintree_public_key(opts),
+    do: Keyword.get_lazy(opts, :public_key, fn -> Braintree.get_env(:public_key) end)
+
+  defp braintree_private_key(opts),
+    do: Keyword.get_lazy(opts, :private_key, fn -> Braintree.get_env(:private_key) end)
 end
