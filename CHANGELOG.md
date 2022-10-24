@@ -1,3 +1,22 @@
+## v0.13.0 2022-10-24
+
+### Added
+
+- [Braintree.Webhook] Allow passing options to webhook parser/validator, similar
+  to other API functions.
+
+- [Braintree.Plan] Expand plan functionality with `delete`, improved guard
+  clauses, and better response code formatting.
+
+- [Braintree.Customer] Support ACH Direct Debit payment methods.
+
+### Fixed
+
+- [Braintree.HTTP] Fix error in response type specification.
+
+  This typespec error wasn't caught given the current dialyzer settings, but
+  could cause issues for clients expecting things like `{:error, :not_found}`.
+
 ## v0.12.1 2021-11-18
 
 ### Fixed
