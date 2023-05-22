@@ -4,7 +4,7 @@ defmodule Braintree.PaymentMethod do
   may be a `CreditCard` or a `PaypalAccount`.
   """
 
-  alias Braintree.{AndroidPayCard, ApplePayCard, CreditCard, HTTP, PaypalAccount, UsBankAccount}
+  alias Braintree.{AndroidPayCard, ApplePayCard, CreditCard, HTTP, PaypalAccount, UsBankAccount, VenmoAccount}
   alias Braintree.ErrorResponse, as: Error
 
   @doc """
@@ -29,6 +29,7 @@ defmodule Braintree.PaymentMethod do
           {:ok, CreditCard.t()}
           | {:ok, PaypalAccount.t()}
           | {:ok, UsBankAccount.t()}
+          | {:ok, VenmoAccount.t()}
           | {:error, Error.t()}
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("payment_methods", %{payment_method: params}, opts) do
@@ -132,5 +133,9 @@ defmodule Braintree.PaymentMethod do
 
   defp new(%{"us_bank_account" => us_bank_account}) do
     UsBankAccount.new(us_bank_account)
+  end
+
+  defp new(%{"venmo_account" => venmo_account}) do
+    UsBankAccount.new(venmo_account)
   end
 end
