@@ -56,4 +56,8 @@ defmodule Braintree.Testing.Nonces do
   def coinbase do
     "fake-coinbase-nonce"
   end
+
+  def venmo_account do
+    "fake-venmo-account-nonce"
+  end
 end
