@@ -171,7 +171,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
         options: %{make_default: true}
       })
 
-    assert paypal_account.default == true
+    assert paypal_account.default
   end
 
   test "update/1 fails when invalid token provided" do
@@ -288,6 +288,76 @@ defmodule Braintree.Integration.PaymentMethodTest do
 
     assert found_paypal_account.email == "jane.doe@paypal.com"
     assert found_paypal_account.token =~ ~r/^\w+$/
+  end
+
+  test "create/1 can create a venmo payment method" do
+    {:ok, customer} =
+      Customer.create(%{
+        first_name: "Jose",
+        last_name: "Lito"
+      })
+
+    {:ok, venmo_account} =
+      PaymentMethod.create(%{
+        customer_id: customer.id,
+        payment_method_nonce: Nonces.venmo_account()
+      })
+
+    assert venmo_account.username == "venmojoe"
+    assert venmo_account.token =~ ~r/^\w+$/
+  end
+
+  test "create/1 can successfully make venmo payment method the default" do
+    {:ok, customer} =
+      Customer.create(%{
+        first_name: "Jose",
+        last_name: "Lito"
+      })
+
+    {:ok, venmo_account} =
+      PaymentMethod.create(%{
+        customer_id: customer.id,
+        payment_method_nonce: Nonces.venmo_account(),
+        options: %{make_default: true}
+      })
+
+    assert venmo_account.username == "venmojoe"
+    assert venmo_account.default
+  end
+
+  test "delete/1 can delete venmo payment method" do
+    {:ok, customer} =
+      Customer.create(%{
+        first_name: "Jose",
+        last_name: "Lito"
+      })
+
+    {:ok, venmo_account} =
+      PaymentMethod.create(%{
+        customer_id: customer.id,
+        payment_method_nonce: Nonces.venmo_account()
+      })
+
+    assert :ok = PaymentMethod.delete(venmo_account.token)
+  end
+
+  test "find/1 can find an existing venmo payment method" do
+    {:ok, customer} =
+      Customer.create(%{
+        first_name: "Jose",
+        last_name: "Lito"
+      })
+
+    {:ok, venmo_account} =
+      PaymentMethod.create(%{
+        customer_id: customer.id,
+        payment_method_nonce: Nonces.venmo_account()
+      })
+
+    {:ok, found_venmo_account} = PaymentMethod.find(venmo_account.token)
+
+    assert found_venmo_account.username == "venmojoe"
+    assert found_venmo_account.token =~ ~r/^\w+$/
   end
 
   defp master_card do
