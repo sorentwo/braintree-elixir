@@ -171,7 +171,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
         options: %{make_default: true}
       })
 
-    assert paypal_account.default == true
+    assert paypal_account.default
   end
 
   test "update/1 fails when invalid token provided" do
@@ -322,7 +322,7 @@ defmodule Braintree.Integration.PaymentMethodTest do
       })
 
     assert venmo_account.username == "venmojoe"
-    assert venmo_account.default == true
+    assert venmo_account.default
   end
 
   test "delete/1 can delete venmo payment method" do
