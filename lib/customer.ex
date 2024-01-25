@@ -109,7 +109,7 @@ defmodule Braintree.Customer do
 
       customer = Braintree.Customer.find("customer_id")
   """
-  @spec find(binary, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec find(binary, Keyword.t()) :: {:ok, t} | {:error, :not_found | Error.t()}
   def find(id, opts \\ []) when is_binary(id) do
     with {:ok, payload} <- HTTP.get("customers/" <> id, opts) do
       {:ok, new(payload)}
