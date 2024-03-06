@@ -23,11 +23,12 @@ defmodule Braintree.HTTP do
   alias Braintree.ErrorResponse, as: Error
   alias Braintree.XML.{Decoder, Encoder}
 
-  @type response ::
-          {:ok, map}
-          | {:error, atom}
+  @type error ::
+          {:error, atom}
           | {:error, Error.t()}
           | {:error, binary}
+
+  @type response :: {:ok, map} | error
 
   @production_endpoint "https://api.braintreegateway.com/merchants/"
   @sandbox_endpoint "https://api.sandbox.braintreegateway.com/merchants/"
