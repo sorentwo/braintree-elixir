@@ -1,6 +1,7 @@
 defmodule Braintree.HTTPTest do
   use ExUnit.Case
 
+  import Braintree.Test.Support.ConfigHelper
   import ExUnit.CaptureLog
 
   alias Braintree.{ConfigError, HTTP}
@@ -197,20 +198,6 @@ defmodule Braintree.HTTPTest do
       assert_raise ConfigError, "missing config for :#{key}", fun
     after
       Braintree.put_env(key, value)
-    end
-  end
-
-  defp with_applicaton_config(key, value, fun) do
-    original = Braintree.get_env(key, :none)
-
-    try do
-      Braintree.put_env(key, value)
-      fun.()
-    after
-      case original do
-        :none -> Application.delete_env(:braintree, key)
-        _ -> Braintree.put_env(key, original)
-      end
     end
   end
 end
