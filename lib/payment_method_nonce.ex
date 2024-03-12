@@ -5,7 +5,6 @@ defmodule Braintree.PaymentMethodNonce do
 
   use Braintree.Construction
 
-  alias Braintree.ErrorResponse, as: Error
   alias Braintree.HTTP
 
   @type t :: %__MODULE__{
@@ -39,7 +38,7 @@ defmodule Braintree.PaymentMethodNonce do
 
       payment_method_nonce.nonce
   """
-  @spec create(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec create(String.t(), Keyword.t()) :: {:ok, t} | HTTP.error()
   def create(payment_method_token, opts \\ []) do
     path = "payment_methods/#{payment_method_token}/nonces"
 
@@ -57,7 +56,7 @@ defmodule Braintree.PaymentMethodNonce do
 
       payment_method.type #CreditCard
   """
-  @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec find(String.t(), Keyword.t()) :: {:ok, t} | HTTP.error()
   def find(nonce, opts \\ []) do
     path = "payment_method_nonces/" <> nonce
 

@@ -12,7 +12,6 @@ defmodule Braintree.AddOn do
 
   use Braintree.Construction
 
-  alias Braintree.ErrorResponse, as: Error
   alias Braintree.HTTP
 
   @type t :: %__MODULE__{
@@ -44,7 +43,7 @@ defmodule Braintree.AddOn do
 
       {:ok, addons} = Braintree.AddOns.all()
   """
-  @spec all(Keyword.t()) :: {:ok, [t]} | {:error, Error.t()}
+  @spec all(Keyword.t()) :: {:ok, [t]} | HTTP.error()
   def all(opts \\ []) do
     with {:ok, %{"add_ons" => add_ons}} <- HTTP.get("add_ons", opts) do
       {:ok, new(add_ons)}

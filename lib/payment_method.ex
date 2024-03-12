@@ -4,8 +4,15 @@ defmodule Braintree.PaymentMethod do
   may be a `CreditCard` or a `PaypalAccount`.
   """
 
-  alias Braintree.{AndroidPayCard, ApplePayCard, CreditCard, HTTP, PaypalAccount, UsBankAccount, VenmoAccount}
-  alias Braintree.ErrorResponse, as: Error
+  alias Braintree.{
+    AndroidPayCard,
+    ApplePayCard,
+    CreditCard,
+    HTTP,
+    PaypalAccount,
+    UsBankAccount,
+    VenmoAccount
+  }
 
   @doc """
   Create a payment method record, or return an error response with after failed
@@ -30,7 +37,7 @@ defmodule Braintree.PaymentMethod do
           | {:ok, PaypalAccount.t()}
           | {:ok, UsBankAccount.t()}
           | {:ok, VenmoAccount.t()}
-          | {:error, Error.t()}
+          | HTTP.error()
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("payment_methods", %{payment_method: params}, opts) do
       {:ok, new(payload)}
@@ -62,7 +69,7 @@ defmodule Braintree.PaymentMethod do
       payment_method.cardholder_name # "NEW"
   """
   @spec update(String.t(), map, Keyword.t()) ::
-          {:ok, CreditCard.t()} | {:ok, PaypalAccount.t()} | {:error, Error.t()}
+          {:ok, CreditCard.t()} | {:ok, PaypalAccount.t()} | HTTP.error()
   def update(token, params \\ %{}, opts \\ []) do
     path = "payment_methods/any/" <> token
 
@@ -78,7 +85,7 @@ defmodule Braintree.PaymentMethod do
 
       {:ok, "Success"} = Braintree.PaymentMethod.delete(token)
   """
-  @spec delete(String.t(), Keyword.t()) :: :ok | {:error, Error.t()}
+  @spec delete(String.t(), Keyword.t()) :: :ok | HTTP.error()
   def delete(token, opts \\ []) do
     path = "payment_methods/any/" <> token
 
@@ -100,7 +107,7 @@ defmodule Braintree.PaymentMethod do
           {:ok, CreditCard.t()}
           | {:ok, PaypalAccount.t()}
           | {:ok, UsBankAccount.t()}
-          | {:error, Error.t()}
+          | HTTP.error()
   def find(token, opts \\ []) do
     path = "payment_methods/any/" <> token
 

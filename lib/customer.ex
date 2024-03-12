@@ -19,8 +19,6 @@ defmodule Braintree.Customer do
     UsBankAccount
   }
 
-  alias Braintree.ErrorResponse, as: Error
-
   @type t :: %__MODULE__{
           id: String.t(),
           company: String.t(),
@@ -79,7 +77,7 @@ defmodule Braintree.Customer do
 
       customer.company # Braintree
   """
-  @spec create(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec create(map, Keyword.t()) :: {:ok, t} | HTTP.error()
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("customers", %{customer: params}, opts) do
       {:ok, new(payload)}
@@ -95,7 +93,7 @@ defmodule Braintree.Customer do
 
       :ok = Braintree.Customer.delete("customer_id")
   """
-  @spec delete(binary, Keyword.t()) :: :ok | {:error, Error.t()}
+  @spec delete(binary, Keyword.t()) :: :ok | HTTP.error()
   def delete(id, opts \\ []) when is_binary(id) do
     with {:ok, _response} <- HTTP.delete("customers/" <> id, opts) do
       :ok
@@ -109,7 +107,7 @@ defmodule Braintree.Customer do
 
       customer = Braintree.Customer.find("customer_id")
   """
-  @spec find(binary, Keyword.t()) :: {:ok, t} | {:error, :not_found | Error.t()}
+  @spec find(binary, Keyword.t()) :: {:ok, t} | HTTP.error()
   def find(id, opts \\ []) when is_binary(id) do
     with {:ok, payload} <- HTTP.get("customers/" <> id, opts) do
       {:ok, new(payload)}
@@ -129,7 +127,7 @@ defmodule Braintree.Customer do
 
       customer.company # "New Company Name"
   """
-  @spec update(binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec update(binary, map, Keyword.t()) :: {:ok, t} | HTTP.error()
   def update(id, params, opts \\ []) when is_binary(id) and is_map(params) do
     with {:ok, payload} <- HTTP.put("customers/" <> id, %{customer: params}, opts) do
       {:ok, new(payload)}
@@ -144,7 +142,7 @@ defmodule Braintree.Customer do
 
       {:ok, customers} = Braintree.Customer.search(%{first_name: %{is: "Jenna"}})
   """
-  @spec search(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec search(map, Keyword.t()) :: {:ok, t} | HTTP.error()
   def search(params, opts \\ []) when is_map(params) do
     Search.perform(params, "customers", &new/1, opts)
   end

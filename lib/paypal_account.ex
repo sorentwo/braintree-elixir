@@ -5,7 +5,6 @@ defmodule Braintree.PaypalAccount do
 
   use Braintree.Construction
 
-  alias Braintree.ErrorResponse, as: Error
   alias Braintree.HTTP
 
   @type t :: %__MODULE__{
@@ -42,7 +41,7 @@ defmodule Braintree.PaypalAccount do
 
       {:ok, paypal_account} = Braintree.PaypalAccount.find(token)
   """
-  @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec find(String.t(), Keyword.t()) :: {:ok, t} | HTTP.error()
   def find(token, opts \\ []) do
     path = "payment_methods/paypal_account/" <> token
 
@@ -62,7 +61,7 @@ defmodule Braintree.PaypalAccount do
         %{options: %{make_default: true}
       )
   """
-  @spec update(String.t(), map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec update(String.t(), map, Keyword.t()) :: {:ok, t} | HTTP.error()
   def update(token, params, opts \\ []) do
     path = "payment_methods/paypal_account/" <> token
 
@@ -79,7 +78,7 @@ defmodule Braintree.PaypalAccount do
 
       {:ok, paypal_account} = Braintree.PaypalAccount.delete(token)
   """
-  @spec delete(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec delete(String.t(), Keyword.t()) :: {:ok, t} | HTTP.error()
   def delete(token, opts \\ []) do
     path = "payment_methods/paypal_account/" <> token
 
