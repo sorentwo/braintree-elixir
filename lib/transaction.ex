@@ -15,7 +15,7 @@ defmodule Braintree.Transaction do
   @type t :: %__MODULE__{
           add_ons: [AddOn.t()],
           additional_processor_response: String.t(),
-          amount: number,
+          amount: String.t(),
           android_pay_card: map,
           apple_pay: map,
           avs_error_response_code: String.t(),
