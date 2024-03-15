@@ -1,4 +1,6 @@
 defmodule Braintree.Test.Support.ConfigHelper do
+  @moduledoc false
+
   def with_applicaton_config(key, value, fun) do
     original = Braintree.get_env(key, :none)
 
