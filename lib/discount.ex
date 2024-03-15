@@ -12,7 +12,6 @@ defmodule Braintree.Discount do
 
   use Braintree.Construction
 
-  alias Braintree.ErrorResponse, as: Error
   alias Braintree.HTTP
 
   @type t :: %__MODULE__{
@@ -44,7 +43,7 @@ defmodule Braintree.Discount do
 
       {:ok, discounts} = Braintree.Discount.all()
   """
-  @spec all(Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec all(Keyword.t()) :: {:ok, t} | HTTP.error()
   def all(opts \\ []) do
     with {:ok, payload} <- HTTP.get("discounts", opts) do
       %{"discounts" => discounts} = payload

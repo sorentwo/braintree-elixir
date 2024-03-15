@@ -11,7 +11,6 @@ defmodule Braintree.SettlementBatchSummary do
 
   import Braintree.Util, only: [atomize: 1]
 
-  alias Braintree.ErrorResponse, as: Error
   alias Braintree.HTTP
 
   defmodule Record do
@@ -65,7 +64,7 @@ defmodule Braintree.SettlementBatchSummary do
 
       Braintree.SettlementBatchSummary("2016-9-5", "custom_field_1")
   """
-  @spec generate(binary, binary | nil, Keyword.t()) :: {:ok, [t]} | {:error, Error.t()}
+  @spec generate(binary, binary | nil, Keyword.t()) :: {:ok, [t]} | HTTP.error()
   def generate(settlement_date, custom_field \\ nil, opts \\ []) do
     criteria = build_criteria(settlement_date, custom_field)
     params = %{settlement_batch_summary: criteria}

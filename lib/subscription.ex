@@ -8,7 +8,6 @@ defmodule Braintree.Subscription do
 
   use Braintree.Construction
 
-  alias Braintree.ErrorResponse, as: Error
   alias Braintree.{AddOn, HTTP, Search, Transaction}
 
   @type t :: %__MODULE__{
@@ -86,7 +85,7 @@ defmodule Braintree.Subscription do
         plan_id: "starter"
       })
   """
-  @spec create(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec create(map, Keyword.t()) :: {:ok, t} | HTTP.error()
   def create(params \\ %{}, opts \\ []) do
     with {:ok, payload} <- HTTP.post("subscriptions", %{subscription: params}, opts) do
       {:ok, new(payload)}
@@ -100,7 +99,7 @@ defmodule Braintree.Subscription do
 
       {:ok, subscription} = Subscription.find("123")
   """
-  @spec find(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec find(String.t(), Keyword.t()) :: {:ok, t} | HTTP.error()
   def find(subscription_id, opts \\ []) do
     with {:ok, payload} <- HTTP.get("subscriptions/#{subscription_id}", opts) do
       {:ok, new(payload)}
@@ -115,7 +114,7 @@ defmodule Braintree.Subscription do
 
       {:ok, subscription} = Subscription.cancel("123")
   """
-  @spec cancel(String.t(), Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec cancel(String.t(), Keyword.t()) :: {:ok, t} | HTTP.error()
   def cancel(subscription_id, opts \\ []) do
     with {:ok, payload} <- HTTP.put("subscriptions/#{subscription_id}/cancel", opts) do
       {:ok, new(payload)}
@@ -140,7 +139,7 @@ defmodule Braintree.Subscription do
   """
   @spec retry_charge(String.t()) :: {:ok, Transaction.t()}
   @spec retry_charge(String.t(), String.t() | nil, Keyword.t()) ::
-          {:ok, Transaction.t()} | {:error, Error.t()}
+          {:ok, Transaction.t()} | HTTP.error()
   def retry_charge(subscription_id, amount \\ nil, opts \\ []) do
     Transaction.sale(%{amount: amount, subscription_id: subscription_id}, opts)
   end
@@ -157,7 +156,7 @@ defmodule Braintree.Subscription do
       })
       subscription.plan_id # "new_plan_id"
   """
-  @spec update(binary, map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec update(binary, map, Keyword.t()) :: {:ok, t} | HTTP.error()
   def update(id, params, opts \\ []) when is_binary(id) and is_map(params) do
     with {:ok, payload} <- HTTP.put("subscriptions/" <> id, %{subscription: params}, opts) do
       {:ok, new(payload)}
@@ -171,7 +170,7 @@ defmodule Braintree.Subscription do
 
     {:ok, subscriptions} = Braintree.Subscription.search(%{plan_id: %{is: "starter"}})
   """
-  @spec search(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
+  @spec search(map, Keyword.t()) :: {:ok, t} | HTTP.error()
   def search(params, opts \\ []) when is_map(params) do
     Search.perform(params, "subscriptions", &new/1, opts)
   end

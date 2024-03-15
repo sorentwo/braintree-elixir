@@ -6,7 +6,6 @@ defmodule Braintree.ClientToken do
   https://developers.braintreepayments.com/reference/request/client-token/generate/ruby
   """
 
-  alias Braintree.ErrorResponse, as: Error
   alias Braintree.HTTP
 
   @version 2

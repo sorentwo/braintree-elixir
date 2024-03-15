@@ -7,7 +7,6 @@ defmodule Braintree.TransactionLineItem do
 
   use Braintree.Construction
 
-  alias Braintree.ErrorResponse, as: Error
   alias Braintree.HTTP
 
   @type t :: %__MODULE__{
@@ -47,7 +46,7 @@ defmodule Braintree.TransactionLineItem do
 
       {:ok, transaction_line_items} = TransactionLineItem.find("123")
   """
-  @spec find_all(String.t(), Keyword.t()) :: {:ok, [t]} | {:error, Error.t()}
+  @spec find_all(String.t(), Keyword.t()) :: {:ok, [t]} | HTTP.error()
   def find_all(transaction_id, opts \\ []) do
     path = "transactions/#{transaction_id}/line_items"
 

@@ -6,7 +6,6 @@ defmodule Braintree.Search do
   https://developers.braintreepayments.com/reference/general/searching/search-fields/ruby
   """
 
-  alias Braintree.ErrorResponse, as: Error
   alias Braintree.HTTP
 
   @doc """
@@ -18,7 +17,7 @@ defmodule Braintree.Search do
     {:ok, customers} = Braintree.Search.perform(search_params, "customers", &Braintree.Customer.new/1)
 
   """
-  @spec perform(map, String.t(), fun(), Keyword.t()) :: {:ok, [any]} | {:error, :not_found | Error.t()}
+  @spec perform(map, String.t(), fun(), Keyword.t()) :: {:ok, [any]} | HTTP.error()
   def perform(params, resource, initializer, opts \\ []) when is_map(params) do
     with {:ok, payload} <- HTTP.post(resource <> "/advanced_search_ids", %{search: params}, opts) do
       fetch_all_records(payload, resource, initializer, opts)
