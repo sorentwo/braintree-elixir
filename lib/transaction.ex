@@ -68,7 +68,7 @@ defmodule Braintree.Transaction do
 
   defstruct add_ons: [],
             additional_processor_response: nil,
-            amount: 0,
+            amount: "0",
             android_pay_card: nil,
             apple_pay: nil,
             avs_error_response_code: nil,
