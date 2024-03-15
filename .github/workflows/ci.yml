@@ -15,8 +15,8 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: '1.13'
-              otp: '24.2'
+              elixir: '1.16'
+              otp: '26.1'
             lint: lint
             exclude_tags: 'nothing'
 
