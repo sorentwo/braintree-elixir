@@ -53,6 +53,8 @@ defmodule Braintree.HTTP do
     426 => :upgrade_required,
     429 => :too_many_requests,
     500 => :server_error,
+    501 => :not_implemented,
+    502 => :bad_gateway,
     503 => :service_unavailable,
     504 => :connect_timeout
   }
