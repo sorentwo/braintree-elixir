@@ -188,6 +188,28 @@ defmodule Braintree.HTTPTest do
     end
   end
 
+  describe "code_to_reason/1" do
+    test "supports common HTTP statuses" do
+      for {status, reason} <- [
+            {400, :bad_request},
+            {401, :unauthorized},
+            {403, :forbidden},
+            {404, :not_found},
+            {406, :not_acceptable},
+            {422, :unprocessable_entity},
+            {426, :upgrade_required},
+            {429, :too_many_requests},
+            {500, :server_error},
+            {501, :not_implemented},
+            {502, :bad_gateway},
+            {503, :service_unavailable},
+            {504, :connect_timeout}
+          ] do
+        assert HTTP.code_to_reason(status) == reason
+      end
+    end
+  end
+
   defp compress(string), do: :zlib.gzip(string)
 
   defp assert_config_error(key, fun) do
