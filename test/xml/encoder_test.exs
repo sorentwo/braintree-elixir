@@ -5,21 +5,95 @@ defmodule Braintree.XML.EncoderTest do
 
   import Braintree.XML.Encoder, only: [dump: 1]
 
+  @xml_tag ~s|<?xml version="1.0" encoding="UTF-8" ?>|
+
   describe "dump/1" do
     test "with content" do
-      assert dump(%{company: "Soren", first_name: "Parker"}) ==
-               ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<first-name>Parker</first-name>|
+      assert [xml_tag | nodes] =
+               %{company: "Soren", first_name: "Parker"}
+               |> dump()
+               |> String.split("\n")
+
+      # Order isn't guaranteed when iterating on a map.
+      assert xml_tag == @xml_tag
+      assert ~s|<company>Soren</company>| in nodes
+      assert ~s|<first-name>Parker</first-name>| in nodes
     end
 
     test "with children" do
-      assert dump(%{company: "Soren", nested: %{name: "Parker"}}) ==
-               ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<nested>\n<name>Parker</name>\n</nested>|
+      assert [xml_tag | nodes] =
+               %{company: "Soren", nested: %{name: "Parker"}}
+               |> dump()
+               |> String.split("\n")
 
-      assert dump(%{company: "Soren", nested: [%{name: "Parker"}, %{name: "Shannon"}]}) ==
-               ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<nested type="array">\n<item>\n<name>Parker</name>\n</item>\n<item>\n<name>Shannon</name>\n</item>\n</nested>|
+      assert xml_tag == @xml_tag
 
-      assert dump(%{company: "Soren", pets: ["cat", "dog"]}) ==
-               ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<pets type="array">\n<item>\ncat\n</item>\n<item>\ndog\n</item>\n</pets>|
+      assert nodes == ~w[<company>Soren</company> <nested> <name>Parker</name> </nested>] or
+               nodes == ~w[<nested> <name>Parker</name> </nested> <company>Soren</company>]
+
+      assert [xml_tag | nodes] =
+               %{company: "Soren", nested: [%{name: "Parker"}, %{name: "Shannon"}]}
+               |> dump()
+               |> String.split("\n")
+
+      assert xml_tag == @xml_tag
+
+      assert nodes in [
+               [
+                 "<company>Soren</company>",
+                 ~s|<nested type="array">|,
+                 "<item>",
+                 "<name>Parker</name>",
+                 "</item>",
+                 "<item>",
+                 "<name>Shannon</name>",
+                 "</item>",
+                 "</nested>"
+               ],
+               [
+                 ~s|<nested type="array">|,
+                 "<item>",
+                 "<name>Parker</name>",
+                 "</item>",
+                 "<item>",
+                 "<name>Shannon</name>",
+                 "</item>",
+                 "</nested>",
+                 "<company>Soren</company>"
+               ]
+             ]
+
+      assert [xml_tag | nodes] =
+               %{company: "Soren", pets: ["cat", "dog"]}
+               |> dump()
+               |> String.split("\n")
+
+      assert xml_tag == @xml_tag
+
+      assert nodes in [
+               [
+                 "<company>Soren</company>",
+                 ~s|<pets type="array">|,
+                 "<item>",
+                 "cat",
+                 "</item>",
+                 "<item>",
+                 "dog",
+                 "</item>",
+                 "</pets>"
+               ],
+               [
+                 ~s|<pets type="array">|,
+                 "<item>",
+                 "cat",
+                 "</item>",
+                 "<item>",
+                 "dog",
+                 "</item>",
+                 "</pets>",
+                 "<company>Soren</company>"
+               ]
+             ]
     end
   end
 end
