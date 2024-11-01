@@ -1,3 +1,25 @@
+## v0.14.0
+
+### Added
+
+- [Braintree.VenmoAccount] Implements support for Venmo accounts
+
+### Bug Fixes
+
+- [Braintree.*] Fix specs for functions returning HTTP errors
+
+  * Fix specs for functions returning HTTP errors
+  * Fix `Transaction` amount typespec and `ClientToken` compiler warning
+  * Make default amount same type as true typespec
+
+- [Braintree.ClientToken] Fix typespec on `ClientToken.generate/2`
+
+- [Braintree.Customer] Update `Customer.find/2` typespec
+
+- [Braintree.HTTP] Support common 5XX HTTP error statuses
+
+- [Braintree.Search] Include `:not_found` in search error typespec
+
 ## v0.13.0 2022-10-24
 
 ### Added
