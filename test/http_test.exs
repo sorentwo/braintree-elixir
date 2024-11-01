@@ -46,8 +46,11 @@ defmodule Braintree.HTTPTest do
   test "encode_body/1 converts the request body to xml" do
     params = %{company: "Soren", first_name: "Parker"}
 
-    assert HTTP.encode_body(params) ==
-             ~s|<?xml version="1.0" encoding="UTF-8" ?>\n<company>Soren</company>\n<first-name>Parker</first-name>|
+    assert [xml_tag | nodes] = params |> HTTP.encode_body() |> String.split("\n")
+
+    assert xml_tag == ~s|<?xml version="1.0" encoding="UTF-8" ?>|
+    assert ~s|<company>Soren</company>| in nodes
+    assert ~s|<first-name>Parker</first-name>| in nodes
   end
 
   test "encode_body/1 ignores empty bodies" do
