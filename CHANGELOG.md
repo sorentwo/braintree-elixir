@@ -1,3 +1,12 @@
+## v0.15.0
+
+### Changed
+
+- [Braintree] Update `api_braintreegateway_com.ca.crt`
+
+  This updates the client certificate to match the current Ruby SDK. Without
+  this update, requests won't be requested after June 30th, 2025.
+
 ## v0.14.0
 
 ### Added
