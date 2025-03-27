@@ -32,19 +32,25 @@ end
 Within your application you will need to configure the merchant id and
 authorization keys. You do *not* want to put this information in your
 `config.exs` file! Either put it in a `{prod,dev,test}.secret.exs` file which is
-sourced by `config.exs`, or read the values in from the environment:
+sourced by `config.exs`, or read the values in from the environment in
+`runtime.exs`:
 
 ```elixir
 config :braintree,
   environment: :sandbox,
-  master_merchant_id: {:system, "BRAINTREE_MASTER_MERCHANT_ID"},
-  merchant_id: {:system, "BRAINTREE_MERCHANT_ID"},
-  public_key:  {:system, "BRAINTREE_PUBLIC_KEY"},
-  private_key: {:system, "BRAINTREE_PRIVATE_KEY"}
+  master_merchant_id: System.fetch_env!("BRAINTREE_MASTER_MERCHANT_ID"),
+  merchant_id: System.fetch_env!("BRAINTREE_MERCHANT_ID"),
+  public_key:  System.fetch_env!("BRAINTREE_PUBLIC_KEY"),
+  private_key: System.fetch_env!("BRAINTREE_PRIVATE_KEY")
 ```
 
 Furthermore, the environment defaults to `:sandbox`, so you'll want to configure
 it with `:production` in `prod.exs`.
+
+Braintree has certificates that will be used for verification during the HTTP
+request. This library includes them and will use them by default, but if you
+need to override them, you may provide the configuration `:cacertfile` and
+`:sandbox_cacertfile`.
 
 You may optionally pass directly those configuration keys to all functions
 performing an API call. In that case, those keys will be used to perform the
@@ -60,7 +66,7 @@ config :braintree,
   ]
 ```
 
-[opts]: https://github.com/benoitc/hackney/blob/master/doc/hackney.md#request5
+[opts]: https://hexdocs.pm/hackney/hackney.html#request/5
 
 ## Usage
 
@@ -130,7 +136,7 @@ Immediately before the HTTP request is fired, a start event will be fired with t
  meta data:     %{method: method, path: path}
 ```
 
-Once the HTTP call completes, a stop event will be fired with the following shape: 
+Once the HTTP call completes, a stop event will be fired with the following shape:
 
 ```
  event name:    [:braintree, :request, :stop]
