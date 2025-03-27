@@ -1,3 +1,24 @@
+## v0.16.0
+
+- [Braintree] Avoid a hackney 1.23.0 bug that compares the resolved server's IP address to the
+  certificate's host.
+
+  Without specifying the server_name_indication ssl option to hackney, it will result in this
+  error: 
+
+  ```
+  {:error,
+   {:tls_alert,
+    {:handshake_failure,
+     ~c"TLS client: In state hello received SERVER ALERT: Fatal - Handshake Failure\n"}}}
+  ```
+
+- [Braintree] Provide an escape hatch for the Braintree cacertfile by providing two new additional
+  configuration keys: cacertfile and sandbox_cacertfile. This is helpful in case the provided
+  cacertfile is expired, or for testing purposes.
+
+- [Braintree] Don't include SSL options for endpoints that aren't the official Braintree url.
+
 ## v0.15.0
 
 ### Changed

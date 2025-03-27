@@ -1,7 +1,7 @@
 defmodule Braintree.Mixfile do
   use Mix.Project
 
-  @version "0.15.0"
+  @version "0.16.0"
 
   def project do
     [
@@ -47,7 +47,7 @@ defmodule Braintree.Mixfile do
       maintainers: ["Parker Selbert"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/sorentwo/braintree-elixir"},
-      files: ~w(lib priv mix.exs README.md CHANGELOG.md)
+      files: ~w(lib priv mix.exs README.md CHANGELOG.md LICENSE.txt)
     ]
   end
 
@@ -67,7 +67,7 @@ defmodule Braintree.Mixfile do
     [
       main: "readme",
       source_ref: @version,
-      formatter_opts: [gfm: true],
+      formatters: ["html"],
       extras: [
         "CHANGELOG.md",
         "README.md"
