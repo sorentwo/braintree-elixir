@@ -78,11 +78,38 @@ defmodule Braintree.HTTPTest do
 
   test "build_options/0 considers the application environment" do
     with_applicaton_config(:http_options, [timeout: 9000], fn ->
-      options = HTTP.build_options()
+      options = HTTP.build_options([])
 
       assert :with_body in options
       assert {:timeout, 9000} in options
     end)
+  end
+
+  test "build_options/1 adds the cacertfile for production" do
+    options = HTTP.build_options(url: "https://api.braintreegateway.com/merchants/123foo/")
+
+    assert {:ssl_options, ssl_options} = :lists.keyfind(:ssl_options, 1, options)
+    ssl_options = Map.new(ssl_options)
+    assert %{cacertfile: _} = ssl_options
+    assert %{server_name_indication: ~c"api.braintreegateway.com"} = ssl_options
+    assert %{verify: :verify_peer} = ssl_options
+  end
+
+  test "build_options/1 adds the cacertfile for sandbox" do
+    options =
+      HTTP.build_options(url: "https://api.sandbox.braintreegateway.com/merchants/123foo/")
+
+    assert {:ssl_options, ssl_options} = :lists.keyfind(:ssl_options, 1, options)
+    ssl_options = Map.new(ssl_options)
+    assert %{cacertfile: _} = ssl_options
+    assert %{server_name_indication: ~c"api.sandbox.braintreegateway.com"} = ssl_options
+    assert %{verify: :verify_peer} = ssl_options
+  end
+
+  test "build_options/1 does not add the cacertfile for other endpoints" do
+    options = HTTP.build_options(url: "http://localhost:5000/merchants/123foo/")
+
+    refute :lists.keyfind(:ssl_options, 1, options)
   end
 
   describe "request/3" do

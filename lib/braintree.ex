@@ -81,6 +81,7 @@ defmodule Braintree do
   end
 
   defp fallback_or_raise(key, nil, nil), do: raise(ConfigError, key)
+  defp fallback_or_raise(_, nil, default) when is_function(default, 0), do: default.()
   defp fallback_or_raise(_, nil, default), do: default
   defp fallback_or_raise(_, value, _), do: value
 end

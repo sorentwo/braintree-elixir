@@ -30,10 +30,9 @@ defmodule Braintree.HTTP do
 
   @type response :: {:ok, map} | error
 
-  @production_endpoint "https://api.braintreegateway.com/merchants/"
-  @sandbox_endpoint "https://api.sandbox.braintreegateway.com/merchants/"
-
+  @production_endpoint "https://api.braintreegateway.com/"
   @cacertfile "/certs/api_braintreegateway_com.ca.crt"
+  @sandbox_endpoint "https://api.sandbox.braintreegateway.com/"
 
   @headers [
     {"Accept", "application/xml"},
@@ -81,12 +80,14 @@ defmodule Braintree.HTTP do
     start_time = System.monotonic_time()
 
     try do
+      url = build_url(path, opts)
+
       :hackney.request(
         method,
-        build_url(path, opts),
+        url,
         build_headers(opts),
         encode_body(body),
-        build_options()
+        build_options([{:url, url} | opts])
       )
     catch
       kind, reason ->
@@ -207,17 +208,43 @@ defmodule Braintree.HTTP do
   end
 
   @doc false
-  @spec build_options() :: [...]
-  def build_options do
-    cacertfile = Path.join(:code.priv_dir(:braintree), @cacertfile)
+  @spec build_options(Keyword.t()) :: [...]
+  def build_options(opts) do
     http_opts = Braintree.get_env(:http_options, [])
+    [:with_body] ++ ssl_opts(opts) ++ http_opts
+  end
 
-    ssl_opts = [
-      cacertfile: cacertfile,
-      verify: :verify_peer
-    ]
+  defp ssl_opts(opts) do
+    case opts[:url] do
+      @production_endpoint <> _ ->
+        [
+          ssl_options: [
+            verify: :verify_peer,
+            # avoid bug in hackney 1.23.0 that compares SSL hostname to resolved IP
+            server_name_indication: String.to_charlist("api.braintreegateway.com"),
+            cacertfile:
+              get_lazy_env(opts, :cacertfile, fn ->
+                Path.join(:code.priv_dir(:braintree), @cacertfile)
+              end)
+          ]
+        ]
 
-    [:with_body, ssl_options: ssl_opts] ++ http_opts
+      @sandbox_endpoint <> _ ->
+        [
+          ssl_options: [
+            verify: :verify_peer,
+            # avoid bug in hackney 1.23.0 that compares SSL hostname to resolved IP
+            server_name_indication: String.to_charlist("api.sandbox.braintreegateway.com"),
+            cacertfile:
+              get_lazy_env(opts, :sandbox_cacertfile, fn ->
+                Path.join(:code.priv_dir(:braintree), @cacertfile)
+              end)
+          ]
+        ]
+
+      _ ->
+        []
+    end
   end
 
   @doc false
@@ -237,14 +264,14 @@ defmodule Braintree.HTTP do
   end
 
   defp endpoints do
-    [production: @production_endpoint, sandbox: sandbox_endpoint()]
+    [production: @production_endpoint <> "merchants/", sandbox: sandbox_endpoint()]
   end
 
   defp sandbox_endpoint do
     Application.get_env(
       :braintree,
       :sandbox_endpoint,
-      @sandbox_endpoint
+      @sandbox_endpoint <> "merchants/"
     )
   end
 
