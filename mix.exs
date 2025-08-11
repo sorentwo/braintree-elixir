@@ -27,7 +27,6 @@ defmodule Braintree.Mixfile do
       extra_applications: [:logger, :xmerl, :telemetry],
       env: [
         environment: :sandbox,
-        http_options: [timeout: 30_000],
         master_merchant_id: {:system, "BRAINTREE_MASTER_MERCHANT_ID"},
         merchant_id: {:system, "BRAINTREE_MERCHANT_ID"},
         private_key: {:system, "BRAINTREE_PRIVATE_KEY"},
