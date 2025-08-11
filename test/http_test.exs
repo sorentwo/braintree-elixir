@@ -76,12 +76,32 @@ defmodule Braintree.HTTPTest do
            end) =~ "unprocessable response"
   end
 
-  test "build_options/0 considers the application environment" do
-    with_applicaton_config(:http_options, [timeout: 9000], fn ->
+  test "build_options/0 sets default timeouts" do
+    options = HTTP.build_options([])
+
+    assert :with_body in options
+    assert {:recv_timeout, 30_000} in options
+    assert {:connect_timeout, 10_000} in options
+  end
+
+  test "build_options/0 allows overriding timeout defaults via config" do
+    with_applicaton_config(:http_options, [recv_timeout: 15_000, connect_timeout: 5_000], fn ->
       options = HTTP.build_options([])
 
       assert :with_body in options
-      assert {:timeout, 9000} in options
+      assert {:recv_timeout, 15_000} in options
+      assert {:connect_timeout, 5_000} in options
+    end)
+  end
+
+  test "build_options/0 merges custom options with defaults" do
+    with_applicaton_config(:http_options, [recv_timeout: 20_000, custom_option: :value], fn ->
+      options = HTTP.build_options([])
+
+      assert :with_body in options
+      assert {:recv_timeout, 20_000} in options
+      assert {:connect_timeout, 10_000} in options
+      assert {:custom_option, :value} in options
     end)
   end
 

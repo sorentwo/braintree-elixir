@@ -56,15 +56,17 @@ You may optionally pass directly those configuration keys to all functions
 performing an API call. In that case, those keys will be used to perform the
 call.
 
-You can optionally [configure Hackney options][opts] with:
+You can optionally configure HTTP request timeouts. The library sets reasonable defaults, but you
+can override them by [configuring Hackney options][opts]:
 
 ```elixir
-config :braintree,
-  http_options: [
-    timeout: 30_000, # default, in milliseconds
-    recv_timeout: 5000 # default, in milliseconds
-  ]
+config :braintree, http_options: [recv_timeout: 30_000, connect_timeout: 10_000]
 ```
+
+Available timeout options:
+
+- `recv_timeout` - Maximum time to wait when receiving data from the server (default: 30,000ms)
+- `connect_timeout` - Maximum time to wait when establishing a connection (default: 10,000ms)
 
 [opts]: https://hexdocs.pm/hackney/hackney.html#request/5
 

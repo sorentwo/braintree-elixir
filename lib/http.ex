@@ -210,7 +210,12 @@ defmodule Braintree.HTTP do
   @doc false
   @spec build_options(Keyword.t()) :: [...]
   def build_options(opts) do
-    http_opts = Braintree.get_env(:http_options, [])
+    http_opts =
+      :http_options
+      |> Braintree.get_env([])
+      |> Keyword.put_new(:recv_timeout, 30_000)
+      |> Keyword.put_new(:connect_timeout, 10_000)
+
     [:with_body] ++ ssl_opts(opts) ++ http_opts
   end
 
