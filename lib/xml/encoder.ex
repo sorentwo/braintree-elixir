@@ -32,7 +32,7 @@ defmodule Braintree.XML.Encoder do
   end
 
   defp generate(term) when is_map(term),
-    do: term |> Map.to_list() |> Enum.map_join("\n", &generate/1)
+    do: term |> Enum.sort() |> Enum.map_join("\n", &generate/1)
 
   defp generate(term) when is_list(term),
     do: term |> Enum.map_join("\n", fn item -> "<item>\n#{generate(item)}\n</item>" end)
