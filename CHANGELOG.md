@@ -1,4 +1,18 @@
+## v0.17.0
+
+### Bug Fixes
+
+- [Braintree] Upgrade dependencies to resolve advisories
+
+  Upgrade hackney to 4.x, clearing all six known hackney CVEs (including the HIGH-severity SOCKS5
+  TLS timeout issue). hackney 4.x is still compatible, so no HTTP client code changed.
+
+  Also bump all tooling (ex_doc, credo, dialyxir) to current releases, and raise the minimum
+  Elixir requirement to 1.13 to match the updated dependencies.
+
 ## v0.16.0
+
+### Bug Fixes
 
 - [Braintree] Avoid a hackney 1.23.0 bug that compares the resolved server's IP address to the
   certificate's host.
