@@ -15,9 +15,9 @@ defmodule Braintree.Testing.TestTransaction do
 
   ## Example
 
-  {:ok, transaction} = TestTransaction.settle(transaction_id: "123")
+      {:ok, transaction} = TestTransaction.settle(transaction_id: "123")
 
-  transaction.status # "settled"
+      transaction.status # "settled"
   """
   @spec settle(String.t()) :: {:ok, any} | {:error, Error.t()}
   def settle(transaction_id) do
@@ -31,10 +31,10 @@ defmodule Braintree.Testing.TestTransaction do
 
   ## Example
 
-  {:ok, transaction} = TestTransaction.settlement_confirm(
-  transaction_id: "123")
+      {:ok, transaction} = TestTransaction.settlement_confirm(
+        transaction_id: "123")
 
-  transaction.status # "settlement_confirmed"
+      transaction.status # "settlement_confirmed"
   """
   @spec settlement_confirm(String.t()) :: {:ok, any} | {:error, Error.t()}
   def settlement_confirm(transaction_id) do
@@ -48,10 +48,10 @@ defmodule Braintree.Testing.TestTransaction do
 
   ## Example
 
-  {:ok, transaction} = TestTransaction.settlement_decline(
-  transaction_id: "123")
+      {:ok, transaction} = TestTransaction.settlement_decline(
+        transaction_id: "123")
 
-  transaction.status # "settlement_declined"
+      transaction.status # "settlement_declined"
   """
   @spec settlement_decline(String.t()) :: {:ok, any} | {:error, Error.t()}
   def settlement_decline(transaction_id) do

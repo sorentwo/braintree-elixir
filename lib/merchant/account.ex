@@ -36,9 +36,9 @@ defmodule Braintree.Merchant.Account do
 
   ## Example
 
-    {:ok, merchant} = Braintree.Merchant.Account.create(%{
-      tos_accepted: true,
-    })
+      {:ok, merchant} = Braintree.Merchant.Account.create(%{
+        tos_accepted: true,
+      })
   """
   @spec create(map, Keyword.t()) :: {:ok, t} | HTTP.error()
   def create(params \\ %{}, opts \\ []) do

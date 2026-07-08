@@ -69,7 +69,8 @@ defmodule Braintree.Mixfile do
       formatters: ["html"],
       extras: [
         "CHANGELOG.md",
-        "README.md"
+        "README.md",
+        "LICENSE.txt"
       ]
     ]
   end

@@ -52,10 +52,10 @@ defmodule Braintree.CreditCardVerification do
 
   ## Example:
 
-    search_params = %{amount: %{min: "10.0", max: "15.0"},
-                      status: ["approved", "pending"]}
+      search_params = %{amount: %{min: "10.0", max: "15.0"},
+                        status: ["approved", "pending"]}
 
-    {:ok, verifications} = Braintree.CreditCardVerification.search(search_params)
+      {:ok, verifications} = Braintree.CreditCardVerification.search(search_params)
   """
   @spec search(map, Keyword.t()) :: {:ok, t} | {:error, Error.t()}
   def search(params, opts \\ []) when is_map(params) do

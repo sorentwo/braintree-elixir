@@ -52,11 +52,11 @@ defmodule Braintree.Address do
 
   ## Example
 
-    {:ok, address} = Braintree.Address.create("customer_id", %{
-      first_name: "Jenna"
-    })
+      {:ok, address} = Braintree.Address.create("customer_id", %{
+        first_name: "Jenna"
+      })
 
-    address.company # Braintree
+      address.company # Braintree
   """
   @spec create(binary, map, Keyword.t()) :: {:ok, t} | HTTP.error()
   def create(customer_id, params \\ %{}, opts \\ []) when is_binary(customer_id) do

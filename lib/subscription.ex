@@ -168,7 +168,7 @@ defmodule Braintree.Subscription do
 
   ## Example:
 
-    {:ok, subscriptions} = Braintree.Subscription.search(%{plan_id: %{is: "starter"}})
+      {:ok, subscriptions} = Braintree.Subscription.search(%{plan_id: %{is: "starter"}})
   """
   @spec search(map, Keyword.t()) :: {:ok, t} | HTTP.error()
   def search(params, opts \\ []) when is_map(params) do
