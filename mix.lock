@@ -29,7 +29,7 @@
   "quic": {:hex, :quic, "1.7.0", "ebcf105fb16ca4d954c3bbd2e5bcda7650074f3e3a9ca80135dbee2607e0c27e", [:rebar3], [], "hexpm", "d0d304e5fda48754a570b90b103153f780f9926c15f6eabfe1b343e4f61e32df"},
   "ranch": {:hex, :ranch, "1.8.1", "208169e65292ac5d333d6cdbad49388c1ae198136e4697ae2f474697140f201c", [:make, :rebar3], [], "hexpm", "aed58910f4e21deea992a67bf51632b6d60114895eb03bb392bb733064594dd0"},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.7", "354c321cf377240c7b8716899e182ce4890c5938111a1296add3ec74cf1715df", [:make, :mix, :rebar3], [], "hexpm", "fe4c190e8f37401d30167c8c405eda19469f34577987c76dde613e838bbc67f8"},
-  "telemetry": {:hex, :telemetry, "1.4.2", "a0cb522801dffb1c49fe6e30561badffc7b6d0e180db1300df759faa22062855", [:rebar3], [], "hexpm", "928f6495066506077862c0d1646609eed891a4326bee3126ba54b60af61febb1"},
+  "telemetry": {:hex, :telemetry, "1.4.3", "d0333fa869361e6833d6ff8e806ff4d8553fe1332fcce0af86c7381951a1dc2f", [:rebar3], [], "hexpm", "17a63581cf2e832a238287f5fe6811e8ca1f333249f1376ad653164a3c4770d4"},
   "unicode_util_compat": {:hex, :unicode_util_compat, "0.7.0", "bc84380c9ab48177092f43ac89e4dfa2c6d62b40b8bd132b1059ecc7232f9a78", [:rebar3], [], "hexpm", "25eee6d67df61960cf6a794239566599b09e17e668d3700247bc498638152521"},
   "webtransport": {:hex, :webtransport, "0.4.3", "df0c53da138cdc5f3390a31ef612caa3a041c23e18c1a0b6fbd4d72743277806", [:rebar3], [{:h2, "~> 0.10.4", [hex: :h2, repo: "hexpm", optional: false]}, {:quic, "~> 1.7.0", [hex: :quic, repo: "hexpm", optional: false]}], "hexpm", "3ae8c76696cdb56bee3caf1dd853a0a596339886468ca17c578a9bfd647dab9d"},
 }
